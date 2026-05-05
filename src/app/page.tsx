@@ -1,65 +1,171 @@
-import Image from "next/image";
+import Link from "next/link";
+import type { Metadata } from "next";
+import HeroSlider from "@/components/sections/HeroSlider";
+import FeaturedImageWall from "@/components/sections/FeaturedImageWall";
+import ReviewsSection from "@/components/sections/ReviewsSection";
+import VoucherSection from "@/components/sections/VoucherSection";
+import AboutEditorial from "@/components/sections/AboutEditorial";
+import ServicesAccordion from "@/components/sections/ServicesAccordion";
+import { instagramUrl } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
+  description:
+    "Professionelle Fotografin in Kaufbeuren & Allgäu für Portraits, Hochzeiten, Familie, Babybauch und Newborn. 5,0 Google Bewertung · 47 Rezensionen.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
+    description:
+      "Professionelle Fotografin in Kaufbeuren & Allgäu für Portraits, Hochzeiten, Familie, Babybauch und Newborn.",
+    url: "/",
+  },
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="bg-[#e7dfd3] text-black">
+      <HeroSlider />
+
+      <section className="px-6 py-20 md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-7xl gap-10 xl:grid-cols-[0.8fr_1.2fr] xl:items-end">
+          <div>
+            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+              R.ArtPhotographie
+            </p>
+
+            <h2 className="mt-5 text-4xl font-light leading-[0.98] md:text-6xl">
+              Bilder mit Haltung,
+              <br />
+              nicht mit Zufall
+            </h2>
+          </div>
+
+          <div className="max-w-3xl">
+            <p className="text-lg leading-8 text-black/65 md:text-xl md:leading-9">
+              R.ArtPhotographie ist Fotografie für Kaufbeuren und das Allgäu:
+              Portraitshooting, Familienmomente, Hochzeitsfotografie und
+              Gutscheine mit klarer Bildsprache und persönlicher Begleitung.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                href="/kontakt"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
+                style={{ color: "#ffffff" }}
+              >
+                Shooting anfragen
+              </Link>
+
+              <Link
+                href="/galerie"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-7 py-3 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
+                style={{ color: "#111111" }}
+              >
+                Arbeiten ansehen
+              </Link>
+            </div>
+
+            <div className="mt-7 flex flex-wrap gap-3 text-sm text-black/58">
+              <Link href="/fotografin-kaufbeuren" className="hover:text-black">
+                Fotografin Kaufbeuren
+              </Link>
+              <span>·</span>
+              <Link href="/fotografin-allgaeu" className="hover:text-black">
+                Fotografin Allgäu
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-20 md:px-10 md:pb-28">
+        <div className="mx-auto grid max-w-7xl gap-10 border-y border-black/10 py-14 md:py-20 xl:grid-cols-[0.85fr_1.15fr] xl:items-start">
+          <div>
+            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+              Kaufbeuren & Allgäu
+            </p>
+            <h2 className="mt-4 max-w-4xl text-4xl font-light leading-[1] md:text-6xl">
+              Fotografin in Kaufbeuren & im Allgäu
+            </h2>
+          </div>
+
+          <div className="max-w-3xl text-base leading-8 text-black/66 md:text-lg md:leading-9">
+            <p>
+              R.ArtPhotographie steht für hochwertige Fotografie in Kaufbeuren
+              und im gesamten Allgäu. Ob Portraitshooting,
+              Hochzeitsfotografie, Familienbilder, Babybauchshooting oder
+              Newborn-Shooting – jedes Shooting wird individuell geplant und
+              professionell umgesetzt.
+            </p>
+            <p className="mt-5">
+              Kundinnen und Kunden aus Kaufbeuren, Kempten, Marktoberdorf,
+              Füssen und der gesamten Region Allgäu schätzen die ruhige
+              Arbeitsweise, die klare Bildsprache und die persönliche Betreuung.
+            </p>
+            <p className="mt-5">
+              Als Fotografin in Kaufbeuren begleite ich private Shootings,
+              Hochzeiten und besondere Momente im gesamten Allgäu.
+            </p>
+
+            <div className="mt-8">
+              <Link
+                href="/kontakt"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
+                style={{ color: "#ffffff" }}
+              >
+                Shooting anfragen
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <FeaturedImageWall />
+      <ServicesAccordion />
+      <AboutEditorial />
+
+      <ReviewsSection />
+
+      <section className="px-6 py-24 md:px-10 md:py-32">
+        <div className="mx-auto max-w-6xl rounded-xl border border-black/8 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),rgba(255,255,255,0.04))] px-8 py-14 text-center md:px-14 md:py-20">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            Nächster Schritt
           </p>
+
+          <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl">
+            Lass uns dein Shooting
+            <br />
+            konkret planen
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
+            Unverbindliche Anfrage, schnelle Rückmeldung und ein klarer Ablauf
+            ohne unnötiges Hin und Her.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/kontakt"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
+              style={{ color: "#ffffff" }}
+            >
+              Anfrage senden
+            </Link>
+
+            <a
+              href={instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-8 py-4 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
+              style={{ color: "#111111" }}
+            >
+              Instagram ansehen
+            </a>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+
+      <VoucherSection compact />
+    </main>
   );
 }
