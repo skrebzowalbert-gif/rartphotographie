@@ -11,11 +11,6 @@ export default function SiteShell({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isStudio = pathname.startsWith("/studio");
-
-  if (isStudio) {
-    return <>{children}</>;
-  }
 
   return (
     <div className="flex min-h-screen flex-col">
