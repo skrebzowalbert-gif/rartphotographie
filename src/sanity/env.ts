@@ -1,4 +1,5 @@
-export const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "";
+export const sanityProjectId =
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "g9dys4hg";
 export const sanityDataset =
   process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
 export const sanityApiVersion =

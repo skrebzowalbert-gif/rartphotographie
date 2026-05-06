@@ -1,5 +1,5 @@
 import imageUrlBuilder from "@sanity/image-url";
-import { sanityClient } from "@/sanity/client";
+import { sanityClient } from "./client";
 
 type SanityImageSource = Parameters<
   ReturnType<typeof imageUrlBuilder>["image"]

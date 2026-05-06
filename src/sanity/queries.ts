@@ -1,6 +1,6 @@
 import { groq } from "next-sanity";
-import { isSanityConfigured } from "@/sanity/env";
-import { sanityClient } from "@/sanity/client";
+import { isSanityConfigured } from "./env";
+import { sanityClient } from "./client";
 
 export type SanityGalleryCategory =
   | "portrait"

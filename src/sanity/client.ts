@@ -4,7 +4,7 @@ import {
   sanityApiVersion,
   sanityDataset,
   sanityProjectId,
-} from "@/sanity/env";
+} from "./env";
 
 export const sanityClient = isSanityConfigured
   ? createClient({
