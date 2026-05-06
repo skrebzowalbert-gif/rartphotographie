@@ -43,9 +43,9 @@ export async function POST(req: Request) {
     const amount = Number(voucherCustomAmount.replace(",", "."));
     const checkoutAmount = Math.round(amount * 100);
 
-    if (!voucherCustomAmount || Number.isNaN(amount) || checkoutAmount < 5000) {
+    if (!voucherCustomAmount || Number.isNaN(amount) || checkoutAmount < 200) {
       return Response.json(
-        { error: "Bitte gib einen Gutscheinbetrag ab 50 € ein." },
+        { error: "Bitte gib einen Gutscheinbetrag ab 2 € ein." },
         { status: 400 }
       );
     }
