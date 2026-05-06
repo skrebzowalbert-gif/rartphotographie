@@ -3,27 +3,30 @@
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-type GalleryGroup = {
+export type GalleryImageItem = {
+  src: string;
+  alt: string;
+  title?: string;
+};
+
+export type GalleryGroup = {
   title: string;
   subtitle: string;
-  images: string[];
+  images: GalleryImageItem[];
 };
 
 type GalerieGridClientProps = {
   groups: GalleryGroup[];
 };
 
-function imageAlt(title: string, index: number) {
-  return `${title} Fotografie ${index + 1} von R.ArtPhotographie Kaufbeuren`;
-}
-
 export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
   const allImages = useMemo(
     () =>
       groups.flatMap((group) =>
-        group.images.map((src, index) => ({
-          src,
-          alt: imageAlt(group.title, index),
+        group.images.map((image) => ({
+          src: image.src,
+          alt: image.alt,
+          title: image.title,
         }))
       ),
     [groups]
@@ -33,9 +36,8 @@ export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
       const offset = groups
         .slice(0, groupIndex)
         .reduce((sum, previousGroup) => sum + previousGroup.images.length, 0);
-      const images = group.images.map((src, index) => ({
-        src,
-        alt: imageAlt(group.title, index),
+      const images = group.images.map((image, index) => ({
+        ...image,
         globalIndex: offset + index,
       }));
 

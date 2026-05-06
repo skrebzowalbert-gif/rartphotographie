@@ -1,6 +1,14 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import GalerieGridClient from "@/components/gallery/GalerieGridClient";
+import GalerieGridClient, {
+  type GalleryGroup,
+  type GalleryImageItem,
+} from "@/components/gallery/GalerieGridClient";
+import {
+  getGalleryImages,
+  type SanityGalleryCategory,
+  type SanityGalleryImage,
+} from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Galerie Portrait, Familie, Events & Hochzeiten",
@@ -99,33 +107,95 @@ const weddingImages = [
   "/images/weddings/wedding-20.JPG",
 ];
 
-export default function GaleriePage() {
-  const groups = [
-    {
-      title: "Portrait",
-      subtitle:
-        "Klare Bildsprache, Ruhe vor der Kamera und Portraits mit Charakter.",
-      images: portraitImages,
-    },
-    {
-      title: "Familie, Babybauch & Newborn",
-      subtitle:
-        "Persönliche Erinnerungen, ruhig fotografiert und hochwertig ausgearbeitet.",
-      images: familyImages,
-    },
-    {
-      title: "Events",
-      subtitle:
-        "Stimmung, Dynamik und echte Situationen statt austauschbarer Partybilder.",
-      images: eventImages,
-    },
-    {
-      title: "Hochzeiten",
-      subtitle:
-        "Emotionale Momente, sauber dokumentiert und ohne künstliche Überladung.",
-      images: weddingImages,
-    },
-  ];
+type GalleryGroupMeta = {
+  title: string;
+  subtitle: string;
+  categories: SanityGalleryCategory[];
+  fallbackImages: string[];
+};
+
+const groupMeta: GalleryGroupMeta[] = [
+  {
+    title: "Portrait",
+    subtitle:
+      "Klare Bildsprache, Ruhe vor der Kamera und Portraits mit Charakter.",
+    categories: ["portrait"],
+    fallbackImages: portraitImages,
+  },
+  {
+    title: "Familie, Babybauch & Newborn",
+    subtitle:
+      "Persönliche Erinnerungen, ruhig fotografiert und hochwertig ausgearbeitet.",
+    categories: [
+      "family",
+      "babybauch",
+      "newborn",
+    ],
+    fallbackImages: familyImages,
+  },
+  {
+    title: "Events",
+    subtitle:
+      "Stimmung, Dynamik und echte Situationen statt austauschbarer Partybilder.",
+    categories: ["event"],
+    fallbackImages: eventImages,
+  },
+  {
+    title: "Hochzeiten",
+    subtitle:
+      "Emotionale Momente, sauber dokumentiert und ohne künstliche Überladung.",
+    categories: ["wedding"],
+    fallbackImages: weddingImages,
+  },
+];
+
+function fallbackAlt(title: string, index: number) {
+  return `${title} Fotografie ${index + 1} von R.ArtPhotographie Kaufbeuren`;
+}
+
+function toFallbackImages(title: string, images: string[]): GalleryImageItem[] {
+  return images.map((src, index) => ({
+    src,
+    alt: fallbackAlt(title, index),
+  }));
+}
+
+function buildFallbackGroups(): GalleryGroup[] {
+  return groupMeta.map((group) => ({
+    title: group.title,
+    subtitle: group.subtitle,
+    images: toFallbackImages(group.title, group.fallbackImages),
+  }));
+}
+
+function buildSanityGroups(images: SanityGalleryImage[]): GalleryGroup[] {
+  const groups = groupMeta
+    .map((group) => {
+      const groupImages = images
+        .filter((image) => group.categories.includes(image.category))
+        .map((image) => ({
+          src: image.src,
+          alt: image.alt,
+          title: image.title,
+        }));
+
+      return {
+        title: group.title,
+        subtitle: group.subtitle,
+        images: groupImages,
+      };
+    })
+    .filter((group) => group.images.length > 0);
+
+  return groups.length > 0 ? groups : buildFallbackGroups();
+}
+
+export default async function GaleriePage() {
+  const sanityImages = await getGalleryImages();
+  const groups =
+    sanityImages.length > 0
+      ? buildSanityGroups(sanityImages)
+      : buildFallbackGroups();
 
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">
