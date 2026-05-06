@@ -16,6 +16,24 @@ function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY);
 }
 
+function createOrderNumber(sessionId: string, date = new Date()) {
+  const datePart = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Berlin",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(date)
+    .replaceAll("-", "");
+
+  const checksum = sessionId.split("").reduce((sum, char, index) => {
+    return sum + char.charCodeAt(0) * (index + 1);
+  }, 0);
+  const suffix = String(checksum % 10000).padStart(4, "0");
+
+  return `RART-${datePart}-${suffix}`;
+}
+
 export async function POST(req: Request) {
   const stripe = getStripe();
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -78,8 +96,10 @@ export async function POST(req: Request) {
   const street = metadata.street || metadata.address || "";
   const zip = metadata.zip || "";
   const city = metadata.city || "";
+  const orderNumber = createOrderNumber(session.id);
   const adminContent = `
     ${row("Status", "Bezahlt")}
+    ${row("Bestellnummer", orderNumber)}
     ${row("Gutschein", voucherName)}
     ${row("Betrag", formatEuro(amountPaid))}
     ${row("Name", customerName)}
@@ -89,7 +109,7 @@ export async function POST(req: Request) {
     ${row("Straße + Hausnummer", street)}
     ${row("PLZ", zip)}
     ${row("Ort", city)}
-    ${row("Stripe Session", session.id)}
+    ${row("Stripe Session intern", session.id)}
     ${row("Datum", paidAt)}
     <p style="margin:18px 0 6px;"><strong>Nachricht für Gutschein:</strong></p>
     <p style="white-space:pre-wrap;margin:0;">${escapeHtml(formatValue(metadata.message))}</p>
@@ -99,12 +119,13 @@ export async function POST(req: Request) {
     from: `R.ArtPhotographie <${resendConfig.fromEmail}>`,
     to: [resendConfig.toEmail],
     replyTo: customerEmail || undefined,
-    subject: `Bezahlter Gutschein: ${voucherName} - ${formatEuro(amountPaid)}`,
+    subject: `Bezahlter Gutschein ${orderNumber}: ${formatEuro(amountPaid)}`,
     html: emailShell("Gutschein bezahlt", adminContent),
     text: [
       "Gutschein bezahlt",
       "",
       `Status: Bezahlt`,
+      `Bestellnummer: ${orderNumber}`,
       `Gutschein: ${voucherName}`,
       `Betrag: ${formatEuro(amountPaid)}`,
       `Name: ${customerName}`,
@@ -114,7 +135,7 @@ export async function POST(req: Request) {
       `Straße + Hausnummer: ${formatValue(street)}`,
       `PLZ: ${formatValue(zip)}`,
       `Ort: ${formatValue(city)}`,
-      `Stripe Session: ${session.id}`,
+      `Stripe Session intern: ${session.id}`,
       `Datum: ${paidAt}`,
       "",
       "Nachricht für Gutschein:",
@@ -134,12 +155,13 @@ export async function POST(req: Request) {
       .send({
         from: `R.ArtPhotographie <${resendConfig.fromEmail}>`,
         to: [customerEmail],
-        subject: "Dein Gutschein wurde bezahlt",
+        subject: `Dein Gutschein wurde bezahlt - ${orderNumber}`,
         html: emailShell(
           "Zahlung erfolgreich",
           `
             <p style="margin:0 0 14px;">Hallo ${escapeHtml(customerName)},</p>
             <p style="margin:0 0 14px;">deine Zahlung ist eingegangen. Regina bereitet deinen Gutschein vor und meldet sich, falls noch Details offen sind.</p>
+            ${row("Bestellnummer", orderNumber)}
             ${row("Gutschein", voucherName)}
             ${row("Betrag", formatEuro(amountPaid))}
             ${row("Versandadresse", [street, zip, city].filter(Boolean).join(", "))}
@@ -151,6 +173,7 @@ export async function POST(req: Request) {
           "",
           "deine Zahlung ist eingegangen. Regina bereitet deinen Gutschein vor und meldet sich, falls noch Details offen sind.",
           "",
+          `Bestellnummer: ${orderNumber}`,
           `Gutschein: ${voucherName}`,
           `Betrag: ${formatEuro(amountPaid)}`,
           `Versandadresse: ${formatValue([street, zip, city].filter(Boolean).join(", "))}`,
