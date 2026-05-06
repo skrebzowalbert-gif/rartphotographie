@@ -46,7 +46,7 @@ export default function VoucherCheckout() {
     ? Math.round(customAmount * 100)
     : 0;
   const displayedAmount =
-    customAmountInCents >= 200 ? formatEuro(customAmountInCents) : "ab 2 €";
+    customAmountInCents >= 5000 ? formatEuro(customAmountInCents) : "ab 50 €";
 
   function updateField(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,10 +59,10 @@ export default function VoucherCheckout() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!form.voucherCustomAmount || customAmount < 2) {
+    if (!form.voucherCustomAmount || customAmount < 50) {
       setStatus({
         type: "error",
-        message: "Bitte gib einen Gutscheinbetrag ab 2 € ein.",
+        message: "Bitte gib einen Gutscheinbetrag ab 50 € ein.",
       });
       return;
     }
@@ -129,7 +129,7 @@ export default function VoucherCheckout() {
               Wertgutschein auswählen und sicher bezahlen
             </h2>
             <p className="mt-6 max-w-2xl text-base leading-8 text-black/64 md:text-lg">
-              Du bestimmst den Betrag ab 2 €. Die Zahlung läuft sicher über
+              Du bestimmst den Betrag ab 50 €. Die Zahlung läuft sicher über
               Stripe Checkout; Zahlungsdaten werden nicht auf dieser Webseite
               gespeichert.
             </p>
@@ -175,7 +175,7 @@ export default function VoucherCheckout() {
                 <input
                   name="voucherCustomAmount"
                   type="number"
-                  min="2"
+                  min="50"
                   step="1"
                   inputMode="decimal"
                   placeholder="z. B. 100 €"
