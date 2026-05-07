@@ -6,7 +6,9 @@ import ReviewsSection from "@/components/sections/ReviewsSection";
 import VoucherSection from "@/components/sections/VoucherSection";
 import AboutEditorial from "@/components/sections/AboutEditorial";
 import ServicesAccordion from "@/components/sections/ServicesAccordion";
+import PromotionBar from "@/components/sections/PromotionBar";
 import { instagramUrl } from "@/lib/site";
+import { getActivePromotions } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
@@ -21,9 +23,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const promotions = await getActivePromotions();
+  const activePromotion = promotions[0] || null;
+
   return (
     <main className="bg-[#e7dfd3] text-black">
+      <PromotionBar promotion={activePromotion} />
       <HeroSlider />
 
       <section className="px-6 py-20 md:px-10 md:py-28">

@@ -19,6 +19,16 @@ export type SanityGalleryImage = {
   order?: number;
 };
 
+export type SanityPromotion = {
+  id: string;
+  title: string;
+  badge?: string;
+  text: string;
+  buttonText?: string;
+  buttonLink?: string;
+  order?: number;
+};
+
 const galleryImagesQuery = groq`
   *[
     _type == "galleryImage" &&
@@ -36,6 +46,24 @@ const galleryImagesQuery = groq`
   }
 `;
 
+const activePromotionsQuery = groq`
+  *[
+    _type == "promotion" &&
+    !(_id in path("drafts.**")) &&
+    isActive == true &&
+    (!defined(startDate) || startDate <= now()) &&
+    (!defined(endDate) || endDate >= now())
+  ] | order(order asc, _createdAt asc) {
+    "id": _id,
+    title,
+    badge,
+    text,
+    buttonText,
+    buttonLink,
+    order
+  }
+`;
+
 export async function getGalleryImages() {
   if (!isSanityConfigured || !sanityClient) {
     return [];
@@ -44,6 +72,22 @@ export async function getGalleryImages() {
   try {
     return await sanityClient.fetch<SanityGalleryImage[]>(
       galleryImagesQuery,
+      {},
+      { next: { revalidate: 300 } }
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function getActivePromotions() {
+  if (!isSanityConfigured || !sanityClient) {
+    return [];
+  }
+
+  try {
+    return await sanityClient.fetch<SanityPromotion[]>(
+      activePromotionsQuery,
       {},
       { next: { revalidate: 300 } }
     );

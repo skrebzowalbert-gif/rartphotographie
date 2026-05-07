@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-05-07T10:50:13.866Z",
+  "createdAt": "2026-05-07T22:47:42.825Z",
   "studioVersion": "5.24.0",
   "version": 3,
   "workspaces": [
@@ -13,7 +13,7 @@
       },
       "name": "rartphotographie",
       "projectId": "g9dys4hg",
-      "schema": "4c2ec914.create-schema.json",
+      "schema": "1afce97a.create-schema.json",
       "title": "R.ArtPhotographie",
       "tools": "af21f36c.create-tools.json"
     }
