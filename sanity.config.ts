@@ -14,7 +14,21 @@ export default defineConfig({
   dataset: sanityDataset,
   apiVersion: sanityApiVersion,
   basePath: "/studio",
+  releases: {
+    enabled: false,
+  },
+  scheduledDrafts: {
+    enabled: false,
+  },
+  scheduledPublishing: {
+    enabled: false,
+  },
   plugins: [structureTool()],
+  document: {
+    drafts: {
+      enabled: true,
+    },
+  },
   schema: {
     types: schemaTypes,
   },
