@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export type GalleryImageItem = {
+  id: string;
   src: string;
   alt: string;
   title?: string;
@@ -24,6 +25,7 @@ export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
     () =>
       groups.flatMap((group) =>
         group.images.map((image) => ({
+          id: image.id,
           src: image.src,
           alt: image.alt,
           title: image.title,
@@ -111,7 +113,7 @@ export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
             <div className="grid grid-cols-3 gap-1.5 sm:gap-2 md:grid-cols-4 md:gap-4 xl:grid-cols-5">
               {group.images.map((image, index) => (
                   <button
-                    key={`${group.title}-${image.src}-${index}`}
+                    key={image.id}
                     type="button"
                     onClick={() => setActiveIndex(image.globalIndex)}
                     className="group relative aspect-square min-w-0 touch-manipulation overflow-hidden bg-black/5 text-left pointer-events-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:aspect-[4/5]"

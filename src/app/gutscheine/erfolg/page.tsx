@@ -22,9 +22,9 @@ export default function GutscheinErfolgPage() {
           Zahlung erfolgreich
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-black/64 md:text-lg">
-          Deine Gutschein-Zahlung ist eingegangen. Regina bereitet den
-          Gutschein persönlich vor und meldet sich, falls noch Details offen
-          sind.
+          Deine Gutschein-Zahlung ist eingegangen. Der Gutschein wird
+          hochwertig vorbereitet und versendet. Falls noch Details offen sind,
+          melden wir uns bei dir.
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-black/58">
           Du bekommst eine Bestätigung per E-Mail. Der Gutschein wird

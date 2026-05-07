@@ -102,9 +102,8 @@ export default function HeroSlider() {
             </h1>
 
             <p className="mt-5 max-w-xl text-[0.98rem] leading-7 text-white/82 md:mt-6 md:text-lg">
-              Professionelle Portraits, Hochzeiten, Familien- und
-              Babybauchshootings in Kaufbeuren, Kempten, Marktoberdorf,
-              Füssen und Umgebung.
+              Portraits, Hochzeiten, Familien- und Babybauchshootings in
+              Kaufbeuren, Kempten, Marktoberdorf, Füssen und Umgebung.
             </p>
 
             <div className="pointer-events-auto mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap md:mt-8 md:gap-4">

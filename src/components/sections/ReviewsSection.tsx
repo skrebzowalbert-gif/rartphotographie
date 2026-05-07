@@ -42,8 +42,8 @@ export default function ReviewsSection() {
             </div>
 
             <p className="mt-8 max-w-md text-base leading-8 text-black/60">
-              Gute Bilder verkaufen nicht allein. Gute Erfahrungen tun es auch.
-              Deshalb gehört sichtbares Vertrauen auf eine starke Fotografen-Seite.
+              Gute Bilder entstehen leichter, wenn man sich wohlfühlt. Genau
+              das sagen viele Kundinnen und Kunden nach dem Shooting.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">

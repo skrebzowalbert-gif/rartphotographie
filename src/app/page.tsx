@@ -42,9 +42,9 @@ export default function Home() {
 
           <div className="max-w-3xl">
             <p className="text-lg leading-8 text-black/65 md:text-xl md:leading-9">
-              R.ArtPhotographie ist Fotografie für Kaufbeuren und das Allgäu:
-              Portraitshooting, Familienmomente, Hochzeitsfotografie und
-              Gutscheine mit klarer Bildsprache und persönlicher Begleitung.
+              Bei R.ArtPhotographie geht es nicht um steife Posen. Du bekommst
+              ein Shooting, das ruhig geführt wird und sich natürlich anfühlt,
+              mit Bildern, die zu dir passen.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -91,20 +91,15 @@ export default function Home() {
 
           <div className="max-w-3xl text-base leading-8 text-black/66 md:text-lg md:leading-9">
             <p>
-              R.ArtPhotographie steht für hochwertige Fotografie in Kaufbeuren
-              und im gesamten Allgäu. Ob Portraitshooting,
-              Hochzeitsfotografie, Familienbilder, Babybauchshooting oder
-              Newborn-Shooting – jedes Shooting wird individuell geplant und
-              professionell umgesetzt.
+              Du suchst eine Fotografin in Kaufbeuren oder im Allgäu?
+              R.ArtPhotographie begleitet Portraitshootings, Familienmomente,
+              Babybauchshootings und Hochzeiten in Kaufbeuren, Kempten,
+              Marktoberdorf, Füssen und Umgebung.
             </p>
             <p className="mt-5">
-              Kundinnen und Kunden aus Kaufbeuren, Kempten, Marktoberdorf,
-              Füssen und der gesamten Region Allgäu schätzen die ruhige
-              Arbeitsweise, die klare Bildsprache und die persönliche Betreuung.
-            </p>
-            <p className="mt-5">
-              Als Fotografin in Kaufbeuren begleite ich private Shootings,
-              Hochzeiten und besondere Momente im gesamten Allgäu.
+              Wichtig ist nicht, dass du perfekt posierst, sondern dass du dich
+              vor der Kamera sicher fühlst. Ohne Druck. Ohne künstliche Posen.
+              Mit Bildern, in denen du dich wiedererkennst.
             </p>
 
             <div className="mt-8">
@@ -139,8 +134,8 @@ export default function Home() {
           </h2>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
-            Unverbindliche Anfrage, schnelle Rückmeldung und ein klarer Ablauf
-            ohne unnötiges Hin und Her.
+            Erzähl kurz, was du dir vorstellst. Danach klären wir gemeinsam,
+            welcher Ort, welcher Ablauf und welches Shooting zu dir passt.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">

@@ -5,12 +5,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Eventfotografie Kaufbeuren",
   description:
-    "Eventfotografie von R.ArtPhotographie: Stimmung, Licht und echte Momente professionell festgehalten.",
+    "Eventfotografie von R.ArtPhotographie: Stimmung, Licht und besondere Augenblicke professionell festgehalten.",
   alternates: { canonical: "/portfolio/events" },
   openGraph: {
     title: "Eventfotografie | R.ArtPhotographie",
     description:
-      "Eventfotos mit Dynamik, Stimmung und klarer Bildsprache.",
+      "Eventfotos mit Dynamik, Stimmung und einem Blick für Details.",
     url: "/portfolio/events",
   },
 };

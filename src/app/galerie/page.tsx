@@ -155,6 +155,7 @@ function fallbackAlt(title: string, index: number) {
 
 function toFallbackImages(title: string, images: string[]): GalleryImageItem[] {
   return images.map((src, index) => ({
+    id: `fallback-${title}-${index}`,
     src,
     alt: fallbackAlt(title, index),
   }));
@@ -174,6 +175,7 @@ function buildSanityGroups(images: SanityGalleryImage[]): GalleryGroup[] {
       const groupImages = images
         .filter((image) => group.categories.includes(image.category))
         .map((image) => ({
+          id: image.id,
           src: image.src,
           alt: image.alt,
           title: image.title,

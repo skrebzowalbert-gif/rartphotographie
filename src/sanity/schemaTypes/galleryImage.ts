@@ -9,6 +9,8 @@ export const galleryImage = defineType({
       name: "title",
       title: "Titel",
       type: "string",
+      description:
+        "Nur als Anzeige-Titel. Darf mehrfach vorkommen und wird nicht als eindeutige ID verwendet.",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -63,11 +65,15 @@ export const galleryImage = defineType({
       title: "title",
       category: "category",
       media: "image",
+      id: "_id",
     },
-    prepare({ title, category, media }) {
+    prepare({ title, category, media, id }) {
+      const shortId =
+        typeof id === "string" ? id.replace(/^drafts\./, "").slice(-6) : "";
+
       return {
         title,
-        subtitle: category,
+        subtitle: shortId ? `${category} · ${shortId}` : category,
         media,
       };
     },

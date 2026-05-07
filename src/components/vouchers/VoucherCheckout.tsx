@@ -149,9 +149,9 @@ export default function VoucherCheckout() {
                 {displayedAmount}
               </p>
               <p className="mt-4 text-sm leading-7 text-black/62">
-                Der Gutschein wird persönlich vorbereitet und kann für
-                Portrait, Familie, Babybauch, Newborn oder Hochzeit eingesetzt
-                werden.
+                Der Gutschein wird nach dem Kauf hochwertig vorbereitet und
+                versendet. Er kann für Portrait, Familie, Babybauch, Newborn
+                oder Hochzeit eingesetzt werden.
               </p>
             </div>
           </div>
@@ -274,8 +274,9 @@ export default function VoucherCheckout() {
               </button>
 
               <p className="text-sm leading-7 text-black/52">
-                Nach erfolgreicher Zahlung erhält Regina die Zahlungsdetails
-                und bereitet den Wertgutschein persönlich vor.
+                Nach erfolgreicher Zahlung wird der Wertgutschein vorbereitet.
+                Die Zahlungsdaten werden sicher über Stripe verarbeitet und
+                nicht auf dieser Webseite gespeichert.
               </p>
             </div>
           </form>

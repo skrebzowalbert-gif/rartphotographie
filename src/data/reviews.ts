@@ -6,12 +6,12 @@ export const reviews = {
     {
       name: "Michaela",
       stars: 5,
-      text: "Schnell, unkompliziert, sympathisch und professionell. Genau diese Mischung hat das Shooting für uns so angenehm gemacht. Man merkt sofort, dass hier nicht einfach nur fotografiert, sondern mit Gefühl gearbeitet wird.",
+      text: "Schnell, unkompliziert und sympathisch. Das Shooting war angenehm und die Bilder sind genau so geworden, wie wir es uns gewünscht haben.",
     },
     {
       name: "Denise",
       stars: 5,
-      text: "Mit viel Ruhe, guten Ideen und Geduld entstanden Bilder, die nicht gestellt wirken, sondern echte Erinnerungen zeigen.",
+      text: "Sehr geduldig, mit guten Ideen und einem Blick für die kleinen Situationen. Die Bilder wirken natürlich und nicht gestellt.",
     },
     {
       name: "Ramona",
@@ -26,12 +26,12 @@ export const reviews = {
     {
       name: "Stephanie",
       stars: 5,
-      text: "Sehr angenehme Zusammenarbeit, klare Kommunikation und tolle Ergebnisse. Man merkt sofort, dass hier mit Gefühl gearbeitet wird.",
+      text: "Sehr angenehme Zusammenarbeit, klare Kommunikation und tolle Ergebnisse. Wir haben uns gut aufgehoben gefühlt.",
     },
     {
       name: "Anne",
       stars: 5,
-      text: "Wir haben uns wohlgefühlt und hatten nie das Gefühl, einfach nur abgearbeitet zu werden. Genau das macht am Ende den Unterschied zwischen netten Bildern und einer wirklich guten Erfahrung.",
+      text: "Wir haben uns wohlgefühlt und hatten nie das Gefühl, einfach nur abgearbeitet zu werden. Das sieht man den Bildern an.",
     },
   ],
 };

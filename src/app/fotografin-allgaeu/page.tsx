@@ -99,8 +99,8 @@ export default function FotografinAllgaeuPage() {
             <p>
               Für Hochzeiten im Allgäu entsteht eine Begleitung, die präsent
               ist, ohne den Tag zu überlagern. Vom Getting Ready über die
-              Trauung bis zum Paarshooting geht es darum, echte Momente zu
-              sehen und sie hochwertig festzuhalten. Als Hochzeitsfotografin im
+              Trauung bis zum Paarshooting geht es darum, kleine Situationen zu
+              sehen und sie sorgfältig festzuhalten. Als Hochzeitsfotografin im
               Allgäu achte ich auf Nähe, Bewegung, kleine Gesten und eine
               elegante Ausarbeitung. So bleiben Bilder, die den Tag nicht nur
               dokumentieren, sondern seine Atmosphäre bewahren.

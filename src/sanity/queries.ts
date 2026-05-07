@@ -11,6 +11,7 @@ export type SanityGalleryCategory =
   | "event";
 
 export type SanityGalleryImage = {
+  id: string;
   title?: string;
   category: SanityGalleryCategory;
   src: string;
@@ -21,10 +22,12 @@ export type SanityGalleryImage = {
 const galleryImagesQuery = groq`
   *[
     _type == "galleryImage" &&
+    !(_id in path("drafts.**")) &&
     isActive == true &&
     defined(image.asset) &&
     defined(category)
   ] | order(order asc, _createdAt asc) {
+    "id": _id,
     title,
     category,
     "src": image.asset->url,

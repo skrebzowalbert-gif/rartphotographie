@@ -9,30 +9,30 @@ type AboutPoint = {
 const leftPoints: AboutPoint[] = [
   {
     title: "Ruhige Begleitung",
-    text: "Ein Shooting soll sich nicht steif anfühlen. Ich nehme mir Zeit, leite sanft an und schaffe eine Atmosphäre, in der echte Bilder entstehen.",
+    text: "Ich leite dich durch das Shooting, ohne dich zu überfordern. Du bekommst klare Hinweise, aber kein gestelltes Programm.",
   },
   {
     title: "Klare Bildsprache",
-    text: "Keine überladenen Effekte, keine künstlichen Posen. Mein Fokus liegt auf ruhigen Farben, natürlichem Ausdruck und hochwertiger Wirkung.",
+    text: "Die Bilder sollen natürlich wirken und trotzdem besonders aussehen: mit ruhigen Farben, sauberem Licht und einem Blick für Details.",
   },
   {
     title: "Persönliche Nähe",
-    text: "Ob Portrait, Familie oder Babybauch – mir ist wichtig, dass du dich gesehen fühlst und dich vor der Kamera sicher bewegen kannst.",
+    text: "Mir ist wichtig, dass du dich gesehen fühlst. Viele gute Bilder entstehen erst dann, wenn die Anspannung nachlässt.",
   },
 ];
 
 const rightPoints: AboutPoint[] = [
   {
     title: "Echte Momente",
-    text: "Bei Hochzeiten und besonderen Tagen achte ich auf die kleinen Augenblicke, die später den größten Wert haben.",
+    text: "Bei Hochzeiten, Familien und Babybauchshootings achte ich auf kleine Augenblicke, die später oft den größten Wert haben.",
   },
   {
     title: "Hochwertige Wirkung",
-    text: "Die Bilder sollen nicht beliebig aussehen, sondern Charakter haben und langfristig wirken – für dich, deine Familie oder als Erinnerung.",
+    text: "Du bekommst Bilder, die nicht nach Trend aussehen, sondern lange wirken: für dich, deine Familie oder als Erinnerung an einen besonderen Tag.",
   },
   {
     title: "Kaufbeuren & Allgäu",
-    text: "Ich fotografiere in Kaufbeuren, Kempten, Marktoberdorf, Füssen und im gesamten Allgäu – im Studio, draußen oder an einem Ort, der zu dir passt.",
+    text: "Shootings finden in Kaufbeuren, Kempten, Marktoberdorf, Füssen und im gesamten Allgäu statt: im Studio, draußen oder an einem Ort, der zu dir passt.",
   },
 ];
 
@@ -74,14 +74,16 @@ export default function AboutEditorial() {
           </p>
 
           <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl md:leading-[0.98]">
-            Fotografie mit Gefühl, Ruhe
+            Du musst vor der Kamera
             <br />
-            und klarer Handschrift
+            nichts können
           </h2>
 
           <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-black/64 md:text-lg md:leading-9">
-            Ich fotografiere Menschen nicht einfach nur. Ich schaffe Bilder,
-            die bleiben – ruhig, klar und mit einem Blick für echte Momente.
+            Viele Menschen fühlen sich vor der Kamera unsicher. Genau deshalb
+            wird jedes Shooting ruhig geführt, ohne Druck, ohne künstliche
+            Posen und mit genug Zeit, damit Bilder entstehen können, die sich
+            nach dir anfühlen.
           </p>
         </div>
 

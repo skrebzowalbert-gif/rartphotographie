@@ -207,8 +207,9 @@ export default function FeaturedImageWall() {
 
           <div className="max-w-2xl text-base leading-8 text-black/62 md:text-lg md:leading-9">
             <p>
-              Portraits, Hochzeiten, Familie, Babybauch und Newborn als ruhige,
-              kuratierte Auswahl aus der Galerie von R.ArtPhotographie.
+              Eine bewegte Auswahl aus Portraits, Hochzeiten, Familie,
+              Babybauch und Events. So bekommst du direkt ein Gefühl für Stil,
+              Stimmung und Arbeitsweise von R.ArtPhotographie.
             </p>
             <Link
               href="/galerie"

@@ -201,9 +201,8 @@ export default function HeroImageWall() {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-white/78 md:text-lg md:leading-9">
-              Professionelle Portraits, Hochzeiten, Familien- und
-              Babybauchshootings in Kaufbeuren, Kempten, Marktoberdorf, Füssen
-              und Umgebung.
+              Portraits, Hochzeiten, Familien- und Babybauchshootings in
+              Kaufbeuren, Kempten, Marktoberdorf, Füssen und Umgebung.
             </p>
 
             <p className="mt-5 text-sm leading-7 text-white/70 md:text-base">

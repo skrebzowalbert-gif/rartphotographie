@@ -30,6 +30,8 @@ const INITIAL_FORM: FormState = {
 
 function KontaktForm() {
   const searchParams = useSearchParams();
+  const hasVehicleInterest = searchParams.get("vehicleInterest") === "true";
+  const [vehicleChoice, setVehicleChoice] = useState("Noch offen");
   const [form, setForm] = useState<FormState>({
     ...INITIAL_FORM,
     type: searchParams.get("shooting") || searchParams.get("type") || "",
@@ -50,13 +52,27 @@ function KontaktForm() {
     setIsSubmitting(true);
     setSubmitStatus(null);
 
+    const payload: FormState = {
+      ...form,
+      message: hasVehicleInterest
+        ? [
+            form.message.trim(),
+            "Interesse an Premium-Fahrzeug: Ja",
+            `Wunschfahrzeug: ${vehicleChoice}`,
+            "Hinweis: Fahrzeugbuchung separat über externen Partner, nicht im Shootingpreis enthalten.",
+          ]
+            .filter(Boolean)
+            .join("\n\n")
+        : form.message,
+    };
+
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -98,26 +114,18 @@ function KontaktForm() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-black/62 md:text-lg">
-              Beschreibe dein Shooting oder deine allgemeine Anfrage so genau
-              wie möglich. Du bekommst eine persönliche Rückmeldung mit allen
-              wichtigen Details.
+              Erzähl kurz, was du dir vorstellst. Du bekommst eine persönliche
+              Rückmeldung mit allen wichtigen Details.
             </p>
 
             <p className="mt-4 max-w-xl text-base leading-8 text-black/68">
-              Anfragen werden in der Regel kurzfristig beantwortet. Für eine
-              schnelle und passende Rückmeldung helfen folgende Angaben:
-              Wunschdatum, Ort, Uhrzeit sowie die Art des Shootings.
+              Für eine passende Antwort helfen Wunschdatum, Ort, Uhrzeit und
+              die Art des Shootings.
             </p>
 
             <p className="mt-4 max-w-xl text-base leading-8 text-black/68">
-              Je mehr Details du angibst, desto konkreter kann ich dir direkt
-              antworten.
-            </p>
-
-            <p className="mt-4 max-w-xl text-base leading-8 text-black/68">
-              Shootings finden im Raum Kaufbeuren statt. Termine außerhalb
-              (z. B. München) sind möglich – die Anfahrt wird individuell
-              berechnet.
+              Shootings finden im Raum Kaufbeuren und im Allgäu statt. Weitere
+              Orte, z. B. München, sind nach Absprache möglich.
             </p>
 
             <p className="mt-4 max-w-xl text-base leading-8 text-black/68">
@@ -222,6 +230,41 @@ function KontaktForm() {
                 required
               />
 
+              {hasVehicleInterest && (
+                <div className="border-y border-black/10 py-4">
+                  <p className="text-sm font-medium text-black">
+                    Interesse an Premium-Fahrzeug
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-black/58">
+                    Die Fahrzeugbuchung erfolgt separat über unseren externen
+                    Partner. Das Fahrzeug ist nicht im Shootingpreis enthalten.
+                  </p>
+                  <label className="mt-4 flex items-start gap-3 text-sm text-black/68">
+                    <input
+                      type="checkbox"
+                      checked
+                      readOnly
+                      className="mt-1 h-4 w-4 accent-black"
+                    />
+                    <span>Interesse wird in der Anfrage mitgesendet.</span>
+                  </label>
+                  <label className="mt-4 grid gap-2">
+                    <span className="text-sm text-black/62">
+                      Wunschfahrzeug
+                    </span>
+                    <select
+                      value={vehicleChoice}
+                      onChange={(event) => setVehicleChoice(event.target.value)}
+                      className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/70 px-4 text-base text-black outline-none md:min-h-[56px]"
+                    >
+                      <option>Noch offen</option>
+                      <option>Audi RSQ8 weiß</option>
+                      <option>BMW XM Plug-in-Hybrid weiß</option>
+                    </select>
+                  </label>
+                </div>
+              )}
+
               <label className="grid gap-2">
                 <span className="text-sm text-black/62">
                   Nachricht (bitte Wunschdatum, Ort und Details angeben)
@@ -260,9 +303,9 @@ function KontaktForm() {
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-black/48">
               <span>Unverbindliche Anfrage</span>
               <span>•</span>
-              <span>Schnelle Rückmeldung</span>
+              <span>Persönliche Rückmeldung</span>
               <span>•</span>
-              <span>Persönliche Abstimmung</span>
+              <span>Klare Abstimmung</span>
             </div>
           </form>
         </section>

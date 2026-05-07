@@ -7,7 +7,7 @@ import VoucherCheckout from "@/components/vouchers/VoucherCheckout";
 export const metadata: Metadata = {
   title: "Wertgutschein Kaufbeuren kaufen | R.ArtPhotographie",
   description:
-    "Wertgutschein ab 50 € für Fotografie bei R.ArtPhotographie in Kaufbeuren und im Allgäu kaufen. Sicher bezahlen und persönlich vorbereiten lassen.",
+    "Wertgutschein ab 50 € für Fotografie bei R.ArtPhotographie in Kaufbeuren und im Allgäu kaufen. Sicher bezahlen und hochwertig vorbereiten lassen.",
   alternates: { canonical: "/gutscheine" },
   openGraph: {
     title: "Gutscheine | R.ArtPhotographie",
@@ -27,16 +27,16 @@ export default function GutscheinePage() {
               Gutscheine
             </p>
             <h1 className="mt-4 max-w-4xl text-4xl font-light leading-[0.98] md:text-6xl">
-              Erinnerungen verschenken statt Dinge
+              Mit einem Geschenkgutschein Erinnerungen verschenken
             </h1>
           </div>
 
           <div>
             <p className="max-w-3xl text-lg leading-8 text-black/62 md:text-xl md:leading-9">
-              Ein Wertgutschein für Fotografie in Kaufbeuren und im Allgäu ist
-              persönlich, hochwertig und direkt kaufbar. Du bestimmst den
-              Betrag ab 50 €, Regina bereitet den Gutschein anschließend
-              persönlich vor.
+              Verschenke einen frei wählbaren Wertgutschein ab 50 € für
+              Portrait, Familie, Babybauch, Newborn oder Hochzeit. Der
+              Gutschein wird hochwertig vorbereitet und kann direkt verschenkt
+              werden.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
