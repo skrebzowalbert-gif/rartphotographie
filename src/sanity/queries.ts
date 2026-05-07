@@ -26,6 +26,10 @@ export type SanityPromotion = {
   text: string;
   buttonText?: string;
   buttonLink?: string;
+  appliesTo?: "vouchers" | "shootings" | "all";
+  discountType?: "none" | "percent" | "fixed";
+  discountValue?: number;
+  promoCode?: string;
   order?: number;
 };
 
@@ -62,6 +66,10 @@ const activePromotionsQuery = groq`
     text,
     buttonText,
     buttonLink,
+    "appliesTo": coalesce(appliesTo, "vouchers"),
+    "discountType": coalesce(discountType, "none"),
+    discountValue,
+    promoCode,
     order
   }
 `;

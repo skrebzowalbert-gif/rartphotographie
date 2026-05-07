@@ -23,9 +23,12 @@ export function getVoucherProduct(id: string) {
 }
 
 export function formatEuro(cents: number) {
+  const hasCents = Math.abs(cents) % 100 !== 0;
+
   return new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: "EUR",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: hasCents ? 2 : 0,
   }).format(cents / 100);
 }

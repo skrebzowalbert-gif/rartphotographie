@@ -1,10 +1,17 @@
 import Stripe from "stripe";
 import { clean } from "@/lib/email";
+import { calculateVoucherDiscount, getVoucherDiscountPromotion } from "@/lib/promotions";
 import { siteUrl } from "@/lib/site";
 import { formatEuro } from "@/lib/vouchers";
+import { getActivePromotions } from "@/sanity/queries";
 
 type CheckoutPayload = {
   voucherCustomAmount?: string;
+  voucherAmount?: number;
+  paymentAmount?: number;
+  discountAmount?: number;
+  discountPercent?: number;
+  promotionId?: string;
   name?: string;
   email?: string;
   phone?: string;
@@ -41,9 +48,9 @@ export async function POST(req: Request) {
     const city = clean(body.city, 80);
 
     const amount = Number(voucherCustomAmount.replace(",", "."));
-    const checkoutAmount = Math.round(amount * 100);
+    const voucherAmount = Math.round(amount * 100);
 
-    if (!voucherCustomAmount || Number.isNaN(amount) || checkoutAmount < 5000) {
+    if (!voucherCustomAmount || Number.isNaN(amount) || voucherAmount < 5000) {
       return Response.json(
         { error: "Bitte gib einen Gutscheinbetrag ab 50 € ein." },
         { status: 400 }
@@ -85,6 +92,21 @@ export async function POST(req: Request) {
 
     const voucherName = "Wertgutschein R.ArtPhotographie";
     const address = [street, zip, city].filter(Boolean).join(", ");
+    const activePromotions = await getActivePromotions();
+    const voucherPromotion = getVoucherDiscountPromotion(activePromotions);
+    const pricing = calculateVoucherDiscount(voucherAmount, voucherPromotion);
+    const paymentAmount = pricing.paymentAmount;
+    const discountLabel =
+      voucherPromotion && pricing.discountAmount > 0
+        ? voucherPromotion.badge || voucherPromotion.title
+        : "";
+
+    if (paymentAmount < 50) {
+      return Response.json(
+        { error: "Der rabattierte Zahlbetrag ist für Stripe zu niedrig." },
+        { status: 400 }
+      );
+    }
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -96,10 +118,10 @@ export async function POST(req: Request) {
           quantity: 1,
           price_data: {
             currency: "eur",
-            unit_amount: checkoutAmount,
+            unit_amount: paymentAmount,
             product_data: {
               name: voucherName,
-              description: `Wertgutschein über ${formatEuro(checkoutAmount)}`,
+              description: `Wertgutschein über ${formatEuro(voucherAmount)}`,
             },
           },
         },
@@ -107,7 +129,14 @@ export async function POST(req: Request) {
       metadata: {
         voucherId: "wert-custom",
         voucherName,
-        amount: String(checkoutAmount),
+        amount: String(paymentAmount),
+        voucherAmount: String(voucherAmount),
+        paymentAmount: String(paymentAmount),
+        discountAmount: String(pricing.discountAmount),
+        discountPercent: String(pricing.percent),
+        promotionId: metadataValue(voucherPromotion?.id || ""),
+        promotionTitle: metadataValue(discountLabel),
+        promoCode: metadataValue(voucherPromotion?.promoCode || ""),
         customerName: metadataValue(name),
         customerEmail: metadataValue(email),
         customerPhone: metadataValue(phone),
@@ -122,7 +151,14 @@ export async function POST(req: Request) {
         metadata: {
           voucherId: "wert-custom",
           voucherName,
-          amount: String(checkoutAmount),
+          amount: String(paymentAmount),
+          voucherAmount: String(voucherAmount),
+          paymentAmount: String(paymentAmount),
+          discountAmount: String(pricing.discountAmount),
+          discountPercent: String(pricing.percent),
+          promotionId: metadataValue(voucherPromotion?.id || ""),
+          promotionTitle: metadataValue(discountLabel),
+          promoCode: metadataValue(voucherPromotion?.promoCode || ""),
           customerName: metadataValue(name),
           customerEmail: metadataValue(email),
           customerPhone: metadataValue(phone),

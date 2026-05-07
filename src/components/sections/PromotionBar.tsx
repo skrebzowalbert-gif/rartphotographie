@@ -21,7 +21,7 @@ export default function PromotionBar({ promotion }: PromotionBarProps) {
   if (!badge && !text) return null;
 
   return (
-    <section className="bg-[#15110e] px-4 py-3 text-[#f6efe4] md:px-10">
+    <section className="relative z-20 bg-[#15110e] px-4 pb-3 pt-[76px] text-[#f6efe4] md:px-10 md:pt-[84px]">
       <div className="mx-auto flex max-w-7xl flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
         <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-center">
           {badge && (

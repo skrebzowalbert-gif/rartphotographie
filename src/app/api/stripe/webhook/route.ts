@@ -76,7 +76,13 @@ export async function POST(req: Request) {
     session.customer_details?.email || session.customer_email || metadata.customerEmail || "";
   const customerName =
     metadata.customerName || session.customer_details?.name || "Nicht angegeben";
-  const amountPaid = session.amount_total || Number(metadata.amount || 0);
+  const amountPaid =
+    session.amount_total || Number(metadata.paymentAmount || metadata.amount || 0);
+  const voucherAmount = Number(metadata.voucherAmount || amountPaid);
+  const discountAmount = Number(metadata.discountAmount || 0);
+  const discountPercent = Number(metadata.discountPercent || 0);
+  const discountTitle = metadata.promotionTitle || "";
+  const promoCode = metadata.promoCode || "";
   const paidAt = new Intl.DateTimeFormat("de-DE", {
     dateStyle: "medium",
     timeStyle: "short",
@@ -101,7 +107,11 @@ export async function POST(req: Request) {
     ${row("Status", "Bezahlt")}
     ${row("Bestellnummer", orderNumber)}
     ${row("Gutschein", voucherName)}
-    ${row("Betrag", formatEuro(amountPaid))}
+    ${row("Gutscheinwert", formatEuro(voucherAmount))}
+    ${row("Gezahlter Betrag", formatEuro(amountPaid))}
+    ${row("Rabattaktion", discountTitle || "Keine")}
+    ${row("Rabatt", discountAmount > 0 ? `-${formatEuro(discountAmount)} (${discountPercent} %)` : "Kein Rabatt")}
+    ${row("Aktionscode", promoCode)}
     ${row("Name", customerName)}
     ${row("E-Mail", customerEmail)}
     ${row("Telefon", metadata.customerPhone)}
@@ -127,7 +137,15 @@ export async function POST(req: Request) {
       `Status: Bezahlt`,
       `Bestellnummer: ${orderNumber}`,
       `Gutschein: ${voucherName}`,
-      `Betrag: ${formatEuro(amountPaid)}`,
+      `Gutscheinwert: ${formatEuro(voucherAmount)}`,
+      `Gezahlter Betrag: ${formatEuro(amountPaid)}`,
+      `Rabattaktion: ${formatValue(discountTitle || "Keine")}`,
+      `Rabatt: ${
+        discountAmount > 0
+          ? `-${formatEuro(discountAmount)} (${discountPercent} %)`
+          : "Kein Rabatt"
+      }`,
+      `Aktionscode: ${formatValue(promoCode)}`,
       `Name: ${customerName}`,
       `E-Mail: ${customerEmail}`,
       `Telefon: ${formatValue(metadata.customerPhone)}`,
@@ -163,7 +181,9 @@ export async function POST(req: Request) {
             <p style="margin:0 0 14px;">deine Zahlung ist eingegangen. Regina bereitet deinen Gutschein vor und meldet sich, falls noch Details offen sind.</p>
             ${row("Bestellnummer", orderNumber)}
             ${row("Gutschein", voucherName)}
-            ${row("Betrag", formatEuro(amountPaid))}
+            ${row("Gutscheinwert", formatEuro(voucherAmount))}
+            ${row("Gezahlter Betrag", formatEuro(amountPaid))}
+            ${discountAmount > 0 ? row("Rabatt", `-${formatEuro(discountAmount)} (${discountPercent} %)`) : ""}
             ${row("Versandadresse", [street, zip, city].filter(Boolean).join(", "))}
             ${row("Datum", paidAt)}
           `
@@ -175,7 +195,11 @@ export async function POST(req: Request) {
           "",
           `Bestellnummer: ${orderNumber}`,
           `Gutschein: ${voucherName}`,
-          `Betrag: ${formatEuro(amountPaid)}`,
+          `Gutscheinwert: ${formatEuro(voucherAmount)}`,
+          `Gezahlter Betrag: ${formatEuro(amountPaid)}`,
+          discountAmount > 0
+            ? `Rabatt: -${formatEuro(discountAmount)} (${discountPercent} %)`
+            : "",
           `Versandadresse: ${formatValue([street, zip, city].filter(Boolean).join(", "))}`,
           `Datum: ${paidAt}`,
         ].join("\n"),

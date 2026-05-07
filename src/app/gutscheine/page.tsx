@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import VoucherSection from "@/components/sections/VoucherSection";
 import VoucherCheckout from "@/components/vouchers/VoucherCheckout";
+import { getVoucherDiscountPromotion } from "@/lib/promotions";
+import { getActivePromotions } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Wertgutschein Kaufbeuren kaufen | R.ArtPhotographie",
@@ -17,7 +19,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GutscheinePage() {
+export const revalidate = 0;
+
+export default async function GutscheinePage() {
+  const activePromotions = await getActivePromotions();
+  const voucherPromotion = getVoucherDiscountPromotion(activePromotions);
+  const promoBadge =
+    voucherPromotion?.badge?.trim() || voucherPromotion?.title?.trim();
+  const promoText = voucherPromotion?.text?.trim();
+
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">
       <section className="px-6 pb-4 md:px-10 md:pb-8">
@@ -52,6 +62,31 @@ export default function GutscheinePage() {
         </div>
       </section>
 
+      {voucherPromotion && (
+        <section className="px-6 py-4 md:px-10">
+          <div className="mx-auto max-w-7xl border-y border-black/10 py-5">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="min-w-0">
+                {promoBadge && (
+                  <p className="text-xs uppercase tracking-[0.28em] text-black/40">
+                    {promoBadge}
+                  </p>
+                )}
+                {promoText && (
+                  <p className="mt-2 max-w-3xl text-base leading-7 text-black/70">
+                    {promoText}
+                  </p>
+                )}
+                <p className="mt-2 text-sm leading-6 text-black/54">
+                  Der Rabatt wird im nächsten Schritt automatisch
+                  berücksichtigt.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       <Suspense
         fallback={
           <section className="px-6 py-20 md:px-10 md:py-24">
@@ -59,7 +94,7 @@ export default function GutscheinePage() {
           </section>
         }
       >
-        <VoucherCheckout />
+        <VoucherCheckout promotion={voucherPromotion} />
       </Suspense>
       <VoucherSection compact />
     </main>

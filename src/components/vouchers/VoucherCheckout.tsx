@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { calculateVoucherDiscount } from "@/lib/promotions";
 import { formatEuro } from "@/lib/vouchers";
+import type { SanityPromotion } from "@/sanity/queries";
 
 type FormState = {
   voucherId: "wert-custom";
@@ -22,6 +24,10 @@ type Status =
   | { type: "info"; message: string }
   | null;
 
+type VoucherCheckoutProps = {
+  promotion?: SanityPromotion | null;
+};
+
 const initialForm: FormState = {
   voucherId: "wert-custom",
   voucherCustomAmount: "",
@@ -35,7 +41,7 @@ const initialForm: FormState = {
   city: "",
 };
 
-export default function VoucherCheckout() {
+export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
   const searchParams = useSearchParams();
   const [form, setForm] = useState<FormState>(initialForm);
   const [status, setStatus] = useState<Status>(null);
@@ -45,8 +51,21 @@ export default function VoucherCheckout() {
   const customAmountInCents = !Number.isNaN(customAmount)
     ? Math.round(customAmount * 100)
     : 0;
+  const hasValidVoucherAmount = customAmountInCents >= 5000;
+  const discount = calculateVoucherDiscount(
+    hasValidVoucherAmount ? customAmountInCents : 0,
+    promotion
+  );
+  const hasDiscount = discount.discountAmount > 0;
+  const promotionPercent =
+    promotion?.discountType === "percent" &&
+    typeof promotion.discountValue === "number"
+      ? Math.min(100, Math.max(0, promotion.discountValue))
+      : 0;
+  const hasVoucherPromotion = promotionPercent > 0;
   const displayedAmount =
-    customAmountInCents >= 5000 ? formatEuro(customAmountInCents) : "ab 50 €";
+    hasValidVoucherAmount ? formatEuro(customAmountInCents) : "ab 50 €";
+  const promoBadge = promotion?.badge?.trim() || promotion?.title?.trim();
 
   function updateField(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -90,7 +109,14 @@ export default function VoucherCheckout() {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          voucherAmount: customAmountInCents,
+          paymentAmount: discount.paymentAmount,
+          discountAmount: discount.discountAmount,
+          discountPercent: discount.percent,
+          promotionId: promotion?.id,
+        }),
       });
       const data = (await response.json().catch(() => null)) as {
         url?: string;
@@ -134,6 +160,20 @@ export default function VoucherCheckout() {
               gespeichert.
             </p>
 
+            {promotion && hasVoucherPromotion && (
+              <div className="mt-7 border-y border-black/10 py-5">
+                {promoBadge && (
+                  <p className="text-xs uppercase tracking-[0.28em] text-black/40">
+                    {promoBadge}
+                  </p>
+                )}
+                <p className="mt-2 text-sm leading-7 text-black/62">
+                  {promotionPercent} % Rabatt auf Wertgutscheine werden beim
+                  Checkout automatisch berücksichtigt.
+                </p>
+              </div>
+            )}
+
             {searchParams.get("zahlung") === "abgebrochen" && (
               <p className="mt-5 rounded-lg border border-black/10 bg-white/24 px-4 py-3 text-sm leading-7 text-black/66">
                 Die Zahlung wurde abgebrochen. Du kannst den Wertgutschein
@@ -153,6 +193,30 @@ export default function VoucherCheckout() {
                 versendet. Er kann für Portrait, Familie, Babybauch, Newborn
                 oder Hochzeit eingesetzt werden.
               </p>
+              {hasValidVoucherAmount && (
+                <div className="mt-5 grid gap-2 text-sm leading-6 text-black/62">
+                  <div className="flex items-center justify-between gap-4">
+                    <span>Gutscheinwert</span>
+                    <span className="text-black">
+                      {formatEuro(customAmountInCents)}
+                    </span>
+                  </div>
+                  {hasDiscount && (
+                    <div className="flex items-center justify-between gap-4">
+                      <span>
+                        {promoBadge || "Aktionsrabatt"} ({discount.percent} %)
+                      </span>
+                      <span className="text-black">
+                        -{formatEuro(discount.discountAmount)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between gap-4 border-t border-black/10 pt-2 text-base text-black">
+                    <span>Zu zahlen</span>
+                    <span>{formatEuro(discount.paymentAmount)}</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

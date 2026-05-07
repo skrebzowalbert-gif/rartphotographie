@@ -43,6 +43,46 @@ export const promotion = defineType({
       description: "Optional, z. B. /gutscheine oder eine externe URL.",
     }),
     defineField({
+      name: "appliesTo",
+      title: "Gilt für",
+      type: "string",
+      initialValue: "vouchers",
+      options: {
+        list: [
+          { title: "Gutscheine", value: "vouchers" },
+          { title: "Shootings", value: "shootings" },
+          { title: "Alles", value: "all" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
+      name: "discountType",
+      title: "Rabattart",
+      type: "string",
+      initialValue: "none",
+      options: {
+        list: [
+          { title: "Kein Rabatt", value: "none" },
+          { title: "Prozent", value: "percent" },
+          { title: "Fester Betrag", value: "fixed" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
+      name: "discountValue",
+      title: "Rabattwert",
+      type: "number",
+      description: "Bei Prozent z. B. 10 für 10 %.",
+    }),
+    defineField({
+      name: "promoCode",
+      title: "Aktionscode",
+      type: "string",
+      description: "Optional, z. B. NEU10.",
+    }),
+    defineField({
       name: "startDate",
       title: "Startdatum",
       type: "datetime",
