@@ -51,6 +51,8 @@ const activePromotionsQuery = groq`
     _type == "promotion" &&
     !(_id in path("drafts.**")) &&
     isActive == true &&
+    defined(title) &&
+    defined(text) &&
     (!defined(startDate) || startDate <= now()) &&
     (!defined(endDate) || endDate >= now())
   ] | order(order asc, _createdAt asc) {
@@ -86,10 +88,12 @@ export async function getActivePromotions() {
   }
 
   try {
-    return await sanityClient.fetch<SanityPromotion[]>(
+    const freshClient = sanityClient.withConfig({ useCdn: false });
+
+    return await freshClient.fetch<SanityPromotion[]>(
       activePromotionsQuery,
       {},
-      { next: { revalidate: 300 } }
+      { cache: "no-store" }
     );
   } catch {
     return [];

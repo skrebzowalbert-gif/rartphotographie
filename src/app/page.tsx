@@ -23,6 +23,8 @@ export const metadata: Metadata = {
   },
 };
 
+export const revalidate = 0;
+
 export default async function Home() {
   const promotions = await getActivePromotions();
   const activePromotion = promotions[0] || null;
