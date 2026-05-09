@@ -12,6 +12,7 @@ type FormState = {
   email: string;
   phone: string;
   type: string;
+  preferredDate: string;
   message: string;
 };
 
@@ -25,6 +26,7 @@ const INITIAL_FORM: FormState = {
   email: "",
   phone: "",
   type: "",
+  preferredDate: "",
   message: "",
 };
 
@@ -56,6 +58,7 @@ function KontaktForm() {
       ...form,
       message: hasVehicleInterest
         ? [
+            form.preferredDate ? `Wunschdatum: ${form.preferredDate}` : "",
             form.message.trim(),
             "Interesse an Premium-Fahrzeug: Ja",
             `Wunschfahrzeug: ${vehicleChoice}`,
@@ -63,7 +66,12 @@ function KontaktForm() {
           ]
             .filter(Boolean)
             .join("\n\n")
-        : form.message,
+        : [
+            form.preferredDate ? `Wunschdatum: ${form.preferredDate}` : "",
+            form.message.trim(),
+          ]
+            .filter(Boolean)
+            .join("\n\n"),
     };
 
     try {
@@ -147,8 +155,7 @@ function KontaktForm() {
 
               <a
                 href={`mailto:${EMAIL_ADDRESS}`}
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/24 bg-white/35 px-7 py-3 text-sm font-semibold text-black transition hover:border-black/40 hover:bg-white/55"
-                style={{ color: "#111111" }}
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
               >
                 Per E-Mail anfragen
               </a>
@@ -230,6 +237,18 @@ function KontaktForm() {
                 required
               />
 
+              <label className="grid gap-2">
+                <span className="text-sm text-black/62">Wunschdatum</span>
+                <input
+                  name="preferredDate"
+                  type="date"
+                  aria-label="Wunschdatum"
+                  value={form.preferredDate}
+                  onChange={handleChange}
+                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/70 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                />
+              </label>
+
               {hasVehicleInterest && (
                 <div className="border-y border-black/10 py-4">
                   <p className="text-sm font-medium text-black">
@@ -275,6 +294,7 @@ function KontaktForm() {
                   value={form.message}
                   onChange={handleChange}
                   className="min-h-[150px] w-full rounded-md border border-black/10 bg-white/70 px-4 py-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[180px]"
+                  required
                 />
               </label>
 

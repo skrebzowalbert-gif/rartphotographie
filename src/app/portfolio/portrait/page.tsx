@@ -73,7 +73,7 @@ export default function PortraitPage() {
             </Link>
             <Link
               href="/preise"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/12 px-8 py-3 text-sm text-black transition hover:border-black/25 hover:bg-black/5"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
             >
               Preise ansehen
             </Link>

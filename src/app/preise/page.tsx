@@ -207,7 +207,7 @@ function PriceCard({
                 href={`/kontakt?shooting=${encodeURIComponent(
                   requestValue
                 )}&vehicleInterest=true`}
-                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-black/25 px-5 py-3 text-center text-sm font-medium text-black/75 transition hover:border-black hover:bg-black hover:text-white"
+                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-center text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
               >
                 Mit Premium-Fahrzeug kombinieren
               </Link>
@@ -284,7 +284,7 @@ export default function PreisePage() {
               href={vehiclePartnerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-8 inline-flex min-h-[54px] items-center justify-center rounded-full border border-black/18 px-7 py-3 text-sm font-medium text-black transition hover:border-black/34 hover:bg-black/5"
+              className="mt-8 inline-flex min-h-[54px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
             >
               Fahrzeuge beim Partner ansehen
             </a>

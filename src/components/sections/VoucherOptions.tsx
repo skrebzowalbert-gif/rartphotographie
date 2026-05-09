@@ -43,7 +43,7 @@ export default function VoucherOptions() {
             <div className="mt-8">
               <Link
                 href="/gutscheine#checkout"
-                className="inline-flex h-[52px] items-center justify-center rounded-full border border-black/20 px-6 text-sm transition hover:bg-black hover:text-white"
+                className="inline-flex h-[52px] items-center justify-center rounded-full border border-black/25 bg-transparent px-6 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
               >
                 Wertgutschein kaufen
               </Link>

@@ -16,6 +16,8 @@ export type SanityGalleryImage = {
   category: SanityGalleryCategory;
   src: string;
   alt: string;
+  width?: number;
+  height?: number;
   order?: number;
 };
 
@@ -45,6 +47,8 @@ const galleryImagesQuery = groq`
     title,
     category,
     "src": image.asset->url,
+    "width": image.asset->metadata.dimensions.width,
+    "height": image.asset->metadata.dimensions.height,
     alt,
     order
   }

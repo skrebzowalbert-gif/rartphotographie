@@ -7,7 +7,6 @@ import VoucherSection from "@/components/sections/VoucherSection";
 import AboutEditorial from "@/components/sections/AboutEditorial";
 import ServicesAccordion from "@/components/sections/ServicesAccordion";
 import PromotionBar from "@/components/sections/PromotionBar";
-import { instagramUrl } from "@/lib/site";
 import { getActivePromotions } from "@/sanity/queries";
 
 export const metadata: Metadata = {
@@ -25,6 +24,39 @@ export const metadata: Metadata = {
 
 export const revalidate = 0;
 
+const faqItems = [
+  {
+    question: "Muss ich vor der Kamera Erfahrung haben?",
+    answer:
+      "Nein. Du musst nicht wissen, wie du posieren sollst. Ich leite dich ruhig an und gebe dir Orientierung.",
+  },
+  {
+    question: "Wo finden Shootings statt?",
+    answer:
+      "In Kaufbeuren, im Allgäu, in Kempten, Marktoberdorf, Füssen und nach Absprache auch in München oder an deinem Wunschort.",
+  },
+  {
+    question: "Wie lange dauert die Bildbearbeitung?",
+    answer:
+      "Das hängt vom Shooting ab. Du bekommst vorab eine realistische Einschätzung.",
+  },
+  {
+    question: "Wie viele Bilder bekomme ich?",
+    answer:
+      "Bei den meisten Shootings sind 40 bearbeitete Bilder enthalten. Details findest du auf der Preis-Seite.",
+  },
+  {
+    question: "Was passiert bei schlechtem Wetter?",
+    answer:
+      "Wir prüfen gemeinsam, ob ein anderer Ort, ein Indoor-Shooting oder ein neuer Termin sinnvoll ist.",
+  },
+  {
+    question: "Kann ich einen Gutschein verschenken?",
+    answer:
+      "Ja. Wertgutscheine sind direkt online kaufbar und können für Portrait, Familie, Babybauch, Newborn oder Hochzeit eingesetzt werden.",
+  },
+];
+
 export default async function Home() {
   const promotions = await getActivePromotions();
   const activePromotion = promotions[0] || null;
@@ -34,136 +66,59 @@ export default async function Home() {
       <PromotionBar promotion={activePromotion} />
       <HeroSlider />
 
-      <section className="px-6 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-7xl gap-10 xl:grid-cols-[0.8fr_1.2fr] xl:items-end">
-          <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-              R.ArtPhotographie
-            </p>
-
-            <h2 className="mt-5 text-4xl font-light leading-[0.98] md:text-6xl">
-              Bilder mit Haltung,
-              <br />
-              nicht mit Zufall
-            </h2>
-          </div>
-
-          <div className="max-w-3xl">
-            <p className="text-lg leading-8 text-black/65 md:text-xl md:leading-9">
-              Bei R.ArtPhotographie geht es nicht um steife Posen. Du bekommst
-              ein Shooting, das ruhig geführt wird und sich natürlich anfühlt,
-              mit Bildern, die zu dir passen.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/kontakt"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
-              >
-                Shooting anfragen
-              </Link>
-
-              <Link
-                href="/galerie"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-7 py-3 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
-                style={{ color: "#111111" }}
-              >
-                Arbeiten ansehen
-              </Link>
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-3 text-sm text-black/58">
-              <Link href="/fotografin-kaufbeuren" className="hover:text-black">
-                Fotografin Kaufbeuren
-              </Link>
-              <span>·</span>
-              <Link href="/fotografin-allgaeu" className="hover:text-black">
-                Fotografin Allgäu
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 pb-20 md:px-10 md:pb-28">
-        <div className="mx-auto grid max-w-7xl gap-10 border-y border-black/10 py-14 md:py-20 xl:grid-cols-[0.85fr_1.15fr] xl:items-start">
-          <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-              Kaufbeuren & Allgäu
-            </p>
-            <h2 className="mt-4 max-w-4xl text-4xl font-light leading-[1] md:text-6xl">
-              Fotografin in Kaufbeuren & im Allgäu
-            </h2>
-          </div>
-
-          <div className="max-w-3xl text-base leading-8 text-black/66 md:text-lg md:leading-9">
-            <p>
-              Du suchst eine Fotografin in Kaufbeuren oder im Allgäu?
-              R.ArtPhotographie begleitet Portraitshootings, Familienmomente,
-              Babybauchshootings und Hochzeiten in Kaufbeuren, Kempten,
-              Marktoberdorf, Füssen und Umgebung.
-            </p>
-            <p className="mt-5">
-              Wichtig ist nicht, dass du perfekt posierst, sondern dass du dich
-              vor der Kamera sicher fühlst. Ohne Druck. Ohne künstliche Posen.
-              Mit Bildern, in denen du dich wiedererkennst.
-            </p>
-
-            <div className="mt-8">
-              <Link
-                href="/kontakt"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
-              >
-                Shooting anfragen
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <FeaturedImageWall />
       <ServicesAccordion />
       <AboutEditorial />
 
       <ReviewsSection />
 
-      <section className="px-6 py-24 md:px-10 md:py-32">
-        <div className="mx-auto max-w-6xl rounded-xl border border-black/8 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),rgba(255,255,255,0.04))] px-8 py-14 text-center md:px-14 md:py-20">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-            Nächster Schritt
-          </p>
+      <section className="px-6 py-24 md:px-10 md:py-28">
+        <div className="mx-auto max-w-7xl border-y border-black/10 py-16 md:py-24">
+          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+            <div>
+              <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+                FAQ
+              </p>
+              <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl">
+                Fragen, bevor
+                <br />
+                du anfragst?
+              </h2>
+              <p className="mt-6 max-w-xl text-base leading-8 text-black/62 md:text-lg">
+                Hier findest du die wichtigsten Antworten. Alles Weitere klären
+                wir persönlich.
+              </p>
+            </div>
 
-          <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl">
-            Lass uns dein Shooting
-            <br />
-            konkret planen
-          </h2>
+            <div className="divide-y divide-black/10">
+              {faqItems.map((item) => (
+                <div key={item.question} className="py-8 first:pt-0">
+                  <h3 className="text-xl font-medium leading-tight text-black">
+                    {item.question}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-black/64 md:text-base md:leading-8">
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
-            Erzähl kurz, was du dir vorstellst. Danach klären wir gemeinsam,
-            welcher Ort, welcher Ablauf und welches Shooting zu dir passt.
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-12 flex flex-wrap items-center gap-4 lg:ml-[calc(42.5%+2rem)]">
             <Link
               href="/kontakt"
               className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
               style={{ color: "#ffffff" }}
             >
-              Anfrage senden
+              Shooting anfragen
             </Link>
 
-            <a
-              href={instagramUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-8 py-4 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
-              style={{ color: "#111111" }}
+            <Link
+              href="/gutscheine"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
             >
-              Instagram ansehen
-            </a>
+              Gutschein ansehen
+            </Link>
           </div>
         </div>
       </section>

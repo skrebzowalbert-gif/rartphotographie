@@ -1,14 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import GalerieGridClient, {
-  type GalleryGroup,
   type GalleryImageItem,
 } from "@/components/gallery/GalerieGridClient";
-import {
-  getGalleryImages,
-  type SanityGalleryCategory,
-  type SanityGalleryImage,
-} from "@/sanity/queries";
+import { getGalleryImages, type SanityGalleryImage } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Galerie Portrait, Familie, Events & Hochzeiten",
@@ -107,97 +102,42 @@ const weddingImages = [
   "/images/weddings/wedding-20.JPG",
 ];
 
-type GalleryGroupMeta = {
-  title: string;
-  subtitle: string;
-  categories: SanityGalleryCategory[];
-  fallbackImages: string[];
-};
-
-const groupMeta: GalleryGroupMeta[] = [
-  {
-    title: "Portrait",
-    subtitle:
-      "Klare Bildsprache, Ruhe vor der Kamera und Portraits mit Charakter.",
-    categories: ["portrait"],
-    fallbackImages: portraitImages,
-  },
-  {
-    title: "Familie, Babybauch & Newborn",
-    subtitle:
-      "Persönliche Erinnerungen, ruhig fotografiert und hochwertig ausgearbeitet.",
-    categories: [
-      "family",
-      "babybauch",
-      "newborn",
-    ],
-    fallbackImages: familyImages,
-  },
-  {
-    title: "Events",
-    subtitle:
-      "Stimmung, Dynamik und echte Situationen statt austauschbarer Partybilder.",
-    categories: ["event"],
-    fallbackImages: eventImages,
-  },
-  {
-    title: "Hochzeiten",
-    subtitle:
-      "Emotionale Momente, sauber dokumentiert und ohne künstliche Überladung.",
-    categories: ["wedding"],
-    fallbackImages: weddingImages,
-  },
+const fallbackImages = [
+  ...portraitImages,
+  ...familyImages,
+  ...eventImages,
+  ...weddingImages,
 ];
 
-function fallbackAlt(title: string, index: number) {
-  return `${title} Fotografie ${index + 1} von R.ArtPhotographie Kaufbeuren`;
+function fallbackAlt(index: number) {
+  return `R.ArtPhotographie Galerie Kaufbeuren und Allgäu ${index + 1}`;
 }
 
-function toFallbackImages(title: string, images: string[]): GalleryImageItem[] {
+function toFallbackImages(images: string[]): GalleryImageItem[] {
   return images.map((src, index) => ({
-    id: `fallback-${title}-${index}`,
+    id: `fallback-gallery-${index}`,
     src,
-    alt: fallbackAlt(title, index),
+    alt: fallbackAlt(index),
   }));
 }
 
-function buildFallbackGroups(): GalleryGroup[] {
-  return groupMeta.map((group) => ({
-    title: group.title,
-    subtitle: group.subtitle,
-    images: toFallbackImages(group.title, group.fallbackImages),
+function toGalleryImages(images: SanityGalleryImage[]): GalleryImageItem[] {
+  return images.map((image) => ({
+    id: image.id,
+    src: image.src,
+    alt: image.alt,
+    title: image.title,
+    width: image.width,
+    height: image.height,
   }));
-}
-
-function buildSanityGroups(images: SanityGalleryImage[]): GalleryGroup[] {
-  const groups = groupMeta
-    .map((group) => {
-      const groupImages = images
-        .filter((image) => group.categories.includes(image.category))
-        .map((image) => ({
-          id: image.id,
-          src: image.src,
-          alt: image.alt,
-          title: image.title,
-        }));
-
-      return {
-        title: group.title,
-        subtitle: group.subtitle,
-        images: groupImages,
-      };
-    })
-    .filter((group) => group.images.length > 0);
-
-  return groups.length > 0 ? groups : buildFallbackGroups();
 }
 
 export default async function GaleriePage() {
   const sanityImages = await getGalleryImages();
-  const groups =
+  const images =
     sanityImages.length > 0
-      ? buildSanityGroups(sanityImages)
-      : buildFallbackGroups();
+      ? toGalleryImages(sanityImages)
+      : toFallbackImages(fallbackImages);
 
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">
@@ -218,8 +158,8 @@ export default async function GaleriePage() {
 
             <div>
               <p className="max-w-3xl text-lg leading-8 text-black/62 md:text-xl md:leading-9">
-                Eine kuratierte Auswahl aus Portrait, Familie, Events und
-                Hochzeiten. Keine Zwischenebene, sondern direkt die Bilder.
+                Eine ruhige Gesamtgalerie aus Portraits, Familienmomenten,
+                Babybauch, Hochzeiten und besonderen Augenblicken.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
@@ -233,8 +173,7 @@ export default async function GaleriePage() {
 
                 <Link
                   href="/preise"
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-8 py-4 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
-                  style={{ color: "#111111" }}
+                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
                 >
                   Preise ansehen
                 </Link>
@@ -244,7 +183,41 @@ export default async function GaleriePage() {
         </div>
       </section>
 
-      <GalerieGridClient groups={groups} />
+      <GalerieGridClient images={images} />
+
+      <section className="px-6 pt-10 md:px-10 md:pt-14">
+        <div className="mx-auto max-w-7xl border-t border-black/10 pt-12 md:flex md:items-end md:justify-between md:gap-10 md:pt-16">
+          <div>
+            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+              Anfrage
+            </p>
+            <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
+              Du möchtest solche Bilder von dir?
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
+              Erzähl kurz, was du dir vorstellst – ich melde mich persönlich
+              zurück.
+            </p>
+          </div>
+
+          <div className="mt-8 flex flex-wrap gap-4 md:mt-0 md:shrink-0">
+            <Link
+              href="/kontakt"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
+              style={{ color: "#ffffff" }}
+            >
+              Shooting anfragen
+            </Link>
+
+            <Link
+              href="/preise"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+            >
+              Preise ansehen
+            </Link>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

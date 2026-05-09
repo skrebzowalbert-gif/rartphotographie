@@ -41,7 +41,7 @@ export default function GutscheinErfolgPage() {
           </Link>
           <Link
             href="/kontakt"
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-8 py-4 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
+            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
           >
             Kontakt
           </Link>
@@ -49,7 +49,7 @@ export default function GutscheinErfolgPage() {
             href={instagramUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/14 px-8 py-4 text-sm font-medium text-black transition hover:border-black/30 hover:bg-black/5"
+            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
           >
             Instagram
           </a>

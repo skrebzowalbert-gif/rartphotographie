@@ -12,12 +12,12 @@ const leftPoints: AboutPoint[] = [
     text: "Ich leite dich durch das Shooting, ohne dich zu überfordern. Du bekommst klare Hinweise, aber kein gestelltes Programm.",
   },
   {
-    title: "Klare Bildsprache",
-    text: "Die Bilder sollen natürlich wirken und trotzdem besonders aussehen: mit ruhigen Farben, sauberem Licht und einem Blick für Details.",
+    title: "Natürlich statt gestellt",
+    text: "Viele Menschen sind vor der Kamera unsicher. Ich helfe dir mit ruhiger Anleitung, ohne dich in künstliche Posen zu drücken.",
   },
   {
-    title: "Persönliche Nähe",
-    text: "Mir ist wichtig, dass du dich gesehen fühlst. Viele gute Bilder entstehen erst dann, wenn die Anspannung nachlässt.",
+    title: "Sicherheit vor der Kamera",
+    text: "Du musst nicht wissen, was du tun sollst. Ich gebe dir Orientierung, damit du dich sicher bewegen kannst.",
   },
 ];
 
@@ -27,8 +27,8 @@ const rightPoints: AboutPoint[] = [
     text: "Bei Hochzeiten, Familien und Babybauchshootings achte ich auf kleine Augenblicke, die später oft den größten Wert haben.",
   },
   {
-    title: "Hochwertige Wirkung",
-    text: "Du bekommst Bilder, die nicht nach Trend aussehen, sondern lange wirken: für dich, deine Familie oder als Erinnerung an einen besonderen Tag.",
+    title: "Bilder, die zu dir passen",
+    text: "Ziel sind natürliche Bilder, in denen du dich wiedererkennst: ohne Druck, ohne übertriebene Inszenierung.",
   },
   {
     title: "Kaufbeuren & Allgäu",
@@ -70,20 +70,20 @@ export default function AboutEditorial() {
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
           <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-            Über Regina
+            Über mich
           </p>
 
           <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl md:leading-[0.98]">
-            Du musst vor der Kamera
+            Ich fotografiere ruhig,
             <br />
-            nichts können
+            persönlich und ohne gestellte Posen
           </h2>
 
           <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-black/64 md:text-lg md:leading-9">
-            Viele Menschen fühlen sich vor der Kamera unsicher. Genau deshalb
-            wird jedes Shooting ruhig geführt, ohne Druck, ohne künstliche
-            Posen und mit genug Zeit, damit Bilder entstehen können, die sich
-            nach dir anfühlen.
+            Ich begleite Shootings ruhig und persönlich. Wenn du vor der Kamera
+            unsicher bist, ist das völlig normal. Du bekommst klare Anleitung,
+            genug Zeit und einen Rahmen, in dem natürliche Bilder entstehen
+            können.
           </p>
         </div>
 
@@ -99,12 +99,8 @@ export default function AboutEditorial() {
                 alt="Regina von R.ArtPhotographie Fotografin in Kaufbeuren und im Allgäu"
                 fill
                 sizes="(max-width: 768px) 90vw, (max-width: 1024px) 82vw, 500px"
-                className="object-cover object-[center_45%] contrast-[1.02]"
+                className="object-cover object-[center_45%] brightness-[1.03] contrast-[1.03]"
               />
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-[45%] bg-[linear-gradient(to_right,rgba(250,248,243,1)_0%,rgba(250,248,243,0.85)_15%,rgba(250,248,243,0.4)_30%,rgba(250,248,243,0)_45%)]" />
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-[40%] bg-[linear-gradient(to_left,rgba(250,248,243,1)_0%,rgba(250,248,243,0.6)_20%,rgba(250,248,243,0)_40%)]" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[35%] bg-[linear-gradient(to_top,rgba(250,248,243,0.9)_0%,rgba(250,248,243,0.6)_10%,rgba(250,248,243,0.2)_20%,rgba(250,248,243,0)_35%)]" />
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-1/5 bg-[linear-gradient(to_bottom,rgba(250,248,243,0.4)_0%,rgba(250,248,243,0)_20%)]" />
             </div>
           </div>
 

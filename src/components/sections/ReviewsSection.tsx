@@ -58,7 +58,7 @@ export default function ReviewsSection() {
                 href="https://www.google.com/search?q=R.ArtPhotographie+Kaufbeuren"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-black/12 px-6 py-3 text-sm text-black transition hover:border-black/25 hover:bg-black/5"
+                className="rounded-full border border-black/25 bg-transparent px-6 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
               >
                 Bei Google ansehen
               </a>

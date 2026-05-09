@@ -8,6 +8,8 @@ export type GalleryImageItem = {
   src: string;
   alt: string;
   title?: string;
+  width?: number;
+  height?: number;
 };
 
 export type GalleryGroup = {
@@ -17,53 +19,41 @@ export type GalleryGroup = {
 };
 
 type GalerieGridClientProps = {
-  groups: GalleryGroup[];
+  images: GalleryImageItem[];
 };
 
-export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
+export default function GalerieGridClient({ images }: GalerieGridClientProps) {
   const allImages = useMemo(
     () =>
-      groups.flatMap((group) =>
-        group.images.map((image) => ({
-          id: image.id,
-          src: image.src,
-          alt: image.alt,
-          title: image.title,
-        }))
-      ),
-    [groups]
+      images.map((image) => ({
+        id: image.id,
+        src: image.src,
+        alt: image.alt,
+        title: image.title,
+        width: image.width,
+        height: image.height,
+      })),
+    [images]
   );
-  const groupedImages = useMemo(() => {
-    return groups.map((group, groupIndex) => {
-      const offset = groups
-        .slice(0, groupIndex)
-        .reduce((sum, previousGroup) => sum + previousGroup.images.length, 0);
-      const images = group.images.map((image, index) => ({
-        ...image,
-        globalIndex: offset + index,
-      }));
-
-      return {
-        ...group,
-        images,
-      };
-    });
-  }, [groups]);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeLoaded, setActiveLoaded] = useState(false);
   const activeImage =
     activeIndex === null ? null : allImages[activeIndex] || null;
 
   const closeLightbox = useCallback(() => {
     setActiveIndex(null);
+    setActiveLoaded(false);
   }, []);
 
   const showPrevious = useCallback(() => {
+    setActiveLoaded(false);
     setActiveIndex((index) =>
       index === null ? null : (index - 1 + allImages.length) % allImages.length
     );
   }, [allImages.length]);
 
   const showNext = useCallback(() => {
+    setActiveLoaded(false);
     setActiveIndex((index) =>
       index === null ? null : (index + 1) % allImages.length
     );
@@ -89,49 +79,33 @@ export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
 
   return (
     <>
-      {groupedImages.map((group) => (
-        <section
-          key={group.title}
-          className="px-3 py-12 sm:px-6 md:px-10 md:py-24"
-        >
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-6 flex flex-col gap-3 px-3 sm:px-0 md:mb-10 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-black/38 md:text-sm md:tracking-[0.32em]">
-                  Galerie
-                </p>
-                <h2 className="mt-3 text-3xl font-light leading-[1] md:text-5xl">
-                  {group.title}
-                </h2>
-              </div>
-
-              <p className="max-w-2xl text-sm leading-7 text-black/60 md:text-lg md:leading-8">
-                {group.subtitle}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 md:grid-cols-4 md:gap-4 xl:grid-cols-5">
-              {group.images.map((image, index) => (
-                  <button
-                    key={image.id}
-                    type="button"
-                    onClick={() => setActiveIndex(image.globalIndex)}
-                    className="group relative aspect-square min-w-0 touch-manipulation overflow-hidden bg-black/5 text-left pointer-events-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:aspect-[4/5]"
-                    aria-label={`${group.title} Bild ${index + 1} öffnen`}
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                      className="pointer-events-none object-cover transition duration-500 group-hover:scale-[1.03]"
-                    />
-                  </button>
-              ))}
-            </div>
+      <section className="px-3 py-12 sm:px-6 md:px-10 md:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="columns-2 gap-2 sm:columns-3 md:columns-4 md:gap-4 xl:columns-5">
+            {allImages.map((image, index) => (
+              <button
+                key={image.id}
+                type="button"
+                onClick={() => {
+                  setActiveLoaded(false);
+                  setActiveIndex(index);
+                }}
+                className="group mb-2 block w-full min-w-0 break-inside-avoid touch-manipulation overflow-hidden bg-transparent text-left pointer-events-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black md:mb-4"
+                aria-label={`Galeriebild ${index + 1} öffnen`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width || 1200}
+                  height={image.height || 1600}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                  className="pointer-events-none h-auto w-full transition duration-500 group-hover:scale-[1.015]"
+                />
+              </button>
+            ))}
           </div>
-        </section>
-      ))}
+        </div>
+      </section>
 
       {activeImage && (
         <div
@@ -162,16 +136,25 @@ export default function GalerieGridClient({ groups }: GalerieGridClientProps) {
           </button>
 
           <div
-            className="relative h-[82vh] w-full max-w-5xl"
+            className="relative h-[82vh] w-full max-w-5xl bg-black/30"
             onClick={(event) => event.stopPropagation()}
           >
+            {!activeLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-white/58">
+                Bild lädt
+              </div>
+            )}
             <Image
               src={activeImage.src}
               alt={activeImage.alt}
               fill
               sizes="100vw"
-              className="object-contain"
+              className={`object-contain transition-opacity duration-300 ${
+                activeLoaded ? "opacity-100" : "opacity-0"
+              }`}
               priority
+              onLoadingComplete={() => setActiveLoaded(true)}
+              onError={() => setActiveLoaded(true)}
             />
           </div>
 

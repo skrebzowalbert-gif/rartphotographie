@@ -139,7 +139,7 @@ export default function PortfolioPage() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-black/18 bg-white/70 px-5 py-3 text-sm font-medium text-black transition hover:border-black/30 hover:bg-white"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
               >
                 {item.title}
               </Link>

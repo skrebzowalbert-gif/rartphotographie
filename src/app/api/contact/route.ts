@@ -30,9 +30,9 @@ export async function POST(req: Request) {
       timeZone: "Europe/Berlin",
     }).format(new Date());
 
-    if (!name || !email || !type) {
+    if (!name || !email || !type || !message) {
       return Response.json(
-        { error: "Name, E-Mail und Anfrageart sind erforderlich." },
+        { error: "Name, E-Mail, Anfrageart und Nachricht sind erforderlich." },
         { status: 400 }
       );
     }

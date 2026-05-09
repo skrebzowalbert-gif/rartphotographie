@@ -76,7 +76,7 @@ export default function HeroSlider() {
       <div className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,rgba(0,0,0,0.46)_0%,rgba(0,0,0,0.28)_42%,rgba(0,0,0,0.14)_100%)] md:block" />
 
       {/* BOTTOM FADE */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[18%] bg-[linear-gradient(to_top,#e7dfd3_0%,rgba(231,223,211,0.32)_48%,rgba(0,0,0,0)_100%)] md:h-[26%] md:bg-[linear-gradient(to_top,#e7dfd3_0%,rgba(231,223,211,0.72)_28%,rgba(36,31,26,0.16)_72%,rgba(0,0,0,0)_100%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[6%] bg-[linear-gradient(to_top,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0)_100%)]" />
 
       {/* CONTENT */}
       <div className="pointer-events-none relative z-10 flex h-full items-end pb-14 pt-24 md:items-center md:pb-0 md:pt-0">
@@ -116,7 +116,7 @@ export default function HeroSlider() {
 
               <Link
                 href="/galerie"
-                className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/30 px-6 py-3 text-sm text-white transition hover:bg-white/10 sm:w-auto md:px-7"
+                className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/46 bg-black/28 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition hover:border-white/70 hover:bg-black/42 sm:w-auto md:px-7"
               >
                 Arbeiten ansehen
               </Link>
