@@ -79,7 +79,7 @@ const portraitItems: PriceCardProps[] = [
 const weddingItems: PriceCardProps[] = [
   {
     title: "Mini-Paket",
-    image: "/images/weddings/wedding-3.jpg",
+    image: "/images/weddings/wedding-16.jpg",
     duration: "1–2 Stunden",
     price: "350 €",
     scope: "Alle bearbeiteten Bilder · digitale Dateien · Online-Galerie",
@@ -91,7 +91,7 @@ const weddingItems: PriceCardProps[] = [
   },
   {
     title: "Kurzpaket",
-    image: "/images/weddings/wedding-6.jpg",
+    image: "/images/weddings/wedding-15.jpg",
     duration: "3 Stunden",
     price: "450 €",
     scope: "Alle bearbeiteten Bilder · digitale Dateien · Online-Galerie",
@@ -103,7 +103,7 @@ const weddingItems: PriceCardProps[] = [
   },
   {
     title: "Standardpaket",
-    image: "/images/weddings/wedding-8.jpg",
+    image: "/images/weddings/wedding-14.jpg",
     duration: "5 Stunden",
     price: "850 €",
     scope: "Alle bearbeiteten Bilder · digitale Dateien · Online-Galerie",
@@ -115,7 +115,7 @@ const weddingItems: PriceCardProps[] = [
   },
   {
     title: "Erweitertes Paket",
-    image: "/images/weddings/wedding-12.jpg",
+    image: "/images/weddings/wedding-17.JPG",
     duration: "8 Stunden",
     price: "1.200 €",
     scope: "Alle bearbeiteten Bilder · digitale Dateien · Online-Galerie",
@@ -161,13 +161,13 @@ function PriceCard({
       id={anchorId}
       className="scroll-mt-36 overflow-hidden rounded-xl border border-black/8 bg-white/24"
     >
-      <div className="relative h-[300px] overflow-hidden sm:h-[340px]">
+      <div className="relative h-[360px] overflow-hidden bg-black/[0.04] sm:h-[380px] md:h-[340px]">
         <Image
           src={image}
           alt={`${title} Kaufbeuren und Allgäu bei R.ArtPhotographie`}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain object-center md:object-cover"
         />
       </div>
 
