@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import VoucherSection from "@/components/sections/VoucherSection";
-
-const vehiclePartnerUrl = "https://sportwagenvermietung-kaufbeuren.de/";
+import PartnersSection from "@/components/sections/PartnersSection";
+import { getWeddingPartners } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Preise Fotoshooting Kaufbeuren & Hochzeit Allgäu",
@@ -219,7 +219,9 @@ function PriceCard({
   );
 }
 
-export default function PreisePage() {
+export default async function PreisePage() {
+  const weddingPartners = await getWeddingPartners();
+
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">
       <section className="px-6 md:px-10">
@@ -262,33 +264,13 @@ export default function PreisePage() {
             ))}
           </div>
 
-          <div className="mx-auto mt-20 max-w-4xl border-y border-black/10 py-12 text-center md:py-16">
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-              Externer Partner
-            </p>
-            <h3 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
-              Premium-Fahrzeug zur Hochzeit
-            </h3>
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-black/64 md:text-lg">
-              Auf Wunsch kann eure Hochzeitsbegleitung mit einem ausgewählten
-              Premium-Fahrzeug ergänzt werden. Das Fahrzeug ist nicht im
-              Shootingpreis enthalten und wird separat über unseren externen
-              Partner angefragt.
-            </p>
-            <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-black/50">
-              Verfügbarkeit, Preise, Vertragsbedingungen, Stornoregelungen und
-              Fahrzeugkonditionen gelten direkt beim Partner
-              Sportwagenvermietung Kaufbeuren.
-            </p>
-            <a
-              href={vehiclePartnerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex min-h-[54px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
-            >
-              Fahrzeuge beim Partner ansehen
-            </a>
-          </div>
+          <PartnersSection
+            partners={weddingPartners}
+            eyebrow="Hochzeitspartner"
+            title="Ergänzungen für euren Tag"
+            intro="Ausgewählte Partner rund um Hochzeit, Location, Floristik, Video, Styling und besondere Details."
+            compact
+          />
         </div>
       </section>
 

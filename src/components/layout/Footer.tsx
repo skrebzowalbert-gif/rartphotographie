@@ -23,6 +23,10 @@ export default function Footer() {
             Kontakt
           </Link>
 
+          <Link href="/partner" className="hover:text-black">
+            Partner
+          </Link>
+
           <Link href="/impressum" className="hover:text-black">
             Impressum
           </Link>

@@ -7,7 +7,8 @@ import VoucherSection from "@/components/sections/VoucherSection";
 import AboutEditorial from "@/components/sections/AboutEditorial";
 import ServicesAccordion from "@/components/sections/ServicesAccordion";
 import PromotionBar from "@/components/sections/PromotionBar";
-import { getActivePromotions } from "@/sanity/queries";
+import PartnersSection from "@/components/sections/PartnersSection";
+import { getActivePromotions, getHomepagePartners } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
@@ -58,7 +59,10 @@ const faqItems = [
 ];
 
 export default async function Home() {
-  const promotions = await getActivePromotions();
+  const [promotions, partners] = await Promise.all([
+    getActivePromotions(),
+    getHomepagePartners(),
+  ]);
   const activePromotion = promotions[0] || null;
 
   return (
@@ -71,6 +75,13 @@ export default async function Home() {
       <AboutEditorial />
 
       <ReviewsSection />
+
+      <PartnersSection
+        partners={partners}
+        title="Partner, denen wir vertrauen"
+        intro="Für besondere Tage ist oft mehr wichtig als Fotografie. Hier zeigen wir ausgewählte Partner, mit denen R.ArtPhotographie vertrauensvoll zusammenarbeitet."
+        compact
+      />
 
       <section className="px-6 py-24 md:px-10 md:py-28">
         <div className="mx-auto max-w-7xl border-y border-black/10 py-16 md:py-24">

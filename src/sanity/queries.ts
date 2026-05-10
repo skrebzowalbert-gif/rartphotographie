@@ -35,6 +35,33 @@ export type SanityPromotion = {
   order?: number;
 };
 
+export type SanityPartnerCategory =
+  | "location"
+  | "cake"
+  | "video"
+  | "makeup"
+  | "florist"
+  | "bridal-fashion"
+  | "music"
+  | "vehicle"
+  | "other";
+
+export type SanityPartner = {
+  id: string;
+  name: string;
+  slug?: string;
+  category?: SanityPartnerCategory | string;
+  logoUrl?: string;
+  description?: string;
+  websiteUrl?: string;
+  isFeatured?: boolean;
+  isClosePartner?: boolean;
+  showOnHomepage?: boolean;
+  showOnWeddingPage?: boolean;
+  showOnContactPage?: boolean;
+  order?: number;
+};
+
 const galleryImagesQuery = groq`
   *[
     _type == "galleryImage" &&
@@ -78,6 +105,65 @@ const activePromotionsQuery = groq`
   }
 `;
 
+const partnerProjection = groq`
+  "id": _id,
+  name,
+  "slug": slug.current,
+  category,
+  "logoUrl": logo.asset->url,
+  description,
+  websiteUrl,
+  isFeatured,
+  isClosePartner,
+  showOnHomepage,
+  showOnWeddingPage,
+  showOnContactPage,
+  order
+`;
+
+const activePartnersQuery = groq`
+  *[
+    _type == "partner" &&
+    !(_id in path("drafts.**")) &&
+    isActive == true
+  ] | order(isFeatured desc, order asc, _createdAt asc) {
+    ${partnerProjection}
+  }
+`;
+
+const homepagePartnersQuery = groq`
+  *[
+    _type == "partner" &&
+    !(_id in path("drafts.**")) &&
+    isActive == true &&
+    showOnHomepage == true
+  ] | order(isFeatured desc, order asc, _createdAt asc) {
+    ${partnerProjection}
+  }
+`;
+
+const weddingPartnersQuery = groq`
+  *[
+    _type == "partner" &&
+    !(_id in path("drafts.**")) &&
+    isActive == true &&
+    showOnWeddingPage == true
+  ] | order(isFeatured desc, order asc, _createdAt asc) {
+    ${partnerProjection}
+  }
+`;
+
+const contactPartnersQuery = groq`
+  *[
+    _type == "partner" &&
+    !(_id in path("drafts.**")) &&
+    isActive == true &&
+    showOnContactPage == true
+  ] | order(isFeatured desc, order asc, _createdAt asc) {
+    ${partnerProjection}
+  }
+`;
+
 export async function getGalleryImages() {
   if (!isSanityConfigured || !sanityClient) {
     return [];
@@ -110,4 +196,38 @@ export async function getActivePromotions() {
   } catch {
     return [];
   }
+}
+
+async function fetchPartners(query: string) {
+  if (!isSanityConfigured || !sanityClient) {
+    return [];
+  }
+
+  try {
+    const freshClient = sanityClient.withConfig({ useCdn: false });
+
+    return await freshClient.fetch<SanityPartner[]>(
+      query,
+      {},
+      { cache: "no-store" }
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function getActivePartners() {
+  return fetchPartners(activePartnersQuery);
+}
+
+export async function getHomepagePartners() {
+  return fetchPartners(homepagePartnersQuery);
+}
+
+export async function getWeddingPartners() {
+  return fetchPartners(weddingPartnersQuery);
+}
+
+export async function getContactPartners() {
+  return fetchPartners(contactPartnersQuery);
 }

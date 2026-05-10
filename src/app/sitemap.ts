@@ -9,6 +9,7 @@ const routes = [
   { path: "/preise", priority: 0.9 },
   { path: "/gutscheine", priority: 0.85 },
   { path: "/kontakt", priority: 0.95 },
+  { path: "/partner", priority: 0.55 },
   { path: "/impressum", priority: 0.3 },
   { path: "/datenschutz", priority: 0.3 },
 ];

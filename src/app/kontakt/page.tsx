@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import KontaktPageContent from "@/components/contact/KontaktPageContent";
+import PartnersSection from "@/components/sections/PartnersSection";
+import { getContactPartners } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: "Kontakt & Shooting anfragen | R.ArtPhotographie",
@@ -14,6 +16,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function KontaktPage() {
-  return <KontaktPageContent />;
+export default async function KontaktPage() {
+  const partners = await getContactPartners();
+
+  return (
+    <>
+      <KontaktPageContent />
+      <PartnersSection
+        partners={partners}
+        title="Partner für besondere Anfragen"
+        intro="Falls dein Shooting Teil eines größeren Tages ist, findest du hier ausgewählte Kontakte aus unserem Netzwerk."
+        compact
+      />
+    </>
+  );
 }

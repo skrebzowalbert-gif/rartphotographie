@@ -90,6 +90,9 @@ export async function POST(req: Request) {
       );
     }
 
+    const checkoutBaseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "") || siteUrl;
+
     const voucherName = "Wertgutschein R.ArtPhotographie";
     const address = [street, zip, city].filter(Boolean).join(", ");
     const activePromotions = await getActivePromotions();
@@ -111,8 +114,8 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email,
-      success_url: `${siteUrl}/gutscheine/erfolg?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/gutscheine?zahlung=abgebrochen`,
+      success_url: `${checkoutBaseUrl}/gutscheine/erfolg?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${checkoutBaseUrl}/gutscheine?zahlung=abgebrochen`,
       line_items: [
         {
           quantity: 1,
