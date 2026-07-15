@@ -38,6 +38,13 @@ export function getResendConfig() {
   const fromEmail = process.env.CONTACT_FROM_EMAIL;
 
   if (!apiKey || apiKey === "DEIN_RESEND_KEY" || !fromEmail) {
+    const missing = [
+      !apiKey || apiKey === "DEIN_RESEND_KEY" ? "RESEND_API_KEY" : null,
+      !fromEmail ? "CONTACT_FROM_EMAIL" : null,
+    ].filter(Boolean);
+    console.error(
+      `[contact] E-Mail-Versand nicht konfiguriert, fehlende Umgebungsvariablen: ${missing.join(", ")}. Kontaktformular-Anfragen schlagen fehl, bis diese im Hosting (z. B. Vercel) gesetzt sind.`
+    );
     return {
       ok: false as const,
       error: "Server-Konfiguration unvollständig.",

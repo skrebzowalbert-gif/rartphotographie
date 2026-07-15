@@ -15,6 +15,18 @@ export default function Footer() {
             Fotografin Allgäu
           </Link>
 
+          <Link href="/galerie" className="hover:text-black">
+            Galerie
+          </Link>
+
+          <Link href="/portfolio" className="hover:text-black">
+            Portfolio
+          </Link>
+
+          <Link href="/preise" className="hover:text-black">
+            Preise
+          </Link>
+
           <Link href="/gutscheine" className="hover:text-black">
             Gutscheine
           </Link>

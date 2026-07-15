@@ -191,7 +191,7 @@ export async function getActivePromotions() {
     return await freshClient.fetch<SanityPromotion[]>(
       activePromotionsQuery,
       {},
-      { cache: "no-store" }
+      { next: { revalidate: 60 } }
     );
   } catch {
     return [];
@@ -209,7 +209,7 @@ async function fetchPartners(query: string) {
     return await freshClient.fetch<SanityPartner[]>(
       query,
       {},
-      { cache: "no-store" }
+      { next: { revalidate: 300 } }
     );
   } catch {
     return [];

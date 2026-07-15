@@ -83,7 +83,10 @@ export async function POST(req: Request) {
 
     const stripe = getStripe();
 
-    if (!stripe || !process.env.NEXT_PUBLIC_SITE_URL) {
+    if (!stripe) {
+      console.error(
+        "[checkout] STRIPE_SECRET_KEY ist nicht gesetzt. Gutschein-Käufe schlagen fehl, bis die Variable im Hosting gesetzt ist."
+      );
       return Response.json(
         { error: "Checkout ist noch nicht vollständig konfiguriert." },
         { status: 500 }
@@ -91,7 +94,7 @@ export async function POST(req: Request) {
     }
 
     const checkoutBaseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "") || siteUrl;
+      process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || siteUrl;
 
     const voucherName = "Wertgutschein R.ArtPhotographie";
     const address = [street, zip, city].filter(Boolean).join(", ");
@@ -183,7 +186,8 @@ export async function POST(req: Request) {
     }
 
     return Response.json({ url: session.url });
-  } catch {
+  } catch (error) {
+    console.error("[checkout] Stripe-Checkout fehlgeschlagen:", error);
     return Response.json(
       { error: "Checkout konnte nicht gestartet werden." },
       { status: 500 }

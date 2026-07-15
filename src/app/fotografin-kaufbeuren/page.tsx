@@ -60,7 +60,7 @@ export default function FotografinKaufbeurenPage() {
               fill
               sizes="(max-width: 1024px) 100vw, 48vw"
               className="object-cover"
-              priority
+              preload
             />
           </div>
         </div>

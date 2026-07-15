@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 0;
+// ISR: Promotions erscheinen spätestens nach 60 s, die Seite bleibt aber statisch schnell.
+export const revalidate = 60;
 
 export default async function GutscheinePage() {
   const activePromotions = await getActivePromotions();

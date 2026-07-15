@@ -102,23 +102,26 @@ const weddingImages = [
   "/images/weddings/wedding-20.JPG",
 ];
 
-const fallbackImages = [
-  ...portraitImages,
-  ...familyImages,
-  ...eventImages,
-  ...weddingImages,
+const fallbackGroups: { images: string[]; alt: string }[] = [
+  { images: portraitImages, alt: "Portraitshooting in Kaufbeuren" },
+  {
+    images: familyImages,
+    alt: "Familien-, Babybauch- und Newbornshooting im Allgäu",
+  },
+  { images: eventImages, alt: "Eventfotografie in Kaufbeuren und im Allgäu" },
+  { images: weddingImages, alt: "Hochzeitsfotografie im Allgäu" },
 ];
 
-function fallbackAlt(index: number) {
-  return `R.ArtPhotographie Galerie Kaufbeuren und Allgäu ${index + 1}`;
-}
-
-function toFallbackImages(images: string[]): GalleryImageItem[] {
-  return images.map((src, index) => ({
-    id: `fallback-gallery-${index}`,
-    src,
-    alt: fallbackAlt(index),
-  }));
+function toFallbackImages(
+  groups: { images: string[]; alt: string }[]
+): GalleryImageItem[] {
+  return groups.flatMap((group) =>
+    group.images.map((src, index) => ({
+      id: `fallback-${src}`,
+      src,
+      alt: `${group.alt} – R.ArtPhotographie, Bild ${index + 1}`,
+    }))
+  );
 }
 
 function toGalleryImages(images: SanityGalleryImage[]): GalleryImageItem[] {
@@ -137,7 +140,7 @@ export default async function GaleriePage() {
   const images =
     sanityImages.length > 0
       ? toGalleryImages(sanityImages)
-      : toFallbackImages(fallbackImages);
+      : toFallbackImages(fallbackGroups);
 
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">

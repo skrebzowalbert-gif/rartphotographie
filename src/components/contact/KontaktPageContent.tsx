@@ -100,8 +100,8 @@ function KontaktForm() {
         type: "error",
         message:
           error instanceof Error && error.message !== "Request failed"
-            ? error.message
-            : "Beim Senden ist ein Fehler aufgetreten. Bitte versuche es erneut oder schreibe direkt per Instagram.",
+            ? `${error.message} Du erreichst mich auch direkt unter ${EMAIL_ADDRESS} oder per Instagram.`
+            : `Beim Senden ist ein Fehler aufgetreten. Bitte versuche es erneut oder schreibe direkt an ${EMAIL_ADDRESS} bzw. per Instagram.`,
       });
     } finally {
       setIsSubmitting(false);

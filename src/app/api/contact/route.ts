@@ -98,6 +98,7 @@ export async function POST(req: Request) {
     });
 
     if (error) {
+      console.error("[contact] Resend-Versand fehlgeschlagen:", error);
       return Response.json({ error: "E-Mail konnte nicht gesendet werden." }, { status: 500 });
     }
 
@@ -130,7 +131,8 @@ export async function POST(req: Request) {
       success: true,
       message: "Vielen Dank. Deine Anfrage wurde erfolgreich gesendet.",
     });
-  } catch {
+  } catch (error) {
+    console.error("[contact] Unerwarteter Fehler bei der Kontaktanfrage:", error);
     return Response.json(
       { error: "Interner Serverfehler." },
       { status: 500 }

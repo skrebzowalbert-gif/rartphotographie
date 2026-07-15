@@ -152,8 +152,8 @@ export default function GalerieGridClient({ images }: GalerieGridClientProps) {
               className={`object-contain transition-opacity duration-300 ${
                 activeLoaded ? "opacity-100" : "opacity-0"
               }`}
-              priority
-              onLoadingComplete={() => setActiveLoaded(true)}
+              preload
+              onLoad={() => setActiveLoaded(true)}
               onError={() => setActiveLoaded(true)}
             />
           </div>

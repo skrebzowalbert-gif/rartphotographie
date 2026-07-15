@@ -63,6 +63,7 @@ export default function HeroSlider() {
           alt="Fotografin Kaufbeuren und Allgäu R.ArtPhotographie"
           fill
           preload={index === 0}
+          fetchPriority={index === 0 ? "high" : undefined}
           sizes="100vw"
           aria-hidden={index !== activeIndex}
           className={`pointer-events-none absolute inset-0 h-full w-full object-cover ${image.mobilePositionClass} transition-opacity duration-[1200ms] md:object-center ${

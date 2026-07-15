@@ -60,7 +60,7 @@ export default function FotografinAllgaeuPage() {
               fill
               sizes="(max-width: 1024px) 100vw, 44vw"
               className="object-cover"
-              priority
+              preload
             />
           </div>
         </div>
