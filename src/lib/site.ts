@@ -39,7 +39,9 @@ export const business: {
   phone: string;
   latitude: number;
   longitude: number;
-  openingHours: readonly { days: readonly string[]; opens: string; closes: string }[];
+  openingHours:
+    | readonly { days: readonly string[]; opens: string; closes: string }[]
+    | null;
 } = {
   legalName: "Regina Gerdt",
   name: "R.ArtPhotographie",
@@ -50,27 +52,33 @@ export const business: {
   country: "DE",
 
   /**
-   * TODO REGINA: Telefonnummer im Format +49XXXXXXXXXX eintragen.
-   * Solange dieser Wert leer ist, wird kein Telefon-Button und kein
-   * telephone-Feld im Schema ausgegeben. Das ist der wichtigste
-   * fehlende Baustein für die lokale Sichtbarkeit.
+   * Mobilnummer (einziger Telefonanschluss). Anzeigeformat mit Leerzeichen,
+   * der tel:-Link wird daraus automatisch nach E.164 normalisiert.
+   *
+   * Muss zeichengenau mit dem Google-Unternehmensprofil übereinstimmen.
    */
-  phone: "",
+  phone: "+49 176 81302747",
 
   /** Koordinaten Hirtenstraße 16, 87600 Kaufbeuren */
   latitude: 47.8809,
   longitude: 10.6215,
 
   /**
-   * TODO REGINA: Echte Erreichbarkeitszeiten eintragen.
-   * Shootings nach Vereinbarung – hier gehören die Zeiten rein,
-   * zu denen tatsächlich jemand ans Telefon geht.
+   * TODO REGINA: Telefonische Erreichbarkeit eintragen, z. B.
+   *
+   *   openingHours: [
+   *     { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+   *       opens: "09:00", closes: "18:00" },
+   *     { days: ["Saturday"], opens: "10:00", closes: "16:00" },
+   *   ],
+   *
+   * Bewusst auf null: Falsche Öffnungszeiten im Schema sind schädlicher als
+   * gar keine. Wer nach der angegebenen Zeit anruft und niemanden erreicht,
+   * ist als Kunde weg – und Google gleicht die Angabe mit dem
+   * Unternehmensprofil ab. Beide Quellen müssen identisch sein.
    */
-  openingHours: [
-    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "18:00" },
-    { days: ["Saturday"], opens: "10:00", closes: "16:00" },
-  ],
-} as const;
+  openingHours: null,
+};
 
 /** Telefonnummer als tel:-Link, oder null wenn keine hinterlegt ist. */
 export const phoneHref = business.phone ? `tel:${business.phone.replace(/[^\d+]/g, "")}` : null;

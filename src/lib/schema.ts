@@ -111,12 +111,6 @@ export function buildLocalBusinessJsonLd() {
     currenciesAccepted: "EUR",
     knowsLanguage: ["de", "ru"],
     sameAs: [instagramUrl, googleBusinessProfileUrl],
-    openingHoursSpecification: business.openingHours.map((slot) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: slot.days,
-      opens: slot.opens,
-      closes: slot.closes,
-    })),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Fotoshootings in Kaufbeuren und im Allgäu",
@@ -141,6 +135,17 @@ export function buildLocalBusinessJsonLd() {
   // telephone-Feld ist ein Fehler in den strukturierten Daten.
   if (business.phone) {
     node.telephone = business.phone;
+  }
+
+  // Öffnungszeiten nur ausgeben, wenn sie tatsächlich gepflegt sind.
+  // Erfundene Zeiten schaden mehr, als sie nutzen.
+  if (business.openingHours) {
+    node.openingHoursSpecification = business.openingHours.map((slot) => ({
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: slot.days,
+      opens: slot.opens,
+      closes: slot.closes,
+    }));
   }
 
   // aggregateRating nur ausgeben, wenn die Zahl öffentlich bei Google
