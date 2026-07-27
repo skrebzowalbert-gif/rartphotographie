@@ -9,10 +9,10 @@ import {
 } from "@/lib/site";
 
 const serviceLinks = [
+  { href: "/babybauch-shooting-kaufbeuren", label: "Babybauch Shooting Kaufbeuren" },
+  { href: "/newborn-fotograf-kaufbeuren", label: "Newborn Fotograf Kaufbeuren" },
+  { href: "/familienfotograf-kaufbeuren", label: "Familienfotograf Kaufbeuren" },
   { href: "/preise#portrait", label: "Portraitshooting" },
-  { href: "/preise#familie", label: "Familienshooting" },
-  { href: "/preise#babybauch", label: "Babybauchshooting" },
-  { href: "/preise#newborn", label: "Newbornshooting" },
   { href: "/preise#hochzeit-mini", label: "Hochzeitsfotografie" },
 ];
 
@@ -22,6 +22,7 @@ const siteLinks = [
   { href: "/preise", label: "Preise" },
   { href: "/gutscheine", label: "Gutscheine" },
   { href: "/kontakt", label: "Kontakt" },
+  { href: "/ueber-mich", label: "Über mich" },
   { href: "/fotografin-kaufbeuren", label: "Fotograf Kaufbeuren" },
   { href: "/fotografin-allgaeu", label: "Fotograf Allgäu" },
   { href: "/partner", label: "Partner" },

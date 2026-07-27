@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import HeroSlider from "@/components/sections/HeroSlider";
+import Hero from "@/components/sections/Hero";
 import FeaturedImageWall from "@/components/sections/FeaturedImageWall";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import VoucherSection from "@/components/sections/VoucherSection";
@@ -86,7 +86,7 @@ export default async function Home() {
     <main className="bg-[#e7dfd3] text-black">
       <script {...jsonLdScript(buildFaqJsonLd(faqItems))} />
       <PromotionBar promotion={activePromotion} />
-      <HeroSlider />
+      <Hero />
 
       <FeaturedImageWall />
       <ServicesAccordion />

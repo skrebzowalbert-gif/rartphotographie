@@ -10,13 +10,27 @@ test.describe("mobile ui interactions", () => {
 
     const menu = page.getByRole("navigation", { name: /mobile navigation/i });
     await expect(menu).toBeVisible();
-    await expect(menu.getByRole("link", { name: "Start" })).toBeVisible();
     await expect(menu.getByRole("link", { name: "Galerie" })).toBeVisible();
     await expect(menu.getByRole("link", { name: "Preise" })).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Über mich" })).toBeVisible();
     await expect(menu.getByRole("link", { name: "Gutscheine" })).toBeVisible();
     // Der Anfrage-CTA muss im Menü prominent vorhanden sein.
     await expect(
       menu.getByRole("link", { name: "Shooting anfragen" })
+    ).toBeVisible();
+  });
+
+  test("hero shows a family-oriented motif and a request CTA", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    // Der Hero zeigte zuvor entsaettigte Fashion-Motive, obwohl Familien-,
+    // Babybauch- und Newborn-Shootings verkauft werden.
+    const heroImg = page.locator("main img").first();
+    await expect(heroImg).toHaveAttribute("alt", /babybauch|familie/i);
+    await expect(
+      page.getByRole("heading", { level: 1, name: /Fotograf in Kaufbeuren/i })
     ).toBeVisible();
   });
 
@@ -136,15 +150,6 @@ test.describe("mobile ui interactions", () => {
     ).toBeVisible();
   });
 
-  test("mobile hero slider changes automatically", async ({ page }) => {
-    await page.goto("/");
-
-    const hero = page.locator("[data-active-slide]");
-    await expect(hero).toHaveAttribute("data-active-slide", "0");
-    await expect(hero).not.toHaveAttribute("data-active-slide", "0", {
-      timeout: 6_000,
-    });
-  });
 });
 
 test.describe("seo essentials", () => {

@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import MobileCtaBar from "@/components/layout/MobileCtaBar";
@@ -10,13 +9,11 @@ export default function SiteShell({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
-
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <div className={`flex-1 ${isHome ? "" : "pt-24 md:pt-32"}`}>
+      {/* Fixierte Navigation: konstanter Abstand auf allen Seiten. */}
+      <div className="flex-1 pt-20 md:pt-24">
         {children}
       </div>
       <Footer />

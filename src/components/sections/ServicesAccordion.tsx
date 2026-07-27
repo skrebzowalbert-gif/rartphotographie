@@ -20,7 +20,7 @@ const services: Service[] = [
   {
     title: "Familie",
     text: "Familienfotos, Babybauch und Newborn ohne Druck, mit genug Zeit für Nähe, Pausen und kleine Situationen.",
-    href: "/preise#familie",
+    href: "/familienfotograf-kaufbeuren",
     image: "/images/family/family-1.jpg",
     alt: "Familienfotografie Allgäu R.ArtPhotographie",
   },
@@ -34,7 +34,7 @@ const services: Service[] = [
   {
     title: "Babybauch",
     text: "Babybauchbilder, die sich nicht gestellt anfühlen: schlicht, nah und mit einem Blick für das, was dir wichtig ist.",
-    href: "/preise#babybauch",
+    href: "/babybauch-shooting-kaufbeuren",
     image: "/images/babybauch/babybauch-1.jpg",
     alt: "Babybauch Shooting Kaufbeuren R.ArtPhotographie",
   },

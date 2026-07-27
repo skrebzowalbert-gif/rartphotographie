@@ -6,22 +6,21 @@ import { useEffect, useState } from "react";
 import { phoneDisplay, phoneHref } from "@/lib/site";
 
 const mainNavItems = [
-  { href: "/", label: "Start" },
   { href: "/galerie", label: "Galerie" },
   { href: "/preise", label: "Preise" },
+  { href: "/ueber-mich", label: "Über mich" },
   { href: "/gutscheine", label: "Gutscheine" },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Steuert nur den Schatten. Die Navigation ist immer deckend: der Hero liegt
+  // auf hellem Grund, weiße Schrift wäre dort unlesbar.
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 36);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 24);
 
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -48,30 +47,29 @@ export default function Navbar() {
     };
   }, [menuOpen]);
 
-  const useSolidStyle = !isHome || scrolled;
-  const toggleMenu = () => setMenuOpen((open) => !open);
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <header
-      className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
-        useSolidStyle
-          ? "border-b border-black/8 bg-[#e7dfd3]/95 text-black backdrop-blur-md"
-          : "bg-transparent text-white"
+      className={`fixed left-0 top-0 z-50 w-full border-b bg-[#e7dfd3]/95 text-black backdrop-blur-md transition-shadow duration-300 ${
+        scrolled
+          ? "border-black/10 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+          : "border-transparent"
       }`}
     >
       <div className="mx-auto max-w-7xl px-5 md:px-10">
-        <div className="flex items-center justify-between gap-4 py-4 md:py-5">
+        <div className="flex items-center justify-between gap-4 py-4">
           <Link
             href="/"
-            className={`text-xs font-semibold uppercase tracking-[0.28em] transition sm:text-sm sm:tracking-[0.35em] ${
-              useSolidStyle ? "text-black" : "text-white"
-            }`}
+            className="text-xs font-semibold uppercase tracking-[0.28em] transition hover:opacity-70 sm:text-sm sm:tracking-[0.32em]"
           >
             R.ArtPhotographie
           </Link>
 
-          <nav aria-label="Hauptnavigation" className="hidden items-center gap-8 md:flex">
+          <nav
+            aria-label="Hauptnavigation"
+            className="hidden items-center gap-7 lg:flex"
+          >
             {mainNavItems.map((item) => {
               const isActive = pathname === item.href;
 
@@ -81,13 +79,7 @@ export default function Navbar() {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={`text-sm transition ${
-                    useSolidStyle
-                      ? isActive
-                        ? "text-black"
-                        : "text-black/75 hover:text-black"
-                      : isActive
-                      ? "text-white"
-                      : "text-white/85 hover:text-white"
+                    isActive ? "text-black" : "text-black/75 hover:text-black"
                   }`}
                 >
                   {item.label}
@@ -97,16 +89,11 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Anrufen: für lokale Dienstleistungen der meistgenutzte Kontaktweg. */}
             {phoneHref && (
               <a
                 href={phoneHref}
                 aria-label={`Anrufen: ${phoneDisplay}`}
-                className={`hidden items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition sm:inline-flex ${
-                  useSolidStyle
-                    ? "border-black/25 text-black hover:border-black/50"
-                    : "border-white/45 text-white hover:border-white"
-                }`}
+                className="hidden items-center gap-2 rounded-full border border-black/25 px-4 py-2 text-sm font-medium transition hover:border-black/50 sm:inline-flex"
               >
                 <svg
                   aria-hidden="true"
@@ -122,7 +109,7 @@ export default function Navbar() {
               </a>
             )}
 
-            {/* Der auffälligste Button muss zur Anfrage führen, nicht zu Instagram. */}
+            {/* Der auffälligste Button führt zur Anfrage, nicht zu Instagram. */}
             <Link
               href="/kontakt"
               className="hidden rounded-full bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-black/85 sm:inline-flex"
@@ -134,23 +121,19 @@ export default function Navbar() {
               type="button"
               aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
               aria-expanded={menuOpen}
-              onClick={toggleMenu}
-              className={`relative z-10 flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border transition md:hidden ${
-                useSolidStyle
-                  ? "border-black/20 bg-black/[0.04]"
-                  : "border-white/30 bg-black/15"
-              }`}
+              onClick={() => setMenuOpen((open) => !open)}
+              className="relative z-10 flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border border-black/20 bg-black/[0.04] transition lg:hidden"
             >
               <span className="flex w-4 flex-col gap-1.5">
                 <span
-                  className={`h-px w-full transition ${
-                    useSolidStyle ? "bg-black" : "bg-white"
-                  } ${menuOpen ? "translate-y-[3px] rotate-45" : ""}`}
+                  className={`h-px w-full bg-black transition ${
+                    menuOpen ? "translate-y-[3px] rotate-45" : ""
+                  }`}
                 />
                 <span
-                  className={`h-px w-full transition ${
-                    useSolidStyle ? "bg-black" : "bg-white"
-                  } ${menuOpen ? "-translate-y-[3px] -rotate-45" : ""}`}
+                  className={`h-px w-full bg-black transition ${
+                    menuOpen ? "-translate-y-[3px] -rotate-45" : ""
+                  }`}
                 />
               </span>
             </button>
@@ -159,7 +142,7 @@ export default function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
+        <div className="fixed inset-0 z-40 lg:hidden">
           <button
             type="button"
             aria-label="Menü schließen"
@@ -169,14 +152,14 @@ export default function Navbar() {
 
           <nav
             aria-label="Mobile Navigation"
-            className="fixed inset-x-4 top-24 z-50 flex flex-col overflow-hidden rounded-xl border border-black/10 bg-[#e7dfd3] p-4 text-black shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
+            className="fixed inset-x-4 top-20 z-50 flex flex-col overflow-hidden rounded-xl border border-black/10 bg-[#e7dfd3] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
           >
             {mainNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={closeMenu}
-                className="border-b border-black/8 py-4 text-[0.95rem] uppercase tracking-[0.22em] text-black/85 transition hover:text-black"
+                className="border-b border-black/8 py-4 text-[0.95rem] uppercase tracking-[0.2em] text-black/85 transition hover:text-black"
               >
                 {item.label}
               </Link>
@@ -194,7 +177,7 @@ export default function Navbar() {
               <a
                 href={phoneHref}
                 onClick={closeMenu}
-                className="mt-3 inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 px-6 text-sm font-medium text-black"
+                className="mt-3 inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 px-6 text-sm font-medium"
               >
                 {phoneDisplay} anrufen
               </a>
