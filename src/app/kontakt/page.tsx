@@ -4,7 +4,7 @@ import PartnersSection from "@/components/sections/PartnersSection";
 import { getContactPartners } from "@/sanity/queries";
 
 export const metadata: Metadata = {
-  title: "Kontakt & Shooting anfragen | R.ArtPhotographie",
+  title: "Kontakt & Shooting anfragen",
   description:
     "Fotografin in Kaufbeuren kontaktieren: Portraitshooting, Hochzeit im Allgäu, Familie, Babybauch oder Newborn bei R.ArtPhotographie anfragen.",
   alternates: { canonical: "/kontakt" },

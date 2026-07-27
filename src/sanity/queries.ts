@@ -175,7 +175,10 @@ export async function getGalleryImages() {
       {},
       { next: { revalidate: 300 } }
     );
-  } catch {
+  } catch (error) {
+    // Ohne Log verschwindet ein Sanity-Ausfall spurlos: Partner und
+    // Aktionsbanner waeren einfach weg, ohne jedes Signal.
+    console.error("[sanity] Abfrage fehlgeschlagen:", error);
     return [];
   }
 }
@@ -188,12 +191,18 @@ export async function getActivePromotions() {
   try {
     const freshClient = sanityClient.withConfig({ useCdn: false });
 
+    // Aktionen aendern sich selten. "no-store" hat die gesamte Route ins
+    // dynamische Rendering gezwungen (kein CDN-Cache, Sanity-Roundtrip pro
+    // Aufruf). 5 Minuten ISR reichen voellig.
     return await freshClient.fetch<SanityPromotion[]>(
       activePromotionsQuery,
       {},
-      { cache: "no-store" }
+      { next: { revalidate: 300 } }
     );
-  } catch {
+  } catch (error) {
+    // Ohne Log verschwindet ein Sanity-Ausfall spurlos: Partner und
+    // Aktionsbanner waeren einfach weg, ohne jedes Signal.
+    console.error("[sanity] Abfrage fehlgeschlagen:", error);
     return [];
   }
 }
@@ -206,12 +215,16 @@ async function fetchPartners(query: string) {
   try {
     const freshClient = sanityClient.withConfig({ useCdn: false });
 
+    // Partnerliste aendert sich hoechstens monatlich.
     return await freshClient.fetch<SanityPartner[]>(
       query,
       {},
-      { cache: "no-store" }
+      { next: { revalidate: 3600 } }
     );
-  } catch {
+  } catch (error) {
+    // Ohne Log verschwindet ein Sanity-Ausfall spurlos: Partner und
+    // Aktionsbanner waeren einfach weg, ohne jedes Signal.
+    console.error("[sanity] Abfrage fehlgeschlagen:", error);
     return [];
   }
 }

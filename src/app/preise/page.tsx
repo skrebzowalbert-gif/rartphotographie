@@ -183,7 +183,7 @@ function PriceCard({
         </p>
 
         {vehicleAddon && (
-          <p className="mt-5 border-t border-black/10 pt-4 text-sm leading-7 text-black/58">
+          <p className="mt-5 border-t border-black/10 pt-4 text-sm leading-7 text-black/65">
             Optional kann eure fotografische Begleitung mit einem Fahrzeug über
             unseren externen Partner ergänzt werden.
           </p>
@@ -193,14 +193,13 @@ function PriceCard({
           <Link
             href={`/kontakt?shooting=${encodeURIComponent(requestValue)}`}
             className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
-            style={{ color: "#ffffff" }}
           >
             {buttonLabel}
           </Link>
 
           {vehicleAddon && (
             <div>
-              <p className="mb-2 text-center text-xs leading-5 text-black/50">
+              <p className="mb-2 text-center text-xs leading-5 text-black/65">
                 Fahrzeugbuchung separat über externen Partner.
               </p>
               <Link
@@ -226,7 +225,7 @@ export default async function PreisePage() {
     <main className="bg-[#e7dfd3] pb-24 text-black">
       <section className="px-6 md:px-10">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Portrait
           </p>
 
@@ -250,7 +249,7 @@ export default async function PreisePage() {
 
       <section className="mt-24 px-6 md:px-10">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Hochzeiten
           </p>
 

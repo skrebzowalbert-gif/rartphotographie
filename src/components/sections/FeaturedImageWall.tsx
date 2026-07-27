@@ -197,7 +197,7 @@ export default function FeaturedImageWall() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Ausgewählte Arbeiten
             </p>
             <h2 className="mt-5 max-w-3xl text-4xl font-light leading-[1] md:text-6xl">
@@ -214,7 +214,6 @@ export default function FeaturedImageWall() {
             <Link
               href="/galerie"
               className="mt-7 inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
             >
               Galerie ansehen
             </Link>

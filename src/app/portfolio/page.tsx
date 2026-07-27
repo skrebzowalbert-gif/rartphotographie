@@ -54,7 +54,7 @@ export default function PortfolioPage() {
   return (
     <main className="bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
       <section className="mx-auto max-w-7xl">
-        <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+        <p className="text-sm uppercase tracking-[0.32em] text-black/65">
           Portfolio
         </p>
 
@@ -108,7 +108,6 @@ export default function PortfolioPage() {
                 <Link
                   href={group.href}
                   className="mt-6 inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/28 bg-black/22 px-5 py-3 text-sm font-medium text-white transition hover:border-white/46 hover:bg-white/12"
-                  style={{ color: "#ffffff" }}
                 >
                   Bereich öffnen
                 </Link>
@@ -120,7 +119,7 @@ export default function PortfolioPage() {
 
       <section className="mx-auto mt-20 max-w-7xl">
         <div className="rounded-xl border border-black/8 bg-white/22 p-8 md:p-10">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/42">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Weitere Bereiche
           </p>
 
@@ -150,7 +149,6 @@ export default function PortfolioPage() {
             <Link
               href="/preise"
               className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
             >
               Alle Preise und Pakete ansehen
             </Link>

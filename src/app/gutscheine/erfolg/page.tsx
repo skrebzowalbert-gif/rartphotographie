@@ -55,7 +55,7 @@ export default async function GutscheinErfolgPage({
   return (
     <main className="bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
       <section className="mx-auto max-w-4xl text-center">
-        <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+        <p className="text-sm uppercase tracking-[0.32em] text-black/65">
           Gutschein
         </p>
         <h1 className="mt-5 text-4xl font-light leading-[1] md:text-6xl">
@@ -70,7 +70,7 @@ export default async function GutscheinErfolgPage({
               hochwertig vorbereitet und versendet. Falls noch Details offen
               sind, melden wir uns bei dir.
             </p>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-black/58">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-black/65">
               Du bekommst eine Bestätigung per E-Mail. Der Gutschein wird
               anschließend vorbereitet.
             </p>
@@ -87,7 +87,6 @@ export default async function GutscheinErfolgPage({
           <Link
             href={isPaymentConfirmed ? "/" : "/gutscheine#checkout"}
             className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
-            style={{ color: "#ffffff" }}
           >
             {isPaymentConfirmed ? "Zur Startseite" : "Gutschein-Kauf erneut starten"}
           </Link>

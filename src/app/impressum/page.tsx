@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { publicContactEmail } from "@/lib/site";
+import { phoneDisplay, publicContactEmail } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Impressum",
@@ -11,7 +11,7 @@ export default function ImpressumPage() {
   return (
     <main className="min-h-screen bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
       <div className="mx-auto max-w-4xl">
-        <p className="text-sm uppercase tracking-[0.35em] text-black/40">
+        <p className="text-sm uppercase tracking-[0.35em] text-black/65">
           Rechtliches
         </p>
 
@@ -32,10 +32,47 @@ export default function ImpressumPage() {
           <section>
             <h2 className="text-2xl font-medium text-black">Kontakt</h2>
             <div className="mt-4">
+              {/*
+                § 5 Abs. 1 Nr. 2 TMG verlangt Angaben, die eine unmittelbare
+                Kommunikation ermöglichen. Eine Telefonnummer ist der sicherste
+                Weg, diese Anforderung zu erfüllen – und für einen lokalen
+                Dienstleister ohnehin unverzichtbar.
+              */}
+              {phoneDisplay ? (
+                <p>Telefon: {phoneDisplay}</p>
+              ) : (
+                <p className="rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+                  Hinweis für die Betreiberin: Hier fehlt die Telefonnummer.
+                  Bitte in <code>src/lib/site.ts</code> unter{" "}
+                  <code>business.phone</code> eintragen.
+                </p>
+              )}
               <p className="break-words [overflow-wrap:anywhere]">
                 E-Mail: {publicContactEmail}
               </p>
             </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-medium text-black">Umsatzsteuer</h2>
+            <p className="mt-4 rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+              Hinweis für die Betreiberin: Hier gehört die zutreffende Angabe
+              hin – entweder die Umsatzsteuer-Identifikationsnummer nach § 27 a
+              UStG oder der Hinweis auf die Kleinunternehmerregelung: „Gemäß
+              § 19 UStG wird keine Umsatzsteuer berechnet.&ldquo;
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-medium text-black">
+              Verbraucherstreitbeilegung
+            </h2>
+            <p className="mt-4">
+              Die Europäische Kommission stellt eine Plattform zur
+              Online-Streitbeilegung bereit. Wir sind nicht verpflichtet und
+              nicht bereit, an einem Streitbeilegungsverfahren vor einer
+              Verbraucherschlichtungsstelle teilzunehmen.
+            </p>
           </section>
 
           <section>

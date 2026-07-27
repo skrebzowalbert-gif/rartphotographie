@@ -9,23 +9,35 @@ import ServicesAccordion from "@/components/sections/ServicesAccordion";
 import PromotionBar from "@/components/sections/PromotionBar";
 import PartnersSection from "@/components/sections/PartnersSection";
 import { getActivePromotions, getHomepagePartners } from "@/sanity/queries";
+import { buildFaqJsonLd, jsonLdScript } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
+  // Der Root-Title greift hier bewusst ohne Template, damit das wichtigste
+  // Keyword ganz vorne steht.
+  title: {
+    absolute: "Fotograf Kaufbeuren – Portrait, Hochzeit & Familie | R.ArtPhotographie",
+  },
   description:
-    "Professionelle Fotografin in Kaufbeuren & Allgäu für Portraits, Hochzeiten, Familie, Babybauch und Newborn. 5,0 Google Bewertung · 47 Rezensionen.",
+    "Fotograf in Kaufbeuren für Portrait, Hochzeit, Familie, Babybauch und Newborn. Feste Preise ab 200 €, persönliche Begleitung. Jetzt Shooting anfragen.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
+    title: "Fotograf Kaufbeuren – Portrait, Hochzeit & Familie",
     description:
-      "Professionelle Fotografin in Kaufbeuren & Allgäu für Portraits, Hochzeiten, Familie, Babybauch und Newborn.",
+      "Fotograf in Kaufbeuren und im Allgäu für Portrait, Hochzeit, Familie, Babybauch und Newborn. Feste Preise ab 200 €.",
     url: "/",
   },
 };
 
-export const revalidate = 0;
+// Die Startseite ist bis auf Aktionsbanner und Partnerliste statisch.
+// revalidate = 0 hat sie bei JEDEM Aufruf neu rendern lassen (kein CDN-Cache).
+export const revalidate = 600;
 
 const faqItems = [
+  {
+    question: "Was kostet ein Fotoshooting in Kaufbeuren?",
+    answer:
+      "Ein Portraitshooting startet bei 200 €, ein Familienshooting bei 250 €. Hochzeiten beginnen bei 350 € für das Mini-Paket und reichen bis 1.200 € für die ganztägige Begleitung. Alle Preise stehen offen auf der Preis-Seite, es gibt keine versteckten Kosten.",
+  },
   {
     question: "Muss ich vor der Kamera Erfahrung haben?",
     answer:
@@ -34,7 +46,12 @@ const faqItems = [
   {
     question: "Wo finden Shootings statt?",
     answer:
-      "In Kaufbeuren, im Allgäu, in Kempten, Marktoberdorf, Füssen und nach Absprache auch in München oder an deinem Wunschort.",
+      "In Kaufbeuren, Neugablonz, Marktoberdorf, Buchloe, Biessenhofen, Kempten, Füssen und im gesamten Ostallgäu. Nach Absprache auch in München oder an deinem Wunschort.",
+  },
+  {
+    question: "Wie schnell bekomme ich eine Antwort auf meine Anfrage?",
+    answer:
+      "In der Regel innerhalb von 24 Stunden. Du bekommst sofort nach dem Absenden eine Bestätigung per E-Mail, danach meldet sich Regina persönlich.",
   },
   {
     question: "Wie lange dauert die Bildbearbeitung?",
@@ -67,6 +84,7 @@ export default async function Home() {
 
   return (
     <main className="bg-[#e7dfd3] text-black">
+      <script {...jsonLdScript(buildFaqJsonLd(faqItems))} />
       <PromotionBar promotion={activePromotion} />
       <HeroSlider />
 
@@ -87,7 +105,7 @@ export default async function Home() {
         <div className="mx-auto max-w-7xl border-y border-black/10 py-16 md:py-24">
           <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
             <div>
-              <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+              <p className="text-sm uppercase tracking-[0.32em] text-black/65">
                 FAQ
               </p>
               <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl">
@@ -119,7 +137,6 @@ export default async function Home() {
             <Link
               href="/kontakt"
               className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
             >
               Shooting anfragen
             </Link>

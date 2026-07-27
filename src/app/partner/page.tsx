@@ -4,7 +4,7 @@ import PartnersSection from "@/components/sections/PartnersSection";
 import { getActivePartners } from "@/sanity/queries";
 
 export const metadata: Metadata = {
-  title: "Partner rund um Hochzeit & Shooting | R.ArtPhotographie",
+  title: "Partner rund um Hochzeit & Shooting",
   description:
     "Ausgewählte Partner von R.ArtPhotographie rund um Hochzeit, Locations, Floristik, Make-up, Video, Musik und besondere Momente in Kaufbeuren und im Allgäu.",
   alternates: { canonical: "/partner" },
@@ -23,7 +23,7 @@ export default async function PartnerPage() {
     <main className="bg-[#e7dfd3] text-black">
       <section className="px-6 pb-10 md:px-10">
         <div className="mx-auto max-w-5xl text-center">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Netzwerk
           </p>
           <h1 className="mt-4 text-4xl font-light leading-tight md:text-6xl">
@@ -52,7 +52,6 @@ export default async function PartnerPage() {
             <Link
               href="/kontakt"
               className="mt-8 inline-flex min-h-[52px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
             >
               Anfrage senden
             </Link>

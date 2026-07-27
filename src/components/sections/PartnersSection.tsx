@@ -56,7 +56,7 @@ export default function PartnersSection({
     >
       <div className="mx-auto max-w-7xl border-y border-black/10 py-10 md:py-12">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm uppercase tracking-[0.34em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.34em] text-black/65">
             {eyebrow}
           </p>
           <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
@@ -93,7 +93,7 @@ export default function PartnersSection({
             {featuredPartner && (
               <article className="relative mb-8 border border-black/35 bg-transparent px-5 py-5 md:px-7 md:py-6">
                 <div className="absolute right-0 top-0 translate-y-[-1px]">
-                  <span className="inline-flex rounded-full border border-black/15 px-3 py-1 text-xs text-black/58">
+                  <span className="inline-flex rounded-full border border-black/15 px-3 py-1 text-xs text-black/65">
                     {featuredPartner.isClosePartner
                       ? "Engster Partner"
                       : "Empfohlen"}
@@ -118,7 +118,7 @@ export default function PartnersSection({
                       <h3 className="text-xl font-medium leading-tight md:text-2xl">
                         {featuredPartner.name}
                       </h3>
-                      <p className="text-xs uppercase tracking-[0.22em] text-black/42">
+                      <p className="text-xs uppercase tracking-[0.22em] text-black/65">
                         {getPartnerCategoryLabel(featuredPartner.category)}
                       </p>
                     </div>
@@ -167,7 +167,7 @@ export default function PartnersSection({
                       )}
 
                       <div>
-                        <p className="text-xs uppercase tracking-[0.24em] text-black/40">
+                        <p className="text-xs uppercase tracking-[0.24em] text-black/65">
                           {getPartnerCategoryLabel(partner.category)}
                         </p>
                         <h3 className="mt-2 text-lg font-medium leading-tight">
@@ -197,7 +197,7 @@ export default function PartnersSection({
               </div>
             )}
 
-            <p className="mt-7 border-t border-black/10 pt-5 text-xs leading-6 text-black/45">
+            <p className="mt-7 border-t border-black/10 pt-5 text-xs leading-6 text-black/65">
               Externe Leistungen werden direkt über den jeweiligen Partner
               angeboten. Es gelten die Bedingungen des jeweiligen Anbieters.
             </p>

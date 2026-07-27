@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { googleReviews } from "@/lib/site";
 
 const HERO_IMAGES = [
   {
@@ -83,7 +84,7 @@ export default function HeroSlider() {
         <div className="mx-auto w-full max-w-7xl px-6 md:px-10">
           <div className="max-w-[34rem] md:max-w-2xl">
 
-            <p className="text-sm uppercase tracking-[0.3em] text-white/70">
+            <p className="text-sm uppercase tracking-[0.3em] text-white/85">
               R.ArtPhotographie
             </p>
 
@@ -122,11 +123,23 @@ export default function HeroSlider() {
               </Link>
             </div>
 
-            <div className="mt-5 space-y-1.5 text-[0.82rem] leading-5 text-white/76 sm:flex sm:flex-wrap sm:gap-x-4 sm:space-y-0 md:mt-6 md:text-sm">
-              <span className="block">
-                ★ 5,0 Google Bewertung · 47 Rezensionen · Kaufbeuren & Allgäu
-              </span>
-            </div>
+            {/*
+              Nur anzeigen, wenn eine bei Google öffentlich nachprüfbare Zahl
+              hinterlegt ist. Vorher standen im Hero "47 Rezensionen" und
+              wenige Sektionen tiefer "46 Bewertungen".
+            */}
+            {googleReviews && (
+              <div className="mt-5 space-y-1.5 text-[0.82rem] leading-5 text-white/85 sm:flex sm:flex-wrap sm:gap-x-4 sm:space-y-0 md:mt-6 md:text-sm">
+                <span className="block">
+                  ★{" "}
+                  {googleReviews.rating.toLocaleString("de-DE", {
+                    minimumFractionDigits: 1,
+                  })}{" "}
+                  bei Google · {googleReviews.count} Bewertungen · Kaufbeuren
+                  &amp; Allgäu
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

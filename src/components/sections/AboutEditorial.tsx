@@ -69,7 +69,7 @@ export default function AboutEditorial() {
     <section className="overflow-x-hidden bg-[#faf8f3] px-6 py-24 text-black md:px-10 md:py-32">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Über mich
           </p>
 
@@ -113,7 +113,6 @@ export default function AboutEditorial() {
           <Link
             href="/kontakt"
             className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
-            style={{ color: "#ffffff" }}
           >
             Shooting anfragen
           </Link>

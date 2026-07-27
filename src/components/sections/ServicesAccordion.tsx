@@ -13,7 +13,7 @@ const services: Service[] = [
   {
     title: "Portrait",
     text: "Du musst vor der Kamera nichts können. Ich leite dich so an, dass Portraits entstehen, in denen du dich wiedererkennst.",
-    href: "/galerie",
+    href: "/preise#portrait",
     image: "/images/portrait/portrait-2.jpg",
     alt: "Fotografin Kaufbeuren Portraitshooting R.ArtPhotographie",
   },
@@ -27,7 +27,7 @@ const services: Service[] = [
   {
     title: "Hochzeiten",
     text: "Euer Tag wird aufmerksam begleitet, ohne ihn zu inszenieren. Wichtig sind Bilder, die sich nach euch anfühlen.",
-    href: "/galerie",
+    href: "/preise#hochzeit-mini",
     image: "/images/weddings/wedding-3.jpg",
     alt: "Hochzeitsfotografin Allgäu R.ArtPhotographie",
   },
@@ -51,7 +51,7 @@ export default function ServicesAccordion() {
   return (
     <section className="px-6 py-24 md:px-10 md:py-28">
       <div className="mx-auto max-w-7xl">
-        <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+        <p className="text-sm uppercase tracking-[0.32em] text-black/65">
           Leistungen
         </p>
 
@@ -84,7 +84,7 @@ export default function ServicesAccordion() {
                 <div className="pointer-events-none absolute inset-0 bg-black/8 opacity-100 transition duration-700 group-hover/service:opacity-0 group-focus-within/service:opacity-0 motion-reduce:transition-none" />
 
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7 lg:p-6 xl:p-8">
-                  <p className="text-xs uppercase tracking-[0.28em] text-white/66">
+                  <p className="text-xs uppercase tracking-[0.28em] text-white/80">
                     R.ArtPhotographie
                   </p>
 

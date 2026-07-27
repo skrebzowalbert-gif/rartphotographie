@@ -7,7 +7,7 @@ import { getVoucherDiscountPromotion } from "@/lib/promotions";
 import { getActivePromotions } from "@/sanity/queries";
 
 export const metadata: Metadata = {
-  title: "Wertgutschein Kaufbeuren kaufen | R.ArtPhotographie",
+  title: "Wertgutschein Kaufbeuren kaufen",
   description:
     "Wertgutschein ab 50 € für Fotografie bei R.ArtPhotographie in Kaufbeuren und im Allgäu kaufen. Sicher bezahlen und hochwertig vorbereiten lassen.",
   alternates: { canonical: "/gutscheine" },
@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 0;
+// Gutscheinseite haengt nur an der Aktionsliste - ISR statt Rendern pro Aufruf.
+export const revalidate = 300;
 
 export default async function GutscheinePage() {
   const activePromotions = await getActivePromotions();
@@ -33,7 +34,7 @@ export default async function GutscheinePage() {
       <section className="px-6 pb-4 md:px-10 md:pb-8">
         <div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-end">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Gutscheine
             </p>
             <h1 className="mt-4 max-w-4xl text-4xl font-light leading-[0.98] md:text-6xl">
@@ -53,7 +54,6 @@ export default async function GutscheinePage() {
               <Link
                 href="#checkout"
                 className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
               >
                 Wertgutschein kaufen
               </Link>
@@ -68,7 +68,7 @@ export default async function GutscheinePage() {
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div className="min-w-0">
                 {promoBadge && (
-                  <p className="text-xs uppercase tracking-[0.28em] text-black/40">
+                  <p className="text-xs uppercase tracking-[0.28em] text-black/65">
                     {promoBadge}
                   </p>
                 )}
@@ -77,7 +77,7 @@ export default async function GutscheinePage() {
                     {promoText}
                   </p>
                 )}
-                <p className="mt-2 text-sm leading-6 text-black/54">
+                <p className="mt-2 text-sm leading-6 text-black/65">
                   Der Rabatt wird im nächsten Schritt automatisch
                   berücksichtigt.
                 </p>

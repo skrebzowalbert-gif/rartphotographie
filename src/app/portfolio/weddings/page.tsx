@@ -43,7 +43,7 @@ export default function WeddingsPage() {
     <main className="min-h-screen bg-[#e7dfd3] text-black">
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto max-w-5xl">
-          <p className="text-sm uppercase tracking-[0.35em] text-black/40">
+          <p className="text-sm uppercase tracking-[0.35em] text-black/65">
             Portfolio / Hochzeiten
           </p>
           <h1 className="mt-6 text-4xl font-light md:text-6xl">

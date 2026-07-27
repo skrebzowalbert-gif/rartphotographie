@@ -143,7 +143,7 @@ export default async function GaleriePage() {
     <main className="bg-[#e7dfd3] pb-24 text-black">
       <section className="px-6 pb-12 md:px-10 md:pb-16">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Galerie
           </p>
 
@@ -166,7 +166,6 @@ export default async function GaleriePage() {
                 <Link
                   href="/kontakt"
                   className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
-                  style={{ color: "#ffffff" }}
                 >
                   Shooting anfragen
                 </Link>
@@ -188,7 +187,7 @@ export default async function GaleriePage() {
       <section className="px-6 pt-10 md:px-10 md:pt-14">
         <div className="mx-auto max-w-7xl border-t border-black/10 pt-12 md:flex md:items-end md:justify-between md:gap-10 md:pt-16">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Anfrage
             </p>
             <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
@@ -204,7 +203,6 @@ export default async function GaleriePage() {
             <Link
               href="/kontakt"
               className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
             >
               Shooting anfragen
             </Link>

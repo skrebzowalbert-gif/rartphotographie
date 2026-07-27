@@ -37,7 +37,7 @@ export default function VoucherSection({
         {/* Inhalt auf normaler Breite */}
         <div className="relative z-10 flex min-h-[560px] items-center px-6 py-10 md:min-h-[720px] md:px-12 md:py-16">
           <div className="ml-0 max-w-[560px] md:ml-[6vw]">
-            <p className="text-sm uppercase tracking-[0.34em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.34em] text-black/65">
               Gutscheine
             </p>
 
@@ -105,7 +105,6 @@ export default function VoucherSection({
               <Link
                 href="/gutscheine#checkout"
                 className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-6 py-3 text-center text-sm font-medium text-white transition hover:opacity-90 md:min-h-[56px] md:px-8 md:py-4"
-                style={{ color: "#ffffff" }}
               >
                 Wertgutschein kaufen
               </Link>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { reviews } from "@/data/reviews";
+import { googleReviews } from "@/lib/site";
 
 function Stars({ count }: { count: number }) {
   return <div className="tracking-[0.22em] text-[#b8892f]">{"★".repeat(count)}</div>;
@@ -18,7 +19,7 @@ export default function ReviewsSection() {
       <div className="relative mx-auto max-w-[1500px]">
         <div className="grid gap-12 xl:grid-cols-[0.72fr_1.28fr] xl:items-end">
           <div>
-            <p className="text-sm uppercase tracking-[0.35em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.35em] text-black/65">
               Bewertungen
             </p>
 
@@ -30,13 +31,13 @@ export default function ReviewsSection() {
 
             <div className="mt-8 flex items-end gap-5">
               <div className="text-6xl font-light leading-none">
-                {reviews.rating.toFixed(1)}
+                {(googleReviews?.rating ?? reviews.rating).toFixed(1)}
               </div>
 
               <div className="pb-1">
                 <Stars count={5} />
-                <p className="mt-2 text-sm text-black/55">
-                  {reviews.total} Bewertungen · {reviews.sourceLabel}
+                <p className="mt-2 text-sm text-black/65">
+                  {googleReviews?.count ?? reviews.total} Bewertungen · {reviews.sourceLabel}
                 </p>
               </div>
             </div>
@@ -72,7 +73,7 @@ export default function ReviewsSection() {
                 <p className="mt-6 text-[1.5rem] font-light leading-[1.45] md:text-[1.9rem]">
                   “{featured.text}”
                 </p>
-                <p className="mt-6 text-sm uppercase tracking-[0.28em] text-black/42">
+                <p className="mt-6 text-sm uppercase tracking-[0.28em] text-black/65">
                   {featured.name}
                 </p>
               </div>
@@ -85,7 +86,7 @@ export default function ReviewsSection() {
                   <p className="mt-4 text-base leading-8 text-black/65">
                     “{item.text}”
                   </p>
-                  <p className="mt-4 text-xs uppercase tracking-[0.28em] text-black/42">
+                  <p className="mt-4 text-xs uppercase tracking-[0.28em] text-black/65">
                     {item.name}
                   </p>
                 </article>
@@ -101,7 +102,7 @@ export default function ReviewsSection() {
               <p className="mt-4 text-base leading-8 text-black/65">
                 “{item.text}”
               </p>
-              <p className="mt-4 text-xs uppercase tracking-[0.28em] text-black/42">
+              <p className="mt-4 text-xs uppercase tracking-[0.28em] text-black/65">
                 {item.name}
               </p>
             </article>

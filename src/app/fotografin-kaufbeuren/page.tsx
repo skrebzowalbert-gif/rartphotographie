@@ -1,18 +1,25 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import {
+  buildBreadcrumbJsonLd,
+  buildServiceJsonLd,
+  jsonLdScript,
+} from "@/lib/schema";
+import { phoneDisplay, phoneHref } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title:
-    "Fotografin Kaufbeuren | Portrait, Hochzeit & Familie | R.ArtPhotographie",
+  // Bewusst NICHT "Fotograf Kaufbeuren": darauf zielt bereits die Startseite.
+  // Zwei Seiten mit demselben Keyword konkurrieren gegeneinander, statt sich
+  // zu ergänzen. Diese Seite bedient die Shooting-orientierte Suche.
+  title: "Fotoshooting Kaufbeuren – Ablauf, Orte & Termine",
   description:
-    "R.ArtPhotographie ist deine Fotografin in Kaufbeuren für Portraitshootings, Hochzeiten, Familienfotos, Babybauch und Newborn. Jetzt Shooting anfragen.",
+    "Fotoshooting in Kaufbeuren: Portrait, Hochzeit, Familie, Babybauch und Newborn. Shootings in Kaufbeuren, Neugablonz, Marktoberdorf und Buchloe. Feste Preise ab 200 €.",
   alternates: { canonical: "/fotografin-kaufbeuren" },
   openGraph: {
-    title:
-      "Fotografin Kaufbeuren | Portrait, Hochzeit & Familie | R.ArtPhotographie",
+    title: "Fotograf Kaufbeuren – Portrait, Hochzeit & Familie",
     description:
-      "Portraitfotografie, Hochzeitsfotografie, Familienfotos, Babybauch und Newborn in Kaufbeuren.",
+      "Portrait, Hochzeit, Familie, Babybauch und Newborn in Kaufbeuren und im Ostallgäu.",
     url: "/fotografin-kaufbeuren",
   },
 };
@@ -39,18 +46,57 @@ const services = [
 export default function FotografinKaufbeurenPage() {
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">
+      <script
+        {...jsonLdScript(
+          buildServiceJsonLd({
+            name: "Fotograf Kaufbeuren – Portrait, Hochzeit, Familie",
+            description:
+              "Fotografie in Kaufbeuren: Portraitshootings, Hochzeitsreportagen, Familienfotos, Babybauch- und Newborn-Shootings.",
+            path: "/fotografin-kaufbeuren",
+            city: "Kaufbeuren",
+          })
+        )}
+      />
+      <script
+        {...jsonLdScript(
+          buildBreadcrumbJsonLd([
+            { name: "Fotograf Kaufbeuren", path: "/fotografin-kaufbeuren" },
+          ])
+        )}
+      />
+
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Kaufbeuren
             </p>
             <h1 className="mt-4 max-w-5xl text-4xl font-light leading-[0.98] md:text-6xl">
-              Fotografin in Kaufbeuren für Portrait, Hochzeit & Familie
+              Fotograf in Kaufbeuren für Portrait, Hochzeit &amp; Familie
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
-              ★ 5,0 Google Bewertung · 47 Rezensionen
+            <p className="mt-6 max-w-2xl text-base leading-8 text-black/75 md:text-lg">
+              Shootings in Kaufbeuren, Neugablonz, Marktoberdorf, Buchloe und im
+              gesamten Ostallgäu. Feste Preise ab 200 €, Antwort in der Regel
+              innerhalb von 24 Stunden.
             </p>
+
+            {/* Kontaktmöglichkeit direkt im ersten Bildschirm, nicht erst am Seitenende. */}
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/kontakt?shooting=Portraitshooting"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 text-sm font-medium text-white transition hover:bg-black/85"
+              >
+                Shooting anfragen
+              </Link>
+              {phoneHref && (
+                <a
+                  href={phoneHref}
+                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-7 text-sm font-medium text-black transition hover:border-black/60"
+                >
+                  {phoneDisplay} anrufen
+                </a>
+              )}
+            </div>
           </div>
 
           <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
@@ -60,7 +106,7 @@ export default function FotografinKaufbeurenPage() {
               fill
               sizes="(max-width: 1024px) 100vw, 48vw"
               className="object-cover"
-              priority
+              preload
             />
           </div>
         </div>
@@ -69,7 +115,7 @@ export default function FotografinKaufbeurenPage() {
       <section className="px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Fotografie vor Ort
             </p>
             <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
@@ -154,7 +200,6 @@ export default function FotografinKaufbeurenPage() {
               <Link
                 href="/kontakt"
                 className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
               >
                 Shooting anfragen
               </Link>
@@ -171,7 +216,7 @@ export default function FotografinKaufbeurenPage() {
 
       <section className="px-6 py-14 md:px-10 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Leistungen
           </p>
           <h2 className="mt-4 text-3xl font-light md:text-5xl">

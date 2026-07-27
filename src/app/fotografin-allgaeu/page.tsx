@@ -1,16 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import {
+  buildBreadcrumbJsonLd,
+  buildServiceJsonLd,
+  jsonLdScript,
+} from "@/lib/schema";
+import { phoneDisplay, phoneHref } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title:
-    "Fotografin Allgäu | Hochzeiten, Portraits & Familie | R.ArtPhotographie",
+  // Eigenes, hochwertiges Keyword statt Dublette zur Startseite.
+  title: "Hochzeitsfotograf Allgäu – Kempten, Füssen & Umgebung",
   description:
-    "Professionelle Fotografin im Allgäu für Hochzeiten, Portraits, Familien, Babybauch und Newborn in Kaufbeuren, Kempten, Füssen und Umgebung.",
+    "Hochzeitsfotograf im Allgäu für Standesamt, freie Trauung und Reportage. Auch Portrait, Familie und Babybauch in Kempten, Füssen, Marktoberdorf und Kaufbeuren.",
   alternates: { canonical: "/fotografin-allgaeu" },
   openGraph: {
-    title:
-      "Fotografin Allgäu | Hochzeiten, Portraits & Familie | R.ArtPhotographie",
+    title: "Fotograf Allgäu – Hochzeit, Portrait & Familie",
     description:
       "Hochzeitsfotografie, Portraits, Familie, Babybauch und Newborn im Allgäu.",
     url: "/fotografin-allgaeu",
@@ -39,18 +44,56 @@ const services = [
 export default function FotografinAllgaeuPage() {
   return (
     <main className="bg-[#e7dfd3] pb-24 text-black">
+      <script
+        {...jsonLdScript(
+          buildServiceJsonLd({
+            name: "Fotograf Allgäu – Hochzeit, Portrait, Familie",
+            description:
+              "Hochzeits- und Portraitfotografie im Allgäu: Kempten, Füssen, Marktoberdorf und Umgebung.",
+            path: "/fotografin-allgaeu",
+            city: "Allgäu",
+          })
+        )}
+      />
+      <script
+        {...jsonLdScript(
+          buildBreadcrumbJsonLd([
+            { name: "Fotograf Allgäu", path: "/fotografin-allgaeu" },
+          ])
+        )}
+      />
+
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Allgäu
             </p>
             <h1 className="mt-4 max-w-5xl text-4xl font-light leading-[0.98] md:text-6xl">
-              Fotografin im Allgäu für Hochzeiten, Portraits & Familie
+              Fotograf im Allgäu für Hochzeiten, Portraits &amp; Familie
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
-              ★ 5,0 Google Bewertung · 47 Rezensionen
+            <p className="mt-6 max-w-2xl text-base leading-8 text-black/75 md:text-lg">
+              Hochzeits- und Portraitfotografie in Kempten, Füssen,
+              Marktoberdorf und im gesamten Allgäu. Feste Preise ab 200 €,
+              Antwort in der Regel innerhalb von 24 Stunden.
             </p>
+
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/kontakt?shooting=Hochzeit"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 text-sm font-medium text-white transition hover:bg-black/85"
+              >
+                Shooting anfragen
+              </Link>
+              {phoneHref && (
+                <a
+                  href={phoneHref}
+                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-7 text-sm font-medium text-black transition hover:border-black/60"
+                >
+                  {phoneDisplay} anrufen
+                </a>
+              )}
+            </div>
           </div>
 
           <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
@@ -60,7 +103,7 @@ export default function FotografinAllgaeuPage() {
               fill
               sizes="(max-width: 1024px) 100vw, 44vw"
               className="object-cover"
-              priority
+              preload
             />
           </div>
         </div>
@@ -69,7 +112,7 @@ export default function FotografinAllgaeuPage() {
       <section className="px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
               Kaufbeuren · Kempten · Füssen
             </p>
             <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
@@ -160,7 +203,6 @@ export default function FotografinAllgaeuPage() {
               <Link
                 href="/kontakt"
                 className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
               >
                 Shooting anfragen
               </Link>
@@ -177,7 +219,7 @@ export default function FotografinAllgaeuPage() {
 
       <section className="px-6 py-14 md:px-10 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-black/65">
             Leistungen
           </p>
           <h2 className="mt-4 text-3xl font-light md:text-5xl">
