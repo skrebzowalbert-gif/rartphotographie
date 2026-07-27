@@ -176,7 +176,8 @@ export default function UeberMichPage() {
           <div className="mt-6 space-y-5 text-base leading-8 text-black/78 md:text-lg">
             <p>
               Die meisten Menschen, die zu mir kommen, sagen im Vorgespräch
-              denselben Satz: „Ich bin nicht fotogen." Fast nie stimmt das.
+              denselben Satz: &bdquo;Ich bin nicht fotogen.&ldquo; Fast nie stimmt
+              das.
               Meistens fehlt nur jemand, der sagt, wohin mit den Händen.
             </p>
             <p>
