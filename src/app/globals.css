@@ -10,71 +10,71 @@
   --foreground: #111111;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  /* Fixierte Navigation darf Anker-Ziele nicht verdecken. */
-  scroll-padding-top: 6rem;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--background);
-  color: var(--foreground);
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100vh;
-  /* Grotesk für Lauftext: deutlich besser lesbar als eine Display-Serif. */
-  font-family: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
-/* Die Display-Serif bleibt der Marke vorbehalten: Überschriften. */
-h1,
-h2,
-h3 {
-  font-family: var(--font-display), Georgia, serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-main {
-  overflow-x: hidden;
-}
-
-section,
-footer {
-  position: relative;
-  z-index: 1;
-}
-
 /*
-  Sicherheitsnetz für Buttons mit vollflächig schwarzem Hintergrund: Ohne
-  eigene Textfarbe würden sie wegen `a { color: inherit }` schwarz auf schwarz
-  stehen.
+  ALLE Element-Grundstile gehören in @layer base.
 
-  Bewusst als exakter Klassenselektor, NICHT als [class*="bg-black"]: Letzteres
-  traf auch Deckflächen wie bg-black/8 oder bg-black/30 und erzwang dort per
-  !important weiße Schrift — das brach unter anderem den Hover-Zustand der
-  Leistungskacheln.
+  Ungeschichtetes CSS gewinnt in der Kaskade gegen JEDE Cascade Layer –
+  unabhängig von der Spezifität. Tailwind v4 legt seine Utilities in
+  `@layer utilities`. Stand `a { color: inherit }` also ungeschichtet hier,
+  überschrieb es jedes `text-white` an jedem Link. Genau deshalb existierte
+  vorher der globale `!important`-Hack auf `[class*="bg-black"]`: er hat das
+  Symptom bekämpft, nicht die Ursache.
+
+  Mit @layer base gewinnen die Utility-Klassen wieder, und der Hack entfällt
+  ersatzlos.
 */
-a.bg-black,
-button.bg-black {
-  color: #ffffff;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Fixierte Navigation darf Anker-Ziele nicht verdecken. */
+    scroll-padding-top: 6rem;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--background);
+    color: var(--foreground);
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    /* Grotesk für Lauftext: besser lesbar als eine Display-Serif. */
+    font-family: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  /* Die Display-Serif bleibt der Marke vorbehalten: Überschriften. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display), Georgia, serif;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+
+  main {
+    overflow-x: hidden;
+  }
+
+  section,
+  footer {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 /* ---------- Bilderband auf der Startseite (mobil) ---------- */

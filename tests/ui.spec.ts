@@ -53,9 +53,51 @@ test.describe("mobile ui interactions", () => {
     await requestType.selectOption("Hochzeit");
     await expect(requestType).toHaveValue("Hochzeit");
 
-    // Reste aus einer fremden Vorlage dürfen nicht zurückkehren.
+    // Ohne Parameter darf die Partner-Sektion nicht erscheinen.
     await expect(page.getByText(/premium-fahrzeug/i)).toHaveCount(0);
     await expect(page.locator('select[name="voucherType"]')).toHaveCount(0);
+  });
+
+  test("every shooting type linked from other pages preselects correctly", async ({
+    page,
+  }) => {
+    // Diese Werte sendet src/app/preise/page.tsx und src/app/portfolio/**.
+    // Fehlt einer im Dropdown, verliert ausgerechnet die teuerste
+    // Produktgruppe ihre Vorauswahl.
+    const linkedValues = [
+      "Portraitshooting",
+      "Familienshooting",
+      "Babybauchshooting",
+      "Newbornshooting",
+      "Hochzeit",
+      "Hochzeit – Mini-Paket",
+      "Hochzeit – Kurzpaket",
+      "Hochzeit – Standardpaket",
+      "Hochzeit – Erweitertes Paket",
+      "Eventfotografie",
+    ];
+
+    for (const value of linkedValues) {
+      await page.goto(`/kontakt?shooting=${encodeURIComponent(value)}`);
+      await page.waitForSelector('select[name="type"]');
+      await expect(
+        page.locator('select[name="type"]'),
+        `Vorauswahl für "${value}"`
+      ).toHaveValue(value);
+    }
+  });
+
+  test("vehicle partner option appears only via the price page link", async ({
+    page,
+  }) => {
+    // Von /preise verlinkt ("Mit Premium-Fahrzeug kombinieren").
+    await page.goto("/kontakt?shooting=Hochzeit&vehicleInterest=true");
+    await page.waitForLoadState("networkidle");
+
+    const vehicle = page.locator('select[name="vehicle"]');
+    await expect(vehicle).toBeVisible();
+    await vehicle.selectOption("Audi RSQ8 weiß");
+    await expect(vehicle).toHaveValue("Audi RSQ8 weiß");
   });
 
   test("contact form links to the privacy policy", async ({ page }) => {

@@ -130,13 +130,18 @@ export default function HeroSlider() {
             */}
             {googleReviews && (
               <div className="mt-5 space-y-1.5 text-[0.82rem] leading-5 text-white/85 sm:flex sm:flex-wrap sm:gap-x-4 sm:space-y-0 md:mt-6 md:text-sm">
+                {/*
+                  Als ein String zusammengesetzt: über mehrere JSX-Textknoten
+                  verteilt fielen beim Rendern Leerzeichen weg ("46Bewertungen").
+                */}
                 <span className="block">
-                  ★{" "}
-                  {googleReviews.rating.toLocaleString("de-DE", {
-                    minimumFractionDigits: 1,
-                  })}{" "}
-                  bei Google · {googleReviews.count} Bewertungen · Kaufbeuren
-                  &amp; Allgäu
+                  {[
+                    `★ ${googleReviews.rating.toLocaleString("de-DE", {
+                      minimumFractionDigits: 1,
+                    })} bei Google`,
+                    `${googleReviews.count} Bewertungen`,
+                    "Kaufbeuren & Allgäu",
+                  ].join(" · ")}
                 </span>
               </div>
             )}

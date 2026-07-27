@@ -45,7 +45,7 @@ export default function VoucherSection({
   <span
     className="block text-[2.05rem] min-[380px]:text-[2.25rem] sm:text-[44px] md:text-[90px]"
     style={{
-      fontFamily: '"Playfair Display", serif',
+      fontFamily: "var(--font-display), Georgia, serif",
       fontWeight: 400,
       fontStyle: "italic",
       letterSpacing: "0",
@@ -57,7 +57,7 @@ export default function VoucherSection({
   <span
     className="block text-[2.05rem] min-[380px]:text-[2.25rem] sm:text-[44px] md:text-[90px]"
     style={{
-      fontFamily: '"Playfair Display", serif',
+      fontFamily: "var(--font-display), Georgia, serif",
       fontWeight: 400,
       fontStyle: "italic",
       letterSpacing: "0",
@@ -69,7 +69,7 @@ export default function VoucherSection({
   <span
     className="block text-[2.05rem] min-[380px]:text-[2.25rem] sm:text-[44px] md:text-[90px]"
     style={{
-      fontFamily: '"Playfair Display", serif',
+      fontFamily: "var(--font-display), Georgia, serif",
       fontWeight: 400,
       fontStyle: "italic",
       letterSpacing: "0",
@@ -81,7 +81,7 @@ export default function VoucherSection({
   <span
     className="block text-[2.05rem] min-[380px]:text-[2.25rem] sm:text-[44px] md:text-[90px]"
     style={{
-      fontFamily: '"Playfair Display", serif',
+      fontFamily: "var(--font-display), Georgia, serif",
       fontWeight: 400,
       fontStyle: "italic",
       letterSpacing: "0",

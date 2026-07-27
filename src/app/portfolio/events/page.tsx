@@ -79,7 +79,9 @@ export default function EventsPage() {
               <div className="relative aspect-[4/5] w-full">
                 <Image
                   src={src}
-                  alt={`Event ${index + 1}`}
+                  alt={`Eventfotografie in Kaufbeuren und im Allgäu von R.ArtPhotographie – Bild ${
+                    index + 1
+                  }`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition duration-500 group-hover:scale-[1.02]"

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { reviews } from "@/data/reviews";
-import { googleReviews } from "@/lib/site";
+import { googleBusinessProfileUrl, googleReviews } from "@/lib/site";
 
 function Stars({ count }: { count: number }) {
   return <div className="tracking-[0.22em] text-[#b8892f]">{"★".repeat(count)}</div>;
@@ -56,7 +56,7 @@ export default function ReviewsSection() {
               </Link>
 
               <a
-                href="https://www.google.com/search?q=R.ArtPhotographie+Kaufbeuren"
+                href={googleBusinessProfileUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-full border border-black/25 bg-transparent px-6 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"

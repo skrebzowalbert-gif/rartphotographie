@@ -11,15 +11,39 @@ import {
   publicContactEmail,
 } from "@/lib/site";
 
+/**
+ * Muss ALLE Werte enthalten, die von anderen Seiten per ?shooting= gesendet
+ * werden — sonst fällt die Vorauswahl still auf "" zurück und der Besucher
+ * muss erneut wählen. Betroffen wären sonst ausgerechnet die vier
+ * Hochzeitspakete, also die höchstpreisigen Produkte.
+ *
+ * Quellen der Werte: src/app/preise/page.tsx (requestValue),
+ * src/app/portfolio/**, src/components/sections/ServicesAccordion.tsx.
+ */
 const SHOOTING_TYPES = [
   "Portraitshooting",
   "Familienshooting",
   "Babybauchshooting",
   "Newbornshooting",
   "Hochzeit",
-  "Event",
+  "Hochzeit – Mini-Paket",
+  "Hochzeit – Kurzpaket",
+  "Hochzeit – Standardpaket",
+  "Hochzeit – Erweitertes Paket",
+  "Eventfotografie",
   "Gutschein",
   "Etwas anderes",
+];
+
+/**
+ * Fahrzeuge des Partners (Sportwagenvermietung Kaufbeuren). Wird nur
+ * angezeigt, wenn der Besucher über einen der "Mit Premium-Fahrzeug
+ * kombinieren"-Links von der Preisseite kommt (?vehicleInterest=true).
+ */
+const VEHICLE_OPTIONS = [
+  "Noch offen",
+  "Audi RSQ8 weiß",
+  "BMW XM Plug-in-Hybrid weiß",
 ];
 
 type FormState = {
@@ -54,10 +78,27 @@ function KontaktForm() {
   const searchParams = useSearchParams();
   const prefillType = searchParams.get("shooting") || searchParams.get("type") || "";
 
+  const hasVehicleInterest = searchParams.get("vehicleInterest") === "true";
+  const [vehicleChoice, setVehicleChoice] = useState(VEHICLE_OPTIONS[0]);
+
+  /*
+    Ausfallsicher: Ein unbekannter, plausibler Wert aus der URL wird als
+    zusätzliche Option aufgenommen, statt still verworfen zu werden. Sonst
+    genügt eine neue Paketbezeichnung auf der Preisseite, um die Vorauswahl
+    wieder unbemerkt zu zerstören. Länge begrenzt, damit die URL nicht zum
+    Einfallstor für beliebigen Text wird.
+  */
+  const safePrefill =
+    prefillType && prefillType.length <= 60 ? prefillType : "";
+  const typeOptions = SHOOTING_TYPES.includes(safePrefill)
+    ? SHOOTING_TYPES
+    : safePrefill
+    ? [safePrefill, ...SHOOTING_TYPES]
+    : SHOOTING_TYPES;
+
   const [form, setForm] = useState<FormState>({
     ...INITIAL_FORM,
-    // Nur übernehmen, wenn der Wert einer echten Option entspricht.
-    type: SHOOTING_TYPES.includes(prefillType) ? prefillType : "",
+    type: safePrefill,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>(null);
@@ -95,6 +136,9 @@ function KontaktForm() {
       message: [
         form.preferredDate ? `Wunschdatum: ${form.preferredDate}` : "",
         form.message.trim(),
+        hasVehicleInterest
+          ? `Interesse an Premium-Fahrzeug: ja\nWunschfahrzeug: ${vehicleChoice}\nHinweis: Fahrzeugbuchung separat über den Partner, nicht im Shootingpreis enthalten.`
+          : "",
       ]
         .filter(Boolean)
         .join("\n\n"),
@@ -265,7 +309,7 @@ function KontaktForm() {
                   required
                 >
                   <option value="">Bitte auswählen</option>
-                  {SHOOTING_TYPES.map((option) => (
+                  {typeOptions.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
@@ -286,6 +330,39 @@ function KontaktForm() {
                   className={inputClass}
                 />
               </div>
+
+              {/*
+                Nur sichtbar, wenn der Besucher von einem
+                "Mit Premium-Fahrzeug kombinieren"-Link der Preisseite kommt.
+              */}
+              {hasVehicleInterest && (
+                <div className="grid gap-2 rounded-md border border-black/15 bg-white/60 p-4">
+                  <p className="text-sm font-medium text-black">
+                    Premium-Fahrzeug zum Shooting
+                  </p>
+                  <p className="text-sm leading-6 text-black/70">
+                    Die Fahrzeugbuchung läuft separat über unseren Partner und
+                    ist nicht im Shootingpreis enthalten. Dein Interesse wird
+                    mit der Anfrage übermittelt.
+                  </p>
+                  <label htmlFor="vehicle" className={`mt-2 ${labelClass}`}>
+                    Wunschfahrzeug
+                  </label>
+                  <select
+                    id="vehicle"
+                    name="vehicle"
+                    value={vehicleChoice}
+                    onChange={(event) => setVehicleChoice(event.target.value)}
+                    className={inputClass}
+                  >
+                    {VEHICLE_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="grid gap-2">
                 <label htmlFor="message" className={labelClass}>
