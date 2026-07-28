@@ -97,8 +97,8 @@ export default function VoucherSection({
             </p>
 
             <p className="mt-4 max-w-[34rem] text-base leading-8 text-ink/68 md:mt-5 md:text-[18px] md:leading-9">
-              Jeder Gutschein wird auf hochwertigem Papier vorbereitet und auf
-              Wunsch per Post versendet.
+              Sofort nach dem Kauf als PDF per E-Mail – zum Ausdrucken oder
+              digital verschenken. Auf Wunsch zusätzlich per Post.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap md:mt-10 md:gap-4">

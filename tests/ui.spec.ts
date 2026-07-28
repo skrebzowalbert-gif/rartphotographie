@@ -157,6 +157,123 @@ test.describe("mobile ui interactions", () => {
 
 });
 
+test.describe("gutschein checkout", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("amount presets fill the field", async ({ page }) => {
+    await page.goto("/gutscheine");
+    await page.waitForLoadState("networkidle");
+
+    // Ohne Vorschläge orientiert sich der Käufer am Minimum von 50 €.
+    await page.getByRole("button", { name: /^200 € Portrait$/ }).click();
+    await expect(page.locator('input[name="voucherCustomAmount"]')).toHaveValue(
+      "200"
+    );
+  });
+
+  test("address is only required for postal delivery", async ({ page }) => {
+    await page.goto("/gutscheine");
+    await page.waitForLoadState("networkidle");
+
+    // Standard ist digital – dann darf keine Anschrift verlangt werden.
+    await expect(page.locator('input[name="street"]')).toHaveCount(0);
+
+    await page.getByRole("radio", { name: /Zusätzlich per Post/ }).check();
+    await expect(page.locator('input[name="street"]')).toBeVisible();
+
+    await page.getByRole("radio", { name: /Sofort per E-Mail/ }).check();
+    await expect(page.locator('input[name="street"]')).toHaveCount(0);
+  });
+
+  test("no checkout is started before the terms are confirmed", async ({
+    page,
+  }) => {
+    await page.goto("/gutscheine");
+    await page.waitForLoadState("networkidle");
+
+    let checkoutCalls = 0;
+    await page.route("**/api/checkout", async (route) => {
+      checkoutCalls += 1;
+      await route.abort();
+    });
+
+    await page.locator('input[name="voucherCustomAmount"]').fill("200");
+    await page.locator('input[name="name"]').fill("Test Person");
+    await page.locator('input[name="email"]').fill("test@example.com");
+    await page.locator('input[name="recipient"]').fill("Anna");
+
+    const terms = page.locator('input[type="checkbox"]');
+    await expect(terms).not.toBeChecked();
+
+    await page.getByRole("button", { name: /Wertgutschein kaufen/ }).click();
+    await page.waitForTimeout(400);
+
+    // Weder die native Pflichtprüfung noch die eigene darf den Kauf durchlassen.
+    expect(checkoutCalls, "Checkout-Aufrufe ohne bestätigte AGB").toBe(0);
+
+    // Mit Bestätigung wird der Kauf ausgelöst.
+    await terms.check();
+    await page.getByRole("button", { name: /Wertgutschein kaufen/ }).click();
+    await expect.poll(() => checkoutCalls).toBe(1);
+  });
+});
+
+test.describe("gutschein api", () => {
+  test("checkout rejects a purchase without accepted terms", async ({
+    request,
+  }) => {
+    const res = await request.post("/api/checkout", {
+      data: {
+        voucherCustomAmount: "200",
+        name: "Test",
+        email: "test@example.com",
+        recipient: "Anna",
+        delivery: "email",
+      },
+    });
+
+    expect(res.status()).toBe(400);
+    expect((await res.json()).error).toMatch(/Widerrufsbelehrung/i);
+  });
+
+  test("checkout requires an address only for postal delivery", async ({
+    request,
+  }) => {
+    const res = await request.post("/api/checkout", {
+      data: {
+        voucherCustomAmount: "200",
+        name: "Test",
+        email: "test@example.com",
+        recipient: "Anna",
+        delivery: "post",
+        acceptedTerms: true,
+      },
+    });
+
+    expect(res.status()).toBe(400);
+    expect((await res.json()).error).toMatch(/Postversand/i);
+  });
+
+  test("voucher pdf is not served without a paid session", async ({
+    request,
+  }) => {
+    // Ohne gültige, bezahlte Stripe-Session darf nie ein Gutschein herauskommen.
+    for (const query of ["", "?session_id=", "?session_id=cs_test_erfunden"]) {
+      const res = await request.get(`/api/gutschein/pdf${query}`);
+      expect(res.status(), `PDF-Zugriff mit "${query}"`).toBe(404);
+    }
+  });
+
+  test("stripe webhook rejects unsigned requests", async ({ request }) => {
+    const res = await request.post("/api/stripe/webhook", {
+      data: { type: "checkout.session.completed" },
+    });
+
+    // Ohne gültige Signatur darf nichts verarbeitet werden.
+    expect([400, 500]).toContain(res.status());
+  });
+});
+
 test.describe("seo essentials", () => {
   // Der teuerste Fehler der bisherigen Version: canonical zeigte auf den
   // Host ohne www, der per 307 auf www zurückleitet.

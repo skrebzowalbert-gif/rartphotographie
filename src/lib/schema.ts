@@ -231,6 +231,44 @@ export function buildServiceJsonLd(params: {
   };
 }
 
+/**
+ * Wertgutschein als Produkt.
+ *
+ * Ein Gutschein ist die einzige Position, die auf dieser Website direkt
+ * gekauft werden kann. Mit Product- und Offer-Markup kann Google Preis und
+ * Verfügbarkeit im Suchergebnis anzeigen – für Geschenksuchende, die häufig
+ * über Preisspannen suchen, der entscheidende Unterschied.
+ */
+export function buildVoucherProductJsonLd(params: {
+  lowPrice: number;
+  highPrice: number;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "Fotoshooting-Gutschein Kaufbeuren",
+    description:
+      "Wertgutschein für ein Fotoshooting bei R.ArtPhotographie in Kaufbeuren: Portrait, Familie, Babybauch, Newborn oder Hochzeit. Sofort als PDF per E-Mail, drei Jahre gültig.",
+    category: "Geschenkgutschein Fotografie",
+    url: `${siteUrl}/gutscheine`,
+    image: `${siteUrl}/images/gutschein/gutschein-main.jpg`,
+    brand: { "@type": "Brand", name: business.name },
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "EUR",
+      lowPrice: params.lowPrice,
+      highPrice: params.highPrice,
+      offerCount: 4,
+      availability: "https://schema.org/InStock",
+      // Digitaler Versand: keine Lieferzeit, keine Versandkosten.
+      itemCondition: "https://schema.org/NewCondition",
+      url: `${siteUrl}/gutscheine`,
+      seller: { "@id": businessId },
+      areaServed: areaServed.map((city) => ({ "@type": "City", name: city })),
+    },
+  };
+}
+
 /** Kleiner Helfer, damit die Ausgabe im JSX immer gleich aussieht. */
 export function jsonLdScript(data: unknown) {
   return {

@@ -29,7 +29,7 @@ const sections = [
     paragraphs: [
       "Die Darstellung der Leistungen auf dieser Website stellt kein rechtlich bindendes Angebot dar, sondern eine unverbindliche Aufforderung zur Anfrage.",
       "Eine Anfrage über das Kontaktformular ist unverbindlich und kostenfrei. Der Vertrag über ein Fotoshooting kommt erst mit der ausdrücklichen Terminbestätigung durch die Fotografin in Textform zustande.",
-      "Beim Kauf eines Wertgutscheins kommt der Vertrag mit dem Abschluss des Bezahlvorgangs zustande. Der Gutschein wird anschließend per E-Mail zugesandt.",
+      "Beim Kauf eines Wertgutscheins kommt der Vertrag mit dem Abschluss des Bezahlvorgangs zustande. Der Gutschein wird unmittelbar danach als PDF per E-Mail zugesandt und steht zusätzlich auf der Bestätigungsseite zum Download bereit. Ein Versand des gedruckten Gutscheins per Post erfolgt nur, wenn dies beim Kauf ausdrücklich gewählt wurde.",
     ],
   },
   {
@@ -43,7 +43,7 @@ const sections = [
   {
     title: "4. Wertgutscheine",
     paragraphs: [
-      "Wertgutscheine sind auf alle angebotenen Shootingarten anrechenbar und übertragbar.",
+      "Wertgutscheine sind auf alle angebotenen Shootingarten anrechenbar und übertragbar. Zum Einlösen genügt die Angabe des Gutscheincodes bei der Anfrage.",
       "Wertgutscheine sind ab Ausstellungsdatum drei Jahre gültig; die Frist beginnt mit dem Schluss des Jahres, in dem der Gutschein ausgestellt wurde (§ 195, § 199 BGB).",
       "Eine Barauszahlung von Wertgutscheinen ist ausgeschlossen. Restguthaben bleiben bis zum Ablauf der Gültigkeit erhalten.",
     ],
