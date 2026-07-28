@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import SelectedWork from "@/components/sections/SelectedWork";
+import LivingGallery from "@/components/sections/LivingGallery";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import VoucherSection from "@/components/sections/VoucherSection";
 import AboutEditorial from "@/components/sections/AboutEditorial";
@@ -94,6 +95,7 @@ export default async function Home() {
         dann der Beleg von Dritten.
       */}
       <SelectedWork />
+      <LivingGallery />
       <ServicesAccordion />
       <AboutEditorial />
 

@@ -280,6 +280,134 @@
 }
 
 /* ============================================================
+   BEWEGTE GALERIE
+   Zwei endlos laufende Bänder in Gegenrichtung, auf einer leicht
+   gekippten Ebene. Die Perspektive macht aus flachen Kacheln einen
+   Raum – das ist der Unterschied zwischen "Bilderleiste" und etwas,
+   das man sonst nirgends sieht.
+   Reines CSS: kein Slider-Skript, kein JavaScript im Bundle.
+   ============================================================ */
+.living-gallery__stage {
+  /* Weiche Kanten links und rechts: das Band wirkt endlos, statt
+     sichtbar abgeschnitten zu sein. */
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+}
+
+/*
+  Die Perspektive muss auf dem DIREKTEN Elternelement der gedrehten Kinder
+  liegen, sonst bleibt rotateY praktisch wirkungslos. Und dieses Element darf
+  kein `overflow` außer `visible` haben: laut Spezifikation erzwingt jeder
+  andere Wert `transform-style: flat` und macht die Tiefe zunichte. Genau
+  diese beiden Fehler steckten im ersten Versuch.
+*/
+.living-gallery__row {
+  perspective: 1100px;
+  perspective-origin: 50% 50%;
+}
+
+.living-gallery__row + .living-gallery__row {
+  margin-top: 1.5rem;
+}
+
+.living-gallery__track {
+  display: flex;
+  width: max-content;
+  gap: 1.5rem;
+  transform-style: preserve-3d;
+  animation: galleryDrift 70s linear infinite;
+  will-change: transform;
+}
+
+.living-gallery__track--reverse {
+  animation-name: galleryDriftReverse;
+  animation-duration: 88s;
+}
+
+/* Beim Überfahren anhalten, damit ein einzelnes Bild betrachtet werden kann. */
+.living-gallery__stage:hover .living-gallery__track,
+.living-gallery__stage:focus-within .living-gallery__track {
+  animation-play-state: paused;
+}
+
+/*
+  Die Tiefe entsteht pro Bild, nicht über das ganze Band. Eine Drehung des
+  gesamten Streifens würde ein Ende riesig und das andere winzig machen –
+  bei einer über 5000 px langen Reihe unbrauchbar. Leicht unterschiedliche
+  Winkel und Z-Abstände je Motiv erzeugen dagegen einen Raum, in dem die
+  Bilder wie Karten stehen.
+*/
+.living-gallery__item {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(190px, 23vw, 350px);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  filter: saturate(0.86) brightness(0.94);
+  transition: filter 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.living-gallery__item:nth-child(3n + 1) {
+  transform: rotateY(9deg) translateZ(-55px);
+}
+
+.living-gallery__item:nth-child(3n + 2) {
+  transform: rotateY(-7deg) translateZ(25px);
+}
+
+.living-gallery__item:nth-child(3n) {
+  transform: rotateY(5deg) translateZ(-15px);
+}
+
+/* Jedes vierte Motiv im Querformat – gleiche Formate hintereinander
+   wirken sonst wie ein Raster. */
+.living-gallery__item:nth-child(4n) {
+  aspect-ratio: 4 / 3;
+  width: clamp(240px, 30vw, 450px);
+}
+
+.living-gallery__item:hover,
+.living-gallery__item:focus-visible {
+  filter: none;
+  transform: rotateY(0deg) translateZ(90px);
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .living-gallery__track {
+    animation-duration: 400s;
+  }
+  .living-gallery__item {
+    transition: none;
+  }
+}
+
+@keyframes galleryDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes galleryDriftReverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* ============================================================
    BILDERBAND auf der Startseite (mobil)
    ============================================================ */
 .featured-mobile-wall__track {
