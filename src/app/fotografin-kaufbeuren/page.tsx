@@ -45,7 +45,7 @@ const services = [
 
 export default function FotografinKaufbeurenPage() {
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
+    <main className="bg-sand pb-24 text-black">
       <script
         {...jsonLdScript(
           buildServiceJsonLd({
@@ -205,7 +205,7 @@ export default function FotografinKaufbeurenPage() {
               </Link>
               <Link
                 href="/preise"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-ink transition hover:border-black/40 hover:bg-transparent hover:text-ink"
               >
                 Preise ansehen
               </Link>

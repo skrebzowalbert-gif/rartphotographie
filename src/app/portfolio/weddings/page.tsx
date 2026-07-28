@@ -40,7 +40,7 @@ const images = [
 
 export default function WeddingsPage() {
   return (
-    <main className="min-h-screen bg-[#e7dfd3] text-black">
+    <main className="min-h-screen bg-sand text-black">
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto max-w-5xl">
           <p className="text-sm uppercase tracking-[0.35em] text-black/65">
@@ -62,7 +62,7 @@ export default function WeddingsPage() {
             </Link>
             <Link
               href="/preise"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-3 text-sm font-semibold text-ink transition hover:border-black/40 hover:bg-transparent hover:text-ink"
             >
               Preise ansehen
             </Link>

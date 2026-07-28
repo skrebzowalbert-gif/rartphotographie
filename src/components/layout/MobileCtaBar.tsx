@@ -18,7 +18,7 @@ export default function MobileCtaBar() {
   if (pathname === "/kontakt") return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-[#e7dfd3]/97 px-4 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-sand/97 px-4 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
       <div className="flex items-center gap-3 py-3">
         <Link
           href="/kontakt"

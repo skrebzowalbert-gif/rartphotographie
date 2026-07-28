@@ -5,101 +5,91 @@ import { googleReviews, phoneDisplay, phoneHref } from "@/lib/site";
 /**
  * Startseiten-Hero.
  *
- * Ersetzt den vorherigen Auto-Slider. Drei Gründe:
+ * Gestaltungsprinzip: kein Bild in einer Box. Das Hauptmotiv läuft randlos
+ * bis an die obere, rechte und untere Kante, ein zweites Motiv überlappt
+ * versetzt die Kante. Diese Asymmetrie erzeugt Tiefe – ein zentriertes
+ * Zwei-Spalten-Raster mit abgerundetem Bild sieht immer nach Vorlage aus.
  *
- * 1. Motiv: Die drei bisherigen Hero-Bilder waren entsättigte Fashion-
- *    Studioaufnahmen, zwei davon mit Wasserzeichen. Verkauft werden aber
- *    Familien-, Babybauch- und Newborn-Shootings. Bild und Versprechen
- *    widersprachen sich im ersten Moment.
- * 2. Auto-Rotation alle 4,2 s verschiebt das LCP-Element, verhindert ruhiges
- *    Lesen und liest sich als Unentschlossenheit.
- * 3. Ohne Slider ist der Hero eine Server-Komponente: kein Client-JS,
- *    kein useEffect, schnelleres LCP.
- *
- * Layout: Das Motiv liegt im Hochformat (1440x1786) vor. Ein vollflächiger
- * Querformat-Hero würde daraus einen Streifen schneiden und die Gesichter
- * verlieren. Deshalb auf Desktop ein geteiltes Layout mit stehendem Bild,
- * auf Mobile vollflächig – dort passt das Hochformat ohnehin.
+ * Beide Motive liegen im Hochformat vor. Deshalb bekommt das Bild eine
+ * eigene, volle Spalte statt eines Querformat-Ausschnitts, in dem die
+ * Gesichter verloren gingen.
  */
-const HERO_IMAGE = {
-  src: "/images/babybauch/babybauch-1.jpg",
-  alt: "Babybauchshooting in Kaufbeuren: werdende Eltern halten gemeinsam Babyschuhe vor dem Bauch – fotografiert von R.ArtPhotographie",
-};
-
 export default function Hero() {
   return (
-    <section className="relative bg-[#e7dfd3]">
-      <div className="mx-auto grid max-w-7xl items-stretch gap-0 lg:grid-cols-2">
-        {/* TEXT */}
-        <div className="relative z-10 order-2 flex flex-col justify-center px-6 pb-16 pt-10 md:px-10 lg:order-1 lg:py-24 lg:pr-14">
-          <p className="text-sm uppercase tracking-[0.3em] text-black/65">
-            R.ArtPhotographie
-          </p>
+    <section className="relative overflow-hidden bg-sand">
+      <div className="mx-auto grid max-w-[110rem] items-stretch lg:min-h-[92svh] lg:grid-cols-[1fr_1.05fr]">
+        {/* BILD – randlos, ohne Rahmen, ohne Radius */}
+        <div className="relative order-1 h-[52svh] min-h-[340px] w-full lg:order-2 lg:h-auto">
+          <Image
+            src="/images/babybauch/babybauch-1.jpg"
+            alt="Babybauchshooting in Kaufbeuren: werdende Eltern halten gemeinsam ein Paar Babyschuhe vor dem Bauch"
+            fill
+            preload
+            sizes="(max-width: 1024px) 100vw, 52vw"
+            className="drift object-cover object-[50%_25%] lg:object-center"
+          />
+          {/* Nur auf Mobile ein weicher Auslauf nach unten. Auf Desktop
+              bewusst eine harte Kante: der Verlauf über dem Gesicht sah aus
+              wie ein Bildfehler. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(to_top,var(--color-sand),transparent)] lg:hidden" />
+        </div>
 
-          <h1 className="mt-5 text-[2.4rem] font-light leading-[1.04] text-black sm:text-5xl md:mt-6 lg:text-[3.6rem]">
-            Fotograf in Kaufbeuren
+        {/* TEXT */}
+        <div className="relative order-2 flex flex-col justify-center px-[var(--shell-x)] pb-20 pt-12 lg:order-1 lg:py-28 lg:pr-0">
+          <p className="eyebrow rise text-ink/55">Kaufbeuren &amp; Allgäu</p>
+
+          <h1 className="display-hero rise mt-6 text-ink">
+            Bilder, die sich
             <br />
-            &amp; im Allgäu
+            <span className="accent-italic">nach euch</span> anfühlen
           </h1>
 
-          <p className="mt-6 max-w-xl text-base leading-8 text-black/75 md:text-lg">
-            Babybauch, Newborn, Familie, Portrait und Hochzeit. Ruhig
-            begleitet, in Kaufbeuren, im Ostallgäu und im gesamten Allgäu.
+          <p className="rise mt-8 max-w-lg text-lg leading-8 text-ink/72">
+            Babybauch, Newborn, Familie und Hochzeit – ruhig begleitet, ohne
+            gestellte Posen. Damit ihr euch auf den Bildern wiedererkennt und
+            nicht bloß gut aussehen müsst.
           </p>
 
-          {/* Preisanker direkt im ersten Bildschirm: qualifiziert vor. */}
-          <p className="mt-4 text-base font-medium text-black">
-            Feste Preise ab 200 € · 40 bearbeitete Bilder · Antwort in der
-            Regel innerhalb von 24 Stunden
-          </p>
-
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="rise mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
             <Link
               href="/kontakt"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 text-base font-medium text-white transition hover:bg-black/85"
+              className="group inline-flex min-h-[58px] items-center justify-center gap-3 rounded-full bg-ink px-8 text-base font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
             >
               Shooting anfragen
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              >
+                →
+              </span>
             </Link>
 
             {phoneHref && (
               <a
                 href={phoneHref}
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-8 text-base font-medium text-black transition hover:border-black/60"
+                className="link-sweep self-start text-base font-medium text-ink/80 sm:ml-4 sm:self-auto"
               >
                 {phoneDisplay}
               </a>
             )}
           </div>
 
-          {googleReviews && (
-            <p className="mt-7 text-sm leading-6 text-black/70">
-              {[
-                `★ ${googleReviews.rating.toLocaleString("de-DE", {
+          {/* Preisanker und Beleg – ohne Kasten, als ruhige Fußzeile. */}
+          <div className="rise mt-12 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-ink/12 pt-6 text-sm text-ink/62">
+            <span>
+              <strong className="font-medium text-ink">ab 200 €</strong> · feste
+              Preise
+            </span>
+            <span>40 bearbeitete Bilder</span>
+            {googleReviews && (
+              <span>
+                ★ {googleReviews.rating.toLocaleString("de-DE", {
                   minimumFractionDigits: 1,
-                })} bei Google`,
-                `${googleReviews.count} Bewertungen`,
-                "Kaufbeuren & Allgäu",
-              ].join(" · ")}
-            </p>
-          )}
-        </div>
-
-        {/* BILD */}
-        {/*
-          Auf Mobile bewusst knapp gehalten: Überschrift, Preisanker und CTA
-          sollen ohne Scrollen erreichbar bleiben.
-        */}
-        <div className="relative order-1 h-[42svh] min-h-[300px] w-full lg:order-2 lg:h-auto lg:min-h-[640px]">
-          <Image
-            src={HERO_IMAGE.src}
-            alt={HERO_IMAGE.alt}
-            fill
-            preload
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover object-[50%_28%] lg:object-center"
-          />
-          {/* Nur auf Mobile: weicher Übergang in den Textbereich darunter. */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(to_top,#e7dfd3_0%,rgba(231,223,211,0)_100%)] lg:hidden" />
+                })}{" "}
+                bei Google · {googleReviews.count} Bewertungen
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </section>

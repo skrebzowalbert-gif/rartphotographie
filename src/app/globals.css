@@ -1,28 +1,30 @@
 @import "tailwindcss";
 
+/* ============================================================
+   FARBEN
+   Die Fotos tragen die Farbe. Die Oberfläche bleibt ruhig und
+   warm, mit einem echten Dunkelton für Kontrastwechsel – erst
+   dadurch bekommt eine Seite Rhythmus statt gleichförmiger
+   Kästen auf einem Farbfeld.
+   ============================================================ */
 @theme {
-  --color-sand: #e7dfd3;
-  --color-ink: #111111;
+  --color-sand: #e9e1d6;
+  --color-sand-deep: #ded3c4;
+  --color-paper: #f6f2ec;
+  --color-ink: #16120f;
+  --color-ink-soft: #2a231d;
+  --color-accent: #8a6f52;
+
+  --font-display: var(--font-playfair), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, -apple-system, sans-serif;
 }
 
 :root {
-  --background: #e7dfd3;
-  --foreground: #111111;
+  --background: #e9e1d6;
+  --foreground: #16120f;
+  --shell-x: clamp(1.25rem, 5vw, 5rem);
 }
 
-/*
-  ALLE Element-Grundstile gehören in @layer base.
-
-  Ungeschichtetes CSS gewinnt in der Kaskade gegen JEDE Cascade Layer –
-  unabhängig von der Spezifität. Tailwind v4 legt seine Utilities in
-  `@layer utilities`. Stand `a { color: inherit }` also ungeschichtet hier,
-  überschrieb es jedes `text-white` an jedem Link. Genau deshalb existierte
-  vorher der globale `!important`-Hack auf `[class*="bg-black"]`: er hat das
-  Symptom bekämpft, nicht die Ursache.
-
-  Mit @layer base gewinnen die Utility-Klassen wieder, und der Hack entfällt
-  ersatzlos.
-*/
 @layer base {
   * {
     box-sizing: border-box;
@@ -30,8 +32,9 @@
 
   html {
     scroll-behavior: smooth;
-    /* Fixierte Navigation darf Anker-Ziele nicht verdecken. */
     scroll-padding-top: 6rem;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   html,
@@ -45,15 +48,25 @@
 
   body {
     min-height: 100vh;
-    /* Grotesk für Lauftext: besser lesbar als eine Display-Serif. */
-    font-family: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.75;
   }
 
-  /* Die Display-Serif bleibt der Marke vorbehalten: Überschriften. */
   h1,
   h2,
   h3 {
-    font-family: var(--font-display), Georgia, serif;
+    font-family: var(--font-display);
+    font-weight: 400;
+    /* Display-Serifen brauchen enge Laufweite und knappe Zeilenhöhe,
+       sonst zerfallen große Größen. */
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   a {
@@ -67,18 +80,208 @@
   }
 
   main {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
-  section,
-  footer {
-    position: relative;
-    z-index: 1;
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
   }
 }
 
-/* ---------- Bilderband auf der Startseite (mobil) ---------- */
+/* ============================================================
+   BEWEGUNG
+   Scrollgesteuerte CSS-Animationen statt JavaScript. Kein
+   IntersectionObserver, kein Hydration-Aufwand, kein Layout-Shift.
+   Browser ohne Unterstützung zeigen den Inhalt einfach sofort –
+   der Inhalt steht immer im DOM, nie hinter einem JS-Gate.
+   ============================================================ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
+@keyframes unveil {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes lineGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .rise,
+    .unveil,
+    .line-grow {
+      animation-fill-mode: both;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    .rise {
+      animation-name: rise;
+    }
+
+    .unveil {
+      animation-name: unveil;
+      animation-range: entry 0% entry 70%;
+    }
+
+    .line-grow {
+      animation-name: lineGrow;
+      transform-origin: left;
+    }
+
+    /* Gestaffelte Reihenfolge innerhalb einer Gruppe. */
+    .stagger > * {
+      animation: rise both cubic-bezier(0.22, 1, 0.36, 1);
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+    .stagger > *:nth-child(2) {
+      animation-range: entry 4% entry 54%;
+    }
+    .stagger > *:nth-child(3) {
+      animation-range: entry 8% entry 58%;
+    }
+    .stagger > *:nth-child(4) {
+      animation-range: entry 12% entry 62%;
+    }
+    .stagger > *:nth-child(5) {
+      animation-range: entry 16% entry 66%;
+    }
+  }
+
+  /* Langsames Heranfahren im Hero – läuft unabhängig vom Scrollen,
+     damit der erste Eindruck lebt, ohne das LCP zu verzögern. */
+  .drift {
+    animation: drift 2400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* ============================================================
+   TYPOGRAFIE-HILFEN
+   ============================================================ */
+.display-xl {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 8.5vw, 8rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+}
+
+/* Der Hero teilt sich die Breite mit dem Bild – display-xl war dort so
+   groß, dass die Überschrift vier Zeilen brauchte und den CTA aus dem
+   ersten Bildschirm drückte. */
+.display-hero {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 4.6vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.display-lg {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5.5vw, 4.75rem);
+  line-height: 1;
+  letter-spacing: -0.028em;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* Kursive Display-Akzente – trägt die Emotion, ohne laut zu werden. */
+.accent-italic {
+  font-style: italic;
+  font-family: var(--font-display);
+}
+
+/* ============================================================
+   INTERAKTION
+   ============================================================ */
+.link-sweep {
+  position: relative;
+  display: inline-block;
+}
+
+.link-sweep::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link-sweep:hover::after,
+.link-sweep:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Bild im Rahmen langsam heranfahren – nur wo bewusst gesetzt. */
+.zoom-parent img {
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.zoom-parent:hover img {
+  transform: scale(1.04);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zoom-parent img,
+  .link-sweep::after {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   BILDERBAND auf der Startseite (mobil)
+   ============================================================ */
 .featured-mobile-wall__track {
   position: absolute;
   left: 0;

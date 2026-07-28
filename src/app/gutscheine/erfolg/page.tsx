@@ -53,7 +53,7 @@ export default async function GutscheinErfolgPage({
   const isPaymentConfirmed = Boolean(paidSession);
 
   return (
-    <main className="bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
+    <main className="bg-sand px-6 pb-24 text-black md:px-10">
       <section className="mx-auto max-w-4xl text-center">
         <p className="text-sm uppercase tracking-[0.32em] text-black/65">
           Gutschein
@@ -92,7 +92,7 @@ export default async function GutscheinErfolgPage({
           </Link>
           <Link
             href="/kontakt"
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-ink transition hover:border-black/40 hover:bg-transparent hover:text-ink"
           >
             Kontakt
           </Link>
@@ -100,7 +100,7 @@ export default async function GutscheinErfolgPage({
             href={instagramUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-ink transition hover:border-black/40 hover:bg-transparent hover:text-ink"
           >
             Instagram
           </a>

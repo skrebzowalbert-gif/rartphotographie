@@ -86,7 +86,7 @@ export default function UeberMichPage() {
   };
 
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
+    <main className="bg-sand pb-24 text-black">
       <script {...jsonLdScript(personJsonLd)} />
       <script
         {...jsonLdScript(

@@ -134,7 +134,7 @@ export default function PartnersSection({
                         href={featuredPartner.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-5 inline-flex min-h-[42px] items-center justify-center border-t border-black/14 pt-4 text-sm font-semibold text-[#1f1714] transition hover:text-black/70"
+                        className="mt-5 inline-flex min-h-[42px] items-center justify-center border-t border-black/14 pt-4 text-sm font-semibold text-ink transition hover:text-black/70"
                       >
                         Website ansehen
                       </a>
@@ -187,7 +187,7 @@ export default function PartnersSection({
                         href={partner.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-auto inline-flex border-t border-black/12 pt-4 text-sm font-semibold text-[#1f1714] transition hover:text-black/70"
+                        className="mt-auto inline-flex border-t border-black/12 pt-4 text-sm font-semibold text-ink transition hover:text-black/70"
                       >
                         Website ansehen
                       </a>

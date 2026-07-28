@@ -32,6 +32,10 @@ const content: ShootingLandingContent = {
     src: "/images/newborn/newborn-1.jpg",
     alt: "Newborn Shooting in Kaufbeuren: schlafendes Neugeborenes wird in den Händen der Eltern gehalten",
   },
+  secondaryImage: {
+    src: "/images/newborn/newborn-2.jpg",
+    alt: "Newborn-Shooting in Kaufbeuren: Neugeborenes in den ersten Lebenstagen",
+  },
   facts: [
     { label: "Dauer", value: "Etwa 3 Stunden, inklusive Pausen" },
     { label: "Preis", value: "250 €, keine versteckten Kosten" },

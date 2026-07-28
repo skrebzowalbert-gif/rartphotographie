@@ -52,7 +52,7 @@ const additionalAreas = [
 
 export default function PortfolioPage() {
   return (
-    <main className="bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
+    <main className="bg-sand px-6 pb-24 text-black md:px-10">
       <section className="mx-auto max-w-7xl">
         <p className="text-sm uppercase tracking-[0.32em] text-black/65">
           Portfolio
@@ -138,7 +138,7 @@ export default function PortfolioPage() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-sm font-semibold text-ink transition hover:border-black/40 hover:bg-transparent hover:text-ink"
               >
                 {item.title}
               </Link>

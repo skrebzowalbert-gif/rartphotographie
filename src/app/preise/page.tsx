@@ -206,7 +206,7 @@ function PriceCard({
                 href={`/kontakt?shooting=${encodeURIComponent(
                   requestValue
                 )}&vehicleInterest=true`}
-                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-center text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-center text-sm font-semibold text-ink transition hover:border-black/40 hover:bg-transparent hover:text-ink"
               >
                 Mit Premium-Fahrzeug kombinieren
               </Link>
@@ -222,7 +222,7 @@ export default async function PreisePage() {
   const weddingPartners = await getWeddingPartners();
 
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
+    <main className="bg-sand pb-24 text-black">
       <section className="px-6 md:px-10">
         <div className="mx-auto max-w-7xl">
           <p className="text-sm uppercase tracking-[0.32em] text-black/65">

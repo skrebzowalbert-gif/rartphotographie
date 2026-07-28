@@ -30,7 +30,7 @@ export default async function GutscheinePage() {
   const promoText = voucherPromotion?.text?.trim();
 
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
+    <main className="bg-sand pb-24 text-black">
       <section className="px-6 pb-4 md:px-10 md:pb-8">
         <div className="mx-auto grid max-w-7xl gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-end">
           <div>

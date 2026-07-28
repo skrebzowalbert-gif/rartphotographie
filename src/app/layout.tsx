@@ -14,14 +14,18 @@ const metadataBase = new URL(siteUrl);
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500"],
+  // Kursiv wird für die Display-Akzente gebraucht. Ohne echten Schnitt
+  // würde der Browser die aufrechte Schrift schräg stellen – bei einer
+  // Serife sofort als billig erkennbar.
+  style: ["normal", "italic"],
   display: "swap",
-  variable: "--font-display",
+  variable: "--font-playfair",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-body",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {

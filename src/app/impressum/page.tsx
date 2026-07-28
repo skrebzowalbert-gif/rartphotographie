@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <main className="min-h-screen bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
+    <main className="min-h-screen bg-sand px-6 pb-24 text-black md:px-10">
       <div className="mx-auto max-w-4xl">
         <p className="text-sm uppercase tracking-[0.35em] text-black/65">
           Rechtliches

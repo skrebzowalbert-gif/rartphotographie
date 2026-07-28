@@ -29,8 +29,13 @@ test.describe("mobile ui interactions", () => {
     // Babybauch- und Newborn-Shootings verkauft werden.
     const heroImg = page.locator("main img").first();
     await expect(heroImg).toHaveAttribute("alt", /babybauch|familie/i);
+
+    // Genau eine H1, und der Anfrage-CTA muss im Hero stehen.
+    await expect(page.locator("h1")).toHaveCount(1);
     await expect(
-      page.getByRole("heading", { level: 1, name: /Fotograf in Kaufbeuren/i })
+      page.locator("section").first().getByRole("link", {
+        name: /Shooting anfragen/i,
+      })
     ).toBeVisible();
   });
 

@@ -32,6 +32,10 @@ const content: ShootingLandingContent = {
     src: "/images/babybauch/babybauch-1.jpg",
     alt: "Babybauchshooting in Kaufbeuren: werdende Eltern halten Babyschuhe vor dem Bauch",
   },
+  secondaryImage: {
+    src: "/images/babybauch/babybauch-2.jpg",
+    alt: "Babybauchshooting in Kaufbeuren: Schwangere im weichen Seitenlicht",
+  },
   facts: [
     { label: "Dauer", value: "Etwa 1 Stunde, ohne Zeitdruck" },
     { label: "Preis", value: "200 €, keine versteckten Kosten" },

@@ -184,7 +184,7 @@ function KontaktForm() {
   }
 
   return (
-    <main className="bg-[#e7dfd3] px-4 pb-24 text-black md:px-10">
+    <main className="bg-sand px-4 pb-24 text-black md:px-10">
       <div className="mx-auto max-w-6xl">
         <header className="mx-auto max-w-3xl text-center">
           <p className="text-sm uppercase tracking-[0.32em] text-black/60">
@@ -484,7 +484,7 @@ export default function KontaktPageContent() {
   return (
     <Suspense
       fallback={
-        <main className="bg-[#e7dfd3] px-6 pb-24 text-black md:px-10" />
+        <main className="bg-sand px-6 pb-24 text-black md:px-10" />
       }
     >
       <KontaktForm />

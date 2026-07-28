@@ -9,7 +9,7 @@ import {
 import { areaServed, phoneDisplay, phoneHref } from "@/lib/site";
 
 export type ShootingLandingContent = {
-  /** Pfad ohne führenden Slash-Trailing, z. B. "/babybauch-shooting-kaufbeuren" */
+  /** Pfad, z. B. "/babybauch-shooting-kaufbeuren" */
   path: string;
   /** Sichtbare H1. Enthält das Hauptkeyword. */
   heading: string;
@@ -24,22 +24,32 @@ export type ShootingLandingContent = {
   duration: string;
   included: string;
   image: { src: string; alt: string };
-  /** Fließtext-Abschnitte mit echtem Informationsgehalt. */
+  /** Zweites Motiv, das den Fließtext aufbricht. */
+  secondaryImage?: { src: string; alt: string };
   sections: { heading: string; paragraphs: string[] }[];
-  /** Stichpunkte "Das solltest du wissen". */
   facts: { label: string; value: string }[];
   faq: { question: string; answer: string }[];
-  /** Verwandte Seiten für die interne Verlinkung. */
   related: { href: string; label: string }[];
 };
 
+/**
+ * Vorlage der Shooting-Landingpages.
+ *
+ * Der erste Entwurf war typografisch sauber, gestalterisch aber ein
+ * Dokument: eine lange Textspalte, ein Kasten mit Eckdaten, ein Kasten mit
+ * CTA. Diese Fassung arbeitet mit denselben Mitteln wie die Startseite –
+ * randlose Bilder, Kontrastwechsel zwischen den Sektionen, Bewegung beim
+ * Scrollen und ein zweites Motiv, das den Lesefluss aufbricht.
+ */
 export default function ShootingLandingPage({
   content,
 }: {
   content: ShootingLandingContent;
 }) {
+  const [firstBlock, ...restBlocks] = content.sections;
+
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
+    <main className="bg-sand text-ink">
       <script
         {...jsonLdScript(
           buildServiceJsonLd({
@@ -59,89 +69,113 @@ export default function ShootingLandingPage({
       />
       <script {...jsonLdScript(buildFaqJsonLd(content.faq))} />
 
-      {/* HERO */}
-      <section className="px-6 md:px-10">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-black/65">
-              Kaufbeuren &amp; Ostallgäu
-            </p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-light leading-[1.03] md:text-[3.4rem]">
+      {/* HERO – Bild randlos, wie auf der Startseite */}
+      <section className="relative overflow-hidden bg-sand">
+        <div className="mx-auto grid max-w-[110rem] items-stretch lg:min-h-[84svh] lg:grid-cols-[1fr_1fr]">
+          <div className="relative order-1 h-[46svh] min-h-[320px] w-full lg:order-2 lg:h-auto">
+            <Image
+              src={content.image.src}
+              alt={content.image.alt}
+              fill
+              preload
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="drift object-cover"
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(to_top,var(--color-sand),transparent)] lg:hidden" />
+          </div>
+
+          <div className="order-2 flex flex-col justify-center px-[var(--shell-x)] pb-16 pt-12 lg:order-1 lg:py-24 lg:pr-0">
+            <p className="eyebrow rise text-ink/55">Kaufbeuren &amp; Ostallgäu</p>
+
+            <h1 className="display-hero rise mt-6 text-ink">
               {content.heading}
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-black/78">
+
+            <p className="rise mt-7 max-w-xl text-lg leading-8 text-ink/75">
               {content.intro}
             </p>
 
-            <p className="mt-5 text-base font-medium">
-              {content.duration} · {content.price} · {content.included}
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div className="rise mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
               <Link
                 href={`/kontakt?shooting=${encodeURIComponent(
                   content.requestValue
                 )}`}
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 text-base font-medium text-white transition hover:bg-black/85"
+                className="group inline-flex min-h-[58px] items-center justify-center gap-3 rounded-full bg-ink px-8 text-base font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
               >
                 Termin anfragen
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-500 group-hover:translate-x-1"
+                >
+                  →
+                </span>
               </Link>
+
               {phoneHref && (
                 <a
                   href={phoneHref}
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-7 text-base font-medium transition hover:border-black/60"
+                  className="link-sweep self-start text-base font-medium text-ink/80 sm:ml-4 sm:self-auto"
                 >
                   {phoneDisplay}
                 </a>
               )}
             </div>
 
-            <p className="mt-4 text-sm text-black/70">
-              Unverbindlich und kostenlos · Antwort in der Regel innerhalb von
-              24 Stunden
+            <p className="rise mt-8 border-t border-ink/12 pt-6 text-sm text-ink/62">
+              {content.duration} · <strong className="font-medium text-ink">
+                {content.price}
+              </strong>{" "}
+              · {content.included} · unverbindliche Anfrage
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-            <Image
-              src={content.image.src}
-              alt={content.image.alt}
-              fill
-              preload
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover"
-            />
+      {/* ECKDATEN – als Linienraster, nicht als Kasten */}
+      <section className="bg-sand-deep px-[var(--shell-x)] py-16 md:py-20">
+        <dl className="stagger mx-auto grid max-w-[110rem] gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {content.facts.map((fact) => (
+            <div key={fact.label} className="border-t border-ink/20 pt-5">
+              <dt className="eyebrow text-ink/55">{fact.label}</dt>
+              <dd className="mt-3 text-lg leading-7 text-ink">{fact.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* ERSTER TEXTBLOCK + zweites Motiv daneben */}
+      <section className="bg-paper px-[var(--shell-x)] py-24 md:py-32">
+        <div className="mx-auto grid max-w-[110rem] gap-14 lg:grid-cols-[1fr_0.85fr] lg:gap-20">
+          <div>
+            <h2 className="display-lg rise text-ink">{firstBlock.heading}</h2>
+            <div className="stagger mt-8 max-w-2xl space-y-6 text-lg leading-8 text-ink/75">
+              {firstBlock.paragraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 40)}>{paragraph}</p>
+              ))}
+            </div>
           </div>
+
+          {content.secondaryImage && (
+            <div className="unveil relative aspect-[3/4] w-full lg:-mr-[var(--shell-x)]">
+              <Image
+                src={content.secondaryImage.src}
+                alt={content.secondaryImage.alt}
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover"
+              />
+            </div>
+          )}
         </div>
       </section>
 
-      {/* FAKTEN */}
-      <section className="px-6 py-14 md:px-10 md:py-16">
-        <div className="mx-auto max-w-7xl">
-          <dl className="grid gap-6 rounded-xl border border-black/12 bg-white/45 p-7 sm:grid-cols-2 lg:grid-cols-4 md:p-9">
-            {content.facts.map((fact) => (
-              <div key={fact.label}>
-                <dt className="text-sm font-semibold uppercase tracking-[0.16em] text-black/70">
-                  {fact.label}
-                </dt>
-                <dd className="mt-2 text-[15px] leading-7 text-black/80">
-                  {fact.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
-
-      {/* FLIESSTEXT */}
-      <section className="px-6 pb-4 md:px-10">
+      {/* WEITERE TEXTBLÖCKE – schmale Lesespalte */}
+      <section className="bg-paper px-[var(--shell-x)] pb-24 md:pb-32">
         <div className="mx-auto max-w-3xl">
-          {content.sections.map((section) => (
-            <div key={section.heading} className="mb-12">
-              <h2 className="text-3xl font-light leading-tight md:text-4xl">
-                {section.heading}
-              </h2>
-              <div className="mt-5 space-y-5 text-base leading-8 text-black/78 md:text-lg">
+          {restBlocks.map((section) => (
+            <div key={section.heading} className="mb-16 last:mb-0">
+              <h2 className="display-lg rise text-ink">{section.heading}</h2>
+              <div className="stagger mt-7 space-y-6 text-lg leading-8 text-ink/75">
                 {section.paragraphs.map((paragraph) => (
                   <p key={paragraph.slice(0, 40)}>{paragraph}</p>
                 ))}
@@ -152,22 +186,29 @@ export default function ShootingLandingPage({
       </section>
 
       {/* FAQ */}
-      <section className="px-6 py-10 md:px-10">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-3xl font-light md:text-4xl">Häufige Fragen</h2>
-          <div className="mt-8 divide-y divide-black/12 border-y border-black/12">
+      <section className="bg-sand px-[var(--shell-x)] py-24 md:py-32">
+        <div className="mx-auto grid max-w-[110rem] gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
+          <h2 className="display-lg rise text-ink lg:sticky lg:top-32 lg:self-start">
+            Häufige
+            <br />
+            <span className="accent-italic">Fragen</span>
+          </h2>
+
+          <div className="divide-y divide-ink/12 border-y border-ink/12">
             {content.faq.map((item) => (
-              <details key={item.question} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-lg font-medium">
-                  {item.question}
+              <details key={item.question} className="group py-6">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-6">
+                  <h3 className="font-display text-xl leading-snug text-ink">
+                    {item.question}
+                  </h3>
                   <span
                     aria-hidden="true"
-                    className="mt-1 shrink-0 text-xl leading-none text-black/50 transition group-open:rotate-45"
+                    className="mt-1 shrink-0 text-2xl leading-none text-ink/35 transition-transform duration-500 group-open:rotate-45"
                   >
                     +
                   </span>
                 </summary>
-                <p className="mt-3 text-base leading-8 text-black/78">
+                <p className="mt-4 max-w-2xl text-base leading-8 text-ink/72">
                   {item.answer}
                 </p>
               </details>
@@ -176,41 +217,49 @@ export default function ShootingLandingPage({
         </div>
       </section>
 
-      {/* EINZUGSGEBIET + ABSCHLUSS-CTA */}
-      <section className="px-6 py-14 md:px-10 md:py-16">
-        <div className="mx-auto max-w-5xl rounded-xl border border-black/12 bg-white/45 p-8 text-center md:p-12">
-          <h2 className="text-3xl font-light md:text-4xl">
-            Termin für dein Shooting sichern
+      {/* ABSCHLUSS – dunkel, damit die Seite nicht im Beige ausläuft */}
+      <section className="bg-ink px-[var(--shell-x)] py-24 text-paper md:py-32">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="display-lg rise text-paper">
+            Termin für dein Shooting
+            <br />
+            <span className="accent-italic">sichern</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-black/78">
+
+          <p className="rise mx-auto mt-7 max-w-2xl text-lg leading-8 text-paper/70">
             Shootings finden in {areaServed.slice(0, 6).join(", ")} und im
             gesamten Ostallgäu statt. Weitere Orte nach Absprache.
           </p>
 
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+          <div className="rise mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href={`/kontakt?shooting=${encodeURIComponent(
                 content.requestValue
               )}`}
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 text-base font-medium text-white transition hover:bg-black/85"
+              className="group inline-flex min-h-[58px] items-center gap-3 rounded-full bg-paper px-8 text-base font-medium text-ink transition-opacity duration-500 hover:opacity-90"
             >
               Termin anfragen
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              >
+                →
+              </span>
             </Link>
-            <Link
-              href="/preise"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-8 text-base font-medium transition hover:border-black/60"
-            >
-              Alle Preise ansehen
-            </Link>
+
+            {phoneHref && (
+              <a
+                href={phoneHref}
+                className="link-sweep text-base font-medium text-paper/75"
+              >
+                {phoneDisplay}
+              </a>
+            )}
           </div>
 
-          <div className="mt-10 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-black/70">
+          <div className="mt-14 flex flex-wrap justify-center gap-x-8 gap-y-3 border-t border-paper/15 pt-8 text-sm text-paper/60">
             {content.related.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="underline underline-offset-4 hover:text-black"
-              >
+              <Link key={link.href} href={link.href} className="link-sweep">
                 {link.label}
               </Link>
             ))}

@@ -49,27 +49,37 @@ const services: Service[] = [
 
 export default function ServicesAccordion() {
   return (
-    <section className="px-6 py-24 md:px-10 md:py-28">
-      <div className="mx-auto max-w-7xl">
-        <p className="text-sm uppercase tracking-[0.32em] text-black/65">
-          Leistungen
-        </p>
+    <section className="bg-sand-deep px-[var(--shell-x)] py-24 md:py-32">
+      <div className="mx-auto max-w-[110rem]">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="eyebrow rise text-ink/55">Leistungen</p>
+            {/*
+              Vorher: "Klar positioniert. Sauber inszeniert." – zwei
+              Behauptungen ohne Aussage, die für jeden Fotografen gelten.
+            */}
+            <h2 className="display-lg rise mt-5 max-w-2xl text-ink">
+              Für die Momente,
+              <br />
+              die <span className="accent-italic">bleiben</span>
+            </h2>
+          </div>
 
-        <h2 className="mt-4 max-w-4xl text-4xl font-light leading-[1] md:text-6xl">
-          Klar positioniert.
-          <br />
-          Sauber inszeniert.
-        </h2>
+          <p className="rise max-w-sm text-base leading-8 text-ink/70">
+            Fünf Anlässe, feste Preise ab 200 €. Alles mit 40 bearbeiteten
+            Bildern und ohne versteckte Kosten.
+          </p>
+        </div>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:flex lg:h-[620px] lg:gap-3 xl:h-[660px]">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:flex lg:h-[620px] lg:gap-3 xl:h-[660px]">
           {services.map((service) => (
             <article
               key={service.title}
-              className="group/service relative min-h-[390px] overflow-hidden rounded-[1.65rem] bg-black/10 shadow-[0_22px_70px_rgba(33,24,17,0.08)] transition-[flex,filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:min-h-[460px] lg:min-h-0 lg:flex-[1_1_0%] lg:focus-within:flex-[2.75_1_0%] lg:hover:flex-[2.75_1_0%]"
+              className="group/service relative min-h-[390px] overflow-hidden bg-ink/10 transition-[flex,filter,transform] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none sm:min-h-[460px] lg:min-h-0 lg:flex-[1_1_0%] lg:focus-within:flex-[2.75_1_0%] lg:hover:flex-[2.75_1_0%]"
             >
               <Link
                 href={service.href}
-                className="block h-full min-h-[390px] rounded-[1.65rem] outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-[#e7dfd3] sm:min-h-[460px] lg:min-h-0"
+                className="block h-full min-h-[390px] outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-sand sm:min-h-[460px] lg:min-h-0"
                 aria-label={`${service.title} ansehen`}
               >
                 <Image

@@ -20,7 +20,7 @@ export default async function PartnerPage() {
   const partners = await getActivePartners();
 
   return (
-    <main className="bg-[#e7dfd3] text-black">
+    <main className="bg-sand text-black">
       <section className="px-6 pb-10 md:px-10">
         <div className="mx-auto max-w-5xl text-center">
           <p className="text-sm uppercase tracking-[0.32em] text-black/65">

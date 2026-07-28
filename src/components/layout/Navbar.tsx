@@ -51,7 +51,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed left-0 top-0 z-50 w-full border-b bg-[#e7dfd3]/95 text-black backdrop-blur-md transition-shadow duration-300 ${
+      className={`fixed left-0 top-0 z-50 w-full border-b bg-sand/95 text-black backdrop-blur-md transition-shadow duration-300 ${
         scrolled
           ? "border-black/10 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
           : "border-transparent"
@@ -152,7 +152,7 @@ export default function Navbar() {
 
           <nav
             aria-label="Mobile Navigation"
-            className="fixed inset-x-4 top-20 z-50 flex flex-col overflow-hidden rounded-xl border border-black/10 bg-[#e7dfd3] p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
+            className="fixed inset-x-4 top-20 z-50 flex flex-col overflow-hidden rounded-xl border border-black/10 bg-sand p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
           >
             {mainNavItems.map((item) => (
               <Link

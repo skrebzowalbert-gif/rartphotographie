@@ -32,6 +32,10 @@ const content: ShootingLandingContent = {
     src: "/images/family/family-2.jpg",
     alt: "Familienshooting in Kaufbeuren: Familie in entspannter, natürlicher Aufnahme von R.ArtPhotographie",
   },
+  secondaryImage: {
+    src: "/images/family/family-1.jpg",
+    alt: "Familienfotografie in Kaufbeuren: mehrere Generationen einer Familie",
+  },
   facts: [
     { label: "Dauer", value: "Etwa 2 Stunden, ohne Zeitdruck" },
     { label: "Preis", value: "250 €, unabhängig von der Personenzahl" },
