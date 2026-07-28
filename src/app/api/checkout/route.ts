@@ -112,15 +112,23 @@ export async function POST(req: Request) {
 
     const stripe = getStripe();
 
-    if (!stripe || !process.env.NEXT_PUBLIC_SITE_URL) {
+    if (!stripe) {
       return Response.json(
         { error: "Checkout ist noch nicht vollständig konfiguriert." },
         { status: 500 }
       );
     }
 
-    const checkoutBaseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "") || siteUrl;
+    /*
+      Bewusst die zentrale siteUrl statt NEXT_PUBLIC_SITE_URL direkt:
+
+      1. Die Variable war eine harte Voraussetzung – fehlte sie, brach der
+         Checkout mit HTTP 500 ab, obwohl ein sinnvoller Wert bekannt ist.
+      2. siteUrl filtert localhost und vercel.app heraus. Stand in der Variable
+         "http://localhost:3000", landete ein zahlender Kunde nach Stripe auf
+         seinem eigenen Rechner.
+    */
+    const checkoutBaseUrl = siteUrl.replace(/\/$/, "");
 
     const voucherName = "Wertgutschein R.ArtPhotographie";
     const address = [street, zip, city].filter(Boolean).join(", ");
