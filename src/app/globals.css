@@ -329,8 +329,14 @@
   animation-duration: 88s;
 }
 
-/* Beim Überfahren anhalten, damit ein einzelnes Bild betrachtet werden kann. */
-.living-gallery__stage:hover .living-gallery__track,
+/*
+  Das Band läuft beim Überfahren mit der Maus bewusst weiter – anhalten
+  unterbricht den Fluss, und die Bilder wandern reizvoll unter dem Zeiger
+  hindurch.
+
+  Bei Tastaturfokus wird dagegen angehalten: Ein Link, der wegwandert,
+  während man ihn ansteuert, ist nicht mehr bedienbar.
+*/
 .living-gallery__stage:focus-within .living-gallery__track {
   animation-play-state: paused;
 }
