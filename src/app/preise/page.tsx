@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import PageHeader from "@/components/layout/PageHeader";
+import { phoneDisplay, phoneHref } from "@/lib/site";
 import type { Metadata } from "next";
 import VoucherSection from "@/components/sections/VoucherSection";
 import PartnersSection from "@/components/sections/PartnersSection";
@@ -44,7 +46,7 @@ const portraitItems: PriceCardProps[] = [
   },
   {
     title: "Familienshooting",
-    image: "/images/family/family-1.jpg",
+    image: "/images/family/family-2.jpg",
     duration: "2 Stunden",
     price: "250 €",
     scope: "40 bearbeitete Bilder · digitale Dateien · Online-Galerie",
@@ -66,7 +68,7 @@ const portraitItems: PriceCardProps[] = [
   },
   {
     title: "Newbornshooting",
-    image: "/images/newborn/newborn-1.jpg",
+    image: "/images/newborn/newborn-2.jpg",
     duration: "3 Stunden",
     price: "250 €",
     scope: "40 bearbeitete Bilder · digitale Dateien · Online-Galerie",
@@ -157,63 +159,73 @@ function PriceCard({
       ? "hochzeit-mini"
       : undefined;
   return (
-    <article
-      id={anchorId}
-      className="scroll-mt-36 overflow-hidden rounded-xl border border-black/8 bg-white/24"
-    >
-      <div className="relative h-[360px] overflow-hidden bg-black/[0.04] sm:h-[380px] md:h-[340px]">
-        <Image
-          src={image}
-          alt={`${title} Kaufbeuren und Allgäu bei R.ArtPhotographie`}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
-          className="h-full w-full object-contain object-center md:object-cover"
-        />
-      </div>
+    <article id={anchorId} className="group scroll-mt-36">
+      {/* Kein Rahmen, keine Karte: das Bild steht frei, der Preis darunter. */}
+      <Link
+        href={`/kontakt?shooting=${encodeURIComponent(requestValue)}`}
+        className="zoom-parent block overflow-hidden"
+      >
+        <div className="unveil relative aspect-[3/4] w-full overflow-hidden">
+          <Image
+            src={image}
+            alt={`${title} in Kaufbeuren und im Allgäu bei R.ArtPhotographie`}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+            className="object-cover"
+          />
+        </div>
+      </Link>
 
-      <div className="p-6">
-        <h3 className="text-[22px] font-semibold leading-tight">{title}</h3>
+      <div className="mt-6">
+        <h3 className="font-display text-2xl leading-tight text-ink">
+          {title}
+        </h3>
 
-        <p className="mt-4 text-xl font-light text-black">
-          {duration} · {price}
+        {/* Der Preis ist das wichtigste Element der Karte und wird auch so
+            gesetzt – vorher stand er in derselben Größe wie der Fließtext. */}
+        <p className="mt-3 flex items-baseline gap-3">
+          <span className="font-display text-3xl text-ink">{price}</span>
+          <span className="text-sm text-ink/60">{duration}</span>
         </p>
-        <p className="mt-4 text-[15px] leading-7 text-black/68">{scope}</p>
-        <p className="mt-5 border-t border-black/10 pt-4 text-sm leading-7 text-black/62">
+
+        <p className="mt-4 text-[15px] leading-7 text-ink/75">{scope}</p>
+
+        <p className="mt-5 border-t border-ink/12 pt-4 text-sm leading-7 text-ink/65">
           {description}
         </p>
-
-        {vehicleAddon && (
-          <p className="mt-5 border-t border-black/10 pt-4 text-sm leading-7 text-black/58">
-            Optional kann eure fotografische Begleitung mit einem Fahrzeug über
-            unseren externen Partner ergänzt werden.
-          </p>
-        )}
 
         <div className="mt-6 flex flex-col gap-3">
           <Link
             href={`/kontakt?shooting=${encodeURIComponent(requestValue)}`}
-            className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition hover:opacity-90"
-            style={{ color: "#ffffff" }}
+            className="group/btn inline-flex min-h-[52px] items-center justify-center gap-2 rounded-full bg-ink px-6 text-sm font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
           >
             {buttonLabel}
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-500 group-hover/btn:translate-x-1"
+            >
+              →
+            </span>
           </Link>
 
           {vehicleAddon && (
-            <div>
-              <p className="mb-2 text-center text-xs leading-5 text-black/50">
-                Fahrzeugbuchung separat über externen Partner.
-              </p>
-              <Link
-                href={`/kontakt?shooting=${encodeURIComponent(
-                  requestValue
-                )}&vehicleInterest=true`}
-                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-center text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
-              >
-                Mit Premium-Fahrzeug kombinieren
-              </Link>
-            </div>
+            <Link
+              href={`/kontakt?shooting=${encodeURIComponent(
+                requestValue
+              )}&vehicleInterest=true`}
+              className="inline-flex min-h-[48px] w-full items-center justify-center rounded-full border border-ink/25 px-5 text-center text-sm font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+            >
+              Mit Premium-Fahrzeug kombinieren
+            </Link>
           )}
         </div>
+
+        {vehicleAddon && (
+          <p className="mt-3 text-xs leading-5 text-ink/60">
+            Fahrzeugbuchung separat über unseren Partner, nicht im
+            Shootingpreis enthalten.
+          </p>
+        )}
       </div>
     </article>
   );
@@ -223,24 +235,36 @@ export default async function PreisePage() {
   const weddingPartners = await getWeddingPartners();
 
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
-      <section className="px-6 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-            Portrait
-          </p>
+    <main className="bg-sand text-ink">
+      <PageHeader
+        eyebrow="Preise"
+        heading="Was ein Shooting"
+        accent="kostet"
+        intro="Alle Preise stehen offen hier. Keine Pakete auf Anfrage, keine Nachverhandlung, keine versteckten Kosten."
+        meta={
+          <>
+            Shootings im Raum Kaufbeuren und im Ostallgäu. Termine außerhalb,
+            zum Beispiel München, sind möglich – die Anfahrt wird dann
+            individuell berechnet.
+          </>
+        }
+        primaryAction={{ href: "/kontakt", label: "Shooting anfragen" }}
+        showPhone
+      />
 
-          <h1 className="mt-3 text-3xl font-semibold md:text-4xl">
-            Persönliche Shootings
-          </h1>
+      <section className="bg-sand px-[var(--shell-x)] py-16 md:py-24">
+        <div className="mx-auto max-w-[110rem]">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 className="display-lg rise text-ink">
+              Persönliche <span className="accent-italic">Shootings</span>
+            </h2>
+            <p className="rise max-w-sm text-base leading-8 text-ink/70">
+              Jedes Paket mit 40 bearbeiteten Bildern als digitale Dateien
+              über eine Online-Galerie.
+            </p>
+          </div>
 
-          <p className="mt-6 max-w-3xl text-base leading-8 text-black/64 md:text-lg">
-            Shootings finden im Raum Kaufbeuren statt. Termine außerhalb
-            (z. B. München) sind möglich – die Anfahrt wird individuell
-            berechnet.
-          </p>
-
-          <div className="mt-10 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-14 grid gap-x-8 gap-y-16 sm:grid-cols-2 xl:grid-cols-4">
             {portraitItems.map((item) => (
               <PriceCard key={item.title} {...item} />
             ))}
@@ -248,17 +272,18 @@ export default async function PreisePage() {
         </div>
       </section>
 
-      <section className="mt-24 px-6 md:px-10">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-            Hochzeiten
-          </p>
+      <section className="bg-paper px-[var(--shell-x)] py-20 md:py-28">
+        <div className="mx-auto max-w-[110rem]">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 className="display-lg rise text-ink">
+              Hochzeits<span className="accent-italic">pakete</span>
+            </h2>
+            <p className="rise max-w-sm text-base leading-8 text-ink/70">
+              Vom kurzen Standesamttermin bis zur ganztägigen Begleitung.
+            </p>
+          </div>
 
-          <h2 className="mt-3 text-3xl font-semibold md:text-4xl">
-            Hochzeitspakete
-          </h2>
-
-          <div className="mt-10 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-14 grid gap-x-8 gap-y-16 sm:grid-cols-2 xl:grid-cols-4">
             {weddingItems.map((item) => (
               <PriceCard key={item.title} {...item} />
             ))}
@@ -271,6 +296,44 @@ export default async function PreisePage() {
             intro="Ausgewählte Partner rund um Hochzeit, Location, Floristik, Video, Styling und besondere Details."
             compact
           />
+        </div>
+      </section>
+
+      {/* Abschluss führt zur Anfrage, nicht in den Gutscheinverkauf. */}
+      <section className="bg-ink px-[var(--shell-x)] py-24 text-paper md:py-32">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="display-lg rise text-paper">
+            Noch unsicher, was
+            <br />
+            <span className="accent-italic">zu euch passt?</span>
+          </h2>
+          <p className="rise mx-auto mt-7 max-w-2xl text-lg leading-8 text-paper/70">
+            Schreib einfach, was ihr vorhabt. Ich sage ehrlich, welches Paket
+            sinnvoll ist – auch wenn es das kleinere ist.
+          </p>
+
+          <div className="rise mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link
+              href="/kontakt"
+              className="group inline-flex min-h-[58px] items-center gap-3 rounded-full bg-paper px-8 text-base font-medium text-ink transition-opacity duration-500 hover:opacity-90"
+            >
+              Shooting anfragen
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </Link>
+            {phoneHref && (
+              <a
+                href={phoneHref}
+                className="link-sweep text-base font-medium text-paper/75"
+              >
+                {phoneDisplay}
+              </a>
+            )}
+          </div>
         </div>
       </section>
 

@@ -54,15 +54,15 @@ export default function PartnersSection({
     <section
       className={`px-6 md:px-10 ${compact ? "py-12" : "py-16 md:py-20"}`}
     >
-      <div className="mx-auto max-w-7xl border-y border-black/10 py-10 md:py-12">
+      <div className="mx-auto max-w-7xl border-y border-ink/10 py-10 md:py-12">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm uppercase tracking-[0.34em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.34em] text-ink/65">
             {eyebrow}
           </p>
           <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
             {title}
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-black/62">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-ink/62">
             {intro}
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function PartnersSection({
         <div className="mx-auto mt-10 max-w-6xl">
             {logoPartners.length > 0 && (
               <div className="mb-10 overflow-x-auto">
-                <div className="flex min-w-max items-center justify-center gap-x-10 border-y border-black/10 py-7 pr-4 sm:min-w-0 sm:flex-wrap sm:gap-x-12 sm:gap-y-6">
+                <div className="flex min-w-max items-center justify-center gap-x-10 border-y border-ink/10 py-7 pr-4 sm:min-w-0 sm:flex-wrap sm:gap-x-12 sm:gap-y-6">
                   {logoPartners.map((partner) => (
                     <div
                       key={`logo-${partner.id}`}
@@ -91,9 +91,9 @@ export default function PartnersSection({
             )}
 
             {featuredPartner && (
-              <article className="relative mb-8 border border-black/35 bg-transparent px-5 py-5 md:px-7 md:py-6">
+              <article className="relative mb-8 border border-ink/35 bg-transparent px-5 py-5 md:px-7 md:py-6">
                 <div className="absolute right-0 top-0 translate-y-[-1px]">
-                  <span className="inline-flex rounded-full border border-black/15 px-3 py-1 text-xs text-black/58">
+                  <span className="inline-flex rounded-full border border-ink/15 px-3 py-1 text-xs text-ink/65">
                     {featuredPartner.isClosePartner
                       ? "Engster Partner"
                       : "Empfohlen"}
@@ -118,13 +118,13 @@ export default function PartnersSection({
                       <h3 className="text-xl font-medium leading-tight md:text-2xl">
                         {featuredPartner.name}
                       </h3>
-                      <p className="text-xs uppercase tracking-[0.22em] text-black/42">
+                      <p className="text-xs uppercase tracking-[0.22em] text-ink/65">
                         {getPartnerCategoryLabel(featuredPartner.category)}
                       </p>
                     </div>
 
                     {featuredPartner.description && (
-                      <p className="mt-5 text-sm leading-7 text-black/64 md:text-base md:leading-8">
+                      <p className="mt-5 text-sm leading-7 text-ink/64 md:text-base md:leading-8">
                         {featuredPartner.description}
                       </p>
                     )}
@@ -134,7 +134,7 @@ export default function PartnersSection({
                         href={featuredPartner.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-5 inline-flex min-h-[42px] items-center justify-center border-t border-black/14 pt-4 text-sm font-semibold text-[#1f1714] transition hover:text-black/70"
+                        className="mt-5 inline-flex min-h-[42px] items-center justify-center border-t border-ink/14 pt-4 text-sm font-semibold text-ink transition hover:text-ink/70"
                       >
                         Website ansehen
                       </a>
@@ -149,7 +149,7 @@ export default function PartnersSection({
                 {remainingPartners.map((partner) => (
                   <article
                     key={partner.id}
-                    className="flex min-h-full flex-col border border-black/12 px-5 py-5"
+                    className="flex min-h-full flex-col border border-ink/12 px-5 py-5"
                   >
                     <div className="grid grid-cols-[64px_1fr] gap-4">
                       {partner.logoUrl ? (
@@ -167,7 +167,7 @@ export default function PartnersSection({
                       )}
 
                       <div>
-                        <p className="text-xs uppercase tracking-[0.24em] text-black/40">
+                        <p className="text-xs uppercase tracking-[0.24em] text-ink/65">
                           {getPartnerCategoryLabel(partner.category)}
                         </p>
                         <h3 className="mt-2 text-lg font-medium leading-tight">
@@ -177,7 +177,7 @@ export default function PartnersSection({
                     </div>
 
                     {partner.description && (
-                      <p className="mt-3 text-sm leading-7 text-black/62">
+                      <p className="mt-3 text-sm leading-7 text-ink/62">
                         {partner.description}
                       </p>
                     )}
@@ -187,7 +187,7 @@ export default function PartnersSection({
                         href={partner.websiteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-auto inline-flex border-t border-black/12 pt-4 text-sm font-semibold text-[#1f1714] transition hover:text-black/70"
+                        className="mt-auto inline-flex border-t border-ink/12 pt-4 text-sm font-semibold text-ink transition hover:text-ink/70"
                       >
                         Website ansehen
                       </a>
@@ -197,7 +197,7 @@ export default function PartnersSection({
               </div>
             )}
 
-            <p className="mt-7 border-t border-black/10 pt-5 text-xs leading-6 text-black/45">
+            <p className="mt-7 border-t border-ink/10 pt-5 text-xs leading-6 text-ink/65">
               Externe Leistungen werden direkt über den jeweiligen Partner
               angeboten. Es gelten die Bedingungen des jeweiligen Anbieters.
             </p>

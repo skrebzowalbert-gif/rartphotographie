@@ -20,6 +20,10 @@ type CheckoutPayload = {
   street?: string;
   zip?: string;
   city?: string;
+  /** "email" (Standard) oder "post". */
+  delivery?: string;
+  /** Bestätigung von AGB und Widerrufsbelehrung. */
+  acceptedTerms?: boolean;
 };
 
 function getStripe() {
@@ -46,6 +50,8 @@ export async function POST(req: Request) {
     const street = clean(body.street, 160);
     const zip = clean(body.zip, 16);
     const city = clean(body.city, 80);
+    // Digitaler Versand ist der Standard. Post nur, wenn ausdrücklich gewählt.
+    const delivery = body.delivery === "post" ? "post" : "email";
 
     const amount = Number(voucherCustomAmount.replace(",", "."));
     const voucherAmount = Math.round(amount * 100);
@@ -57,11 +63,34 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!name || !email || !recipient || !street || !zip || !city) {
+    if (!name || !email || !recipient) {
       return Response.json(
         {
           error:
-            "Name, E-Mail, Gutscheinempfänger und Versandadresse sind für den Gutschein-Kauf erforderlich.",
+            "Name, E-Mail und Gutscheinempfänger sind für den Kauf erforderlich.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Die Anschrift wird NUR beim Postversand gebraucht. Sie vorher als
+    // Pflichtfeld zu verlangen, war der teuerste Abbruchgrund im Checkout:
+    // Wer ein Geschenk kurzfristig sucht, will es sofort ausdrucken.
+    if (delivery === "post" && (!street || !zip || !city)) {
+      return Response.json(
+        {
+          error:
+            "Für den Postversand werden Straße, PLZ und Ort benötigt.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!body.acceptedTerms) {
+      return Response.json(
+        {
+          error:
+            "Bitte bestätige AGB und Widerrufsbelehrung, um fortzufahren.",
         },
         { status: 400 }
       );
@@ -83,15 +112,23 @@ export async function POST(req: Request) {
 
     const stripe = getStripe();
 
-    if (!stripe || !process.env.NEXT_PUBLIC_SITE_URL) {
+    if (!stripe) {
       return Response.json(
         { error: "Checkout ist noch nicht vollständig konfiguriert." },
         { status: 500 }
       );
     }
 
-    const checkoutBaseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "") || siteUrl;
+    /*
+      Bewusst die zentrale siteUrl statt NEXT_PUBLIC_SITE_URL direkt:
+
+      1. Die Variable war eine harte Voraussetzung – fehlte sie, brach der
+         Checkout mit HTTP 500 ab, obwohl ein sinnvoller Wert bekannt ist.
+      2. siteUrl filtert localhost und vercel.app heraus. Stand in der Variable
+         "http://localhost:3000", landete ein zahlender Kunde nach Stripe auf
+         seinem eigenen Rechner.
+    */
+    const checkoutBaseUrl = siteUrl.replace(/\/$/, "");
 
     const voucherName = "Wertgutschein R.ArtPhotographie";
     const address = [street, zip, city].filter(Boolean).join(", ");
@@ -124,7 +161,10 @@ export async function POST(req: Request) {
             unit_amount: paymentAmount,
             product_data: {
               name: voucherName,
-              description: `Wertgutschein über ${formatEuro(voucherAmount)}`,
+              description:
+                delivery === "post"
+                  ? `Wertgutschein über ${formatEuro(voucherAmount)}, als PDF und per Post`
+                  : `Wertgutschein über ${formatEuro(voucherAmount)}, sofort als PDF`,
             },
           },
         },
@@ -149,6 +189,7 @@ export async function POST(req: Request) {
         zip: metadataValue(zip),
         city: metadataValue(city),
         address: metadataValue(address),
+        delivery,
       },
       payment_intent_data: {
         metadata: {
@@ -171,6 +212,7 @@ export async function POST(req: Request) {
           zip: metadataValue(zip),
           city: metadataValue(city),
           address: metadataValue(address),
+          delivery,
         },
       },
     });

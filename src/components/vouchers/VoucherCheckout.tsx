@@ -17,6 +17,7 @@ type FormState = {
   street: string;
   zip: string;
   city: string;
+  delivery: "email" | "post";
 };
 
 type Status =
@@ -39,7 +40,23 @@ const initialForm: FormState = {
   street: "",
   zip: "",
   city: "",
+  // Digital ist der Standard: sofort verfügbar, kein Portoweg, keine Adresse.
+  delivery: "email",
 };
+
+/**
+ * Voreingestellte Beträge.
+ *
+ * Vorher gab es nur ein leeres Zahlenfeld mit "ab 50 €". Ohne Anker orientiert
+ * sich der Käufer am Minimum. Die Vorschläge entsprechen den echten
+ * Shootingpreisen, damit der Gutschein direkt ein Paket abdeckt.
+ */
+const AMOUNT_PRESETS = [
+  { value: "100", label: "100 €" },
+  { value: "200", label: "200 €", hint: "Portrait" },
+  { value: "250", label: "250 €", hint: "Familie" },
+  { value: "350", label: "350 €", hint: "Hochzeit" },
+];
 
 export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
   const searchParams = useSearchParams();
@@ -67,6 +84,9 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
     hasValidVoucherAmount ? formatEuro(customAmountInCents) : "ab 50 €";
   const promoBadge = promotion?.badge?.trim() || promotion?.title?.trim();
 
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const wantsPost = form.delivery === "post";
+
   function updateField(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
@@ -86,18 +106,27 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
       return;
     }
 
-    if (
-      !form.name.trim() ||
-      !form.email.trim() ||
-      !form.recipient.trim() ||
-      !form.street.trim() ||
-      !form.zip.trim() ||
-      !form.city.trim()
-    ) {
+    if (!form.name.trim() || !form.email.trim() || !form.recipient.trim()) {
       setStatus({
         type: "error",
         message:
-          "Bitte fülle alle Pflichtfelder aus: Name, E-Mail, Gutschein für wen und Versandadresse.",
+          "Bitte fülle Name, E-Mail und den Namen der beschenkten Person aus.",
+      });
+      return;
+    }
+
+    if (wantsPost && (!form.street.trim() || !form.zip.trim() || !form.city.trim())) {
+      setStatus({
+        type: "error",
+        message: "Für den Postversand brauchen wir Straße, PLZ und Ort.",
+      });
+      return;
+    }
+
+    if (!acceptedTerms) {
+      setStatus({
+        type: "error",
+        message: "Bitte bestätige AGB und Widerrufsbelehrung.",
       });
       return;
     }
@@ -116,6 +145,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
           discountAmount: discount.discountAmount,
           discountPercent: discount.percent,
           promotionId: promotion?.id,
+          acceptedTerms,
         }),
       });
       const data = (await response.json().catch(() => null)) as {
@@ -148,26 +178,26 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="eyebrow text-ink/55">
               Direkt kaufen
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-light leading-[1] md:text-5xl">
+            <h2 className="display-lg mt-4 max-w-3xl text-ink">
               Wertgutschein auswählen und sicher bezahlen
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-black/64 md:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-ink/64 md:text-lg">
               Du bestimmst den Betrag ab 50 €. Die Zahlung läuft sicher über
               Stripe Checkout; Zahlungsdaten werden nicht auf dieser Webseite
               gespeichert.
             </p>
 
             {promotion && hasVoucherPromotion && (
-              <div className="mt-7 border-y border-black/10 py-5">
+              <div className="mt-7 border-y border-ink/10 py-5">
                 {promoBadge && (
-                  <p className="text-xs uppercase tracking-[0.28em] text-black/40">
+                  <p className="text-xs uppercase tracking-[0.28em] text-ink/65">
                     {promoBadge}
                   </p>
                 )}
-                <p className="mt-2 text-sm leading-7 text-black/62">
+                <p className="mt-2 text-sm leading-7 text-ink/62">
                   {promotionPercent} % Rabatt auf Wertgutscheine werden beim
                   Checkout automatisch berücksichtigt.
                 </p>
@@ -175,29 +205,29 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
             )}
 
             {searchParams.get("zahlung") === "abgebrochen" && (
-              <p className="mt-5 rounded-lg border border-black/10 bg-white/24 px-4 py-3 text-sm leading-7 text-black/66">
+              <p className="mt-5 rounded-lg border border-ink/10 bg-paper/24 px-4 py-3 text-sm leading-7 text-ink/66">
                 Die Zahlung wurde abgebrochen. Du kannst den Wertgutschein
                 jederzeit erneut kaufen oder Regina direkt kontaktieren.
               </p>
             )}
 
-            <div className="mt-10 border-y border-black/10 py-6">
-              <p className="text-xs uppercase tracking-[0.28em] text-black/40">
+            <div className="mt-10 border-y border-ink/10 py-6">
+              <p className="text-xs uppercase tracking-[0.28em] text-ink/65">
                 Wertgutschein
               </p>
-              <p className="mt-3 text-3xl font-light text-black">
+              <p className="mt-3 text-3xl font-light text-ink">
                 {displayedAmount}
               </p>
-              <p className="mt-4 text-sm leading-7 text-black/62">
+              <p className="mt-4 text-sm leading-7 text-ink/62">
                 Der Gutschein wird nach dem Kauf hochwertig vorbereitet und
                 versendet. Er kann für Portrait, Familie, Babybauch, Newborn
                 oder Hochzeit eingesetzt werden.
               </p>
               {hasValidVoucherAmount && (
-                <div className="mt-5 grid gap-2 text-sm leading-6 text-black/62">
+                <div className="mt-5 grid gap-2 text-sm leading-6 text-ink/62">
                   <div className="flex items-center justify-between gap-4">
                     <span>Gutscheinwert</span>
-                    <span className="text-black">
+                    <span className="text-ink">
                       {formatEuro(customAmountInCents)}
                     </span>
                   </div>
@@ -206,12 +236,12 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                       <span>
                         {promoBadge || "Aktionsrabatt"} ({discount.percent} %)
                       </span>
-                      <span className="text-black">
+                      <span className="text-ink">
                         -{formatEuro(discount.discountAmount)}
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center justify-between gap-4 border-t border-black/10 pt-2 text-base text-black">
+                  <div className="flex items-center justify-between gap-4 border-t border-ink/10 pt-2 text-base text-ink">
                     <span>Zu zahlen</span>
                     <span>{formatEuro(discount.paymentAmount)}</span>
                   </div>
@@ -222,18 +252,18 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
 
           <form
             onSubmit={handleSubmit}
-            className="relative z-10 rounded-md border border-black/10 bg-white/26 p-4 md:p-8"
+            className="relative z-10 rounded-md border border-ink/10 bg-paper/26 p-4 md:p-8"
           >
-            <p className="text-sm uppercase tracking-[0.28em] text-black/40">
+            <p className="text-sm uppercase tracking-[0.28em] text-ink/65">
               Kaufdaten
             </p>
-            <h3 className="mt-3 text-2xl font-light text-black">
+            <h3 className="mt-3 text-2xl font-light text-ink">
               Wertgutschein R.ArtPhotographie
             </h3>
 
             <div className="mt-7 grid gap-4">
               <label className="grid gap-2">
-                <span className="text-sm text-black/62">
+                <span className="text-sm text-ink/62">
                   Gewünschter Gutscheinbetrag *
                 </span>
                 <input
@@ -245,17 +275,51 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                   placeholder="z. B. 100 €"
                   value={form.voucherCustomAmount}
                   onChange={updateField}
-                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                  className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
                   required
                 />
               </label>
+
+              {/* Preisanker: ohne Vorschläge orientiert sich der Käufer am
+                  Minimum von 50 €. Die Beträge entsprechen echten Paketen. */}
+              <div className="-mt-2 flex flex-wrap gap-2">
+                {AMOUNT_PRESETS.map((preset) => {
+                  const active = form.voucherCustomAmount === preset.value;
+                  return (
+                    <button
+                      key={preset.value}
+                      type="button"
+                      onClick={() => {
+                        setStatus(null);
+                        setForm((prev) => ({
+                          ...prev,
+                          voucherCustomAmount: preset.value,
+                        }));
+                      }}
+                      aria-pressed={active}
+                      className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-5 text-sm transition ${
+                        active
+                          ? "border-ink bg-ink text-paper"
+                          : "border-ink/25 text-ink hover:border-ink/55"
+                      }`}
+                    >
+                      <span className="font-medium">{preset.label}</span>
+                      {preset.hint && (
+                        <span className={active ? "text-paper/70" : "text-ink/55"}>
+                          {preset.hint}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
 
               <input
                 name="name"
                 placeholder="Name *"
                 value={form.name}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
                 required
               />
               <input
@@ -264,7 +328,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="E-Mail *"
                 value={form.email}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
                 required
               />
               <input
@@ -272,14 +336,14 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="Telefon (optional)"
                 value={form.phone}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
               />
               <input
                 name="recipient"
                 placeholder="Gutschein für wen? *"
                 value={form.recipient}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
                 required
               />
               <textarea
@@ -287,41 +351,129 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="Nachricht auf dem Gutschein (optional)"
                 value={form.message}
                 onChange={updateField}
-                className="min-h-[120px] w-full rounded-md border border-black/10 bg-white/76 px-4 py-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[130px]"
+                className="min-h-[120px] w-full rounded-md border border-ink/20 bg-paper px-4 py-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[130px]"
               />
-              <input
-                name="street"
-                placeholder="Straße und Hausnummer *"
-                value={form.street}
-                onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
-                required
-              />
-              <div className="grid gap-4 md:grid-cols-[160px_1fr]">
+              {/* Zustellweg – digital ist der Standard und ausdrücklich benannt.
+                  Vorher war die Anschrift Pflicht, obwohl an drei Stellen der
+                  Website etwas anderes versprochen wurde. */}
+              <fieldset className="rounded-md border border-ink/15 p-5">
+                <legend className="px-2 text-sm font-medium text-ink">
+                  Wie soll der Gutschein ankommen?
+                </legend>
+
+                <div className="mt-2 grid gap-3">
+                  {[
+                    {
+                      value: "email" as const,
+                      title: "Sofort per E-Mail (PDF)",
+                      text: "Direkt nach der Zahlung zum Herunterladen und Ausdrucken. Auch digital verschenkbar.",
+                    },
+                    {
+                      value: "post" as const,
+                      title: "Zusätzlich per Post",
+                      text: "Auf hochwertigem Papier vorbereitet und verschickt. Das PDF bekommst du trotzdem sofort.",
+                    },
+                  ].map((option) => (
+                    <label
+                      key={option.value}
+                      className={`flex cursor-pointer gap-3 rounded-md border p-4 transition ${
+                        form.delivery === option.value
+                          ? "border-ink bg-paper/60"
+                          : "border-ink/15 hover:border-ink/35"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="delivery"
+                        value={option.value}
+                        checked={form.delivery === option.value}
+                        onChange={() => {
+                          setStatus(null);
+                          setForm((prev) => ({ ...prev, delivery: option.value }));
+                        }}
+                        className="mt-1 h-4 w-4 accent-black"
+                      />
+                      <span>
+                        <span className="block text-[15px] font-medium text-ink">
+                          {option.title}
+                        </span>
+                        <span className="mt-1 block text-sm leading-6 text-ink/70">
+                          {option.text}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              {wantsPost && (
+                <div className="grid gap-4">
+                  <input
+                    name="street"
+                    placeholder="Straße und Hausnummer *"
+                    autoComplete="street-address"
+                    value={form.street}
+                    onChange={updateField}
+                    className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
+                    required
+                  />
+                  <div className="grid gap-4 md:grid-cols-[160px_1fr]">
+                    <input
+                      name="zip"
+                      placeholder="PLZ *"
+                      autoComplete="postal-code"
+                      inputMode="numeric"
+                      value={form.zip}
+                      onChange={updateField}
+                      className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
+                      required
+                    />
+                    <input
+                      name="city"
+                      placeholder="Ort *"
+                      autoComplete="address-level2"
+                      value={form.city}
+                      onChange={updateField}
+                      className="min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/60 focus:border-ink md:min-h-[56px]"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Pflichtangaben im Fernabsatz: AGB und Widerrufsbelehrung
+                  müssen vor dem Kauf zugänglich und bestätigt sein. */}
+              <label className="flex cursor-pointer items-start gap-3 text-sm leading-6 text-ink/78">
                 <input
-                  name="zip"
-                  placeholder="PLZ *"
-                  value={form.zip}
-                  onChange={updateField}
-                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(event) => {
+                    setStatus(null);
+                    setAcceptedTerms(event.target.checked);
+                  }}
+                  className="mt-1 h-4 w-4 shrink-0 accent-black"
                   required
                 />
-                <input
-                  name="city"
-                  placeholder="Ort *"
-                  value={form.city}
-                  onChange={updateField}
-                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/35 md:min-h-[56px]"
-                  required
-                />
-              </div>
+                <span>
+                  Ich habe die{" "}
+                  <a href="/agb" className="underline underline-offset-4" target="_blank" rel="noreferrer">
+                    AGB
+                  </a>{" "}
+                  und die{" "}
+                  <a href="/widerruf" className="underline underline-offset-4" target="_blank" rel="noreferrer">
+                    Widerrufsbelehrung
+                  </a>{" "}
+                  gelesen und stimme zu. Mit dem Kauf eines Wertgutscheins
+                  bleibt das Widerrufsrecht bestehen.
+                </span>
+              </label>
 
               {status && (
                 <p
                   className={`rounded-xl border px-4 py-3 text-sm leading-7 ${
                     status.type === "error"
-                      ? "border-black/12 bg-white/24 text-black/70"
-                      : "border-black/10 bg-white/34 text-black/72"
+                      ? "border-ink/12 bg-paper/24 text-ink/70"
+                      : "border-ink/10 bg-paper/34 text-ink/72"
                   }`}
                 >
                   {status.message}
@@ -331,13 +483,12 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                style={{ color: "#ffffff" }}
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-ink px-8 py-4 text-sm font-medium text-paper transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Weiter zu Stripe..." : "Wertgutschein kaufen"}
               </button>
 
-              <p className="text-sm leading-7 text-black/52">
+              <p className="text-sm leading-7 text-ink/65">
                 Nach erfolgreicher Zahlung wird der Wertgutschein vorbereitet.
                 Die Zahlungsdaten werden sicher über Stripe verarbeitet und
                 nicht auf dieser Webseite gespeichert.

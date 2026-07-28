@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import HeroSlider from "@/components/sections/HeroSlider";
-import FeaturedImageWall from "@/components/sections/FeaturedImageWall";
+import Hero from "@/components/sections/Hero";
+import SelectedWork from "@/components/sections/SelectedWork";
+import LivingGallery from "@/components/sections/LivingGallery";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import VoucherSection from "@/components/sections/VoucherSection";
 import AboutEditorial from "@/components/sections/AboutEditorial";
@@ -9,23 +10,35 @@ import ServicesAccordion from "@/components/sections/ServicesAccordion";
 import PromotionBar from "@/components/sections/PromotionBar";
 import PartnersSection from "@/components/sections/PartnersSection";
 import { getActivePromotions, getHomepagePartners } from "@/sanity/queries";
+import { buildFaqJsonLd, jsonLdScript } from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
+  // Der Root-Title greift hier bewusst ohne Template, damit das wichtigste
+  // Keyword ganz vorne steht.
+  title: {
+    absolute: "Fotograf Kaufbeuren – Portrait, Hochzeit & Familie | R.ArtPhotographie",
+  },
   description:
-    "Professionelle Fotografin in Kaufbeuren & Allgäu für Portraits, Hochzeiten, Familie, Babybauch und Newborn. 5,0 Google Bewertung · 47 Rezensionen.",
+    "Fotograf in Kaufbeuren für Portrait, Hochzeit, Familie, Babybauch und Newborn. Feste Preise ab 200 €, persönliche Begleitung. Jetzt Shooting anfragen.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Fotografin Kaufbeuren & Allgäu | R.ArtPhotographie",
+    title: "Fotograf Kaufbeuren – Portrait, Hochzeit & Familie",
     description:
-      "Professionelle Fotografin in Kaufbeuren & Allgäu für Portraits, Hochzeiten, Familie, Babybauch und Newborn.",
+      "Fotograf in Kaufbeuren und im Allgäu für Portrait, Hochzeit, Familie, Babybauch und Newborn. Feste Preise ab 200 €.",
     url: "/",
   },
 };
 
-export const revalidate = 0;
+// Die Startseite ist bis auf Aktionsbanner und Partnerliste statisch.
+// revalidate = 0 hat sie bei JEDEM Aufruf neu rendern lassen (kein CDN-Cache).
+export const revalidate = 600;
 
 const faqItems = [
+  {
+    question: "Was kostet ein Fotoshooting in Kaufbeuren?",
+    answer:
+      "Ein Portraitshooting startet bei 200 €, ein Familienshooting bei 250 €. Hochzeiten beginnen bei 350 € für das Mini-Paket und reichen bis 1.200 € für die ganztägige Begleitung. Alle Preise stehen offen auf der Preis-Seite, es gibt keine versteckten Kosten.",
+  },
   {
     question: "Muss ich vor der Kamera Erfahrung haben?",
     answer:
@@ -34,7 +47,12 @@ const faqItems = [
   {
     question: "Wo finden Shootings statt?",
     answer:
-      "In Kaufbeuren, im Allgäu, in Kempten, Marktoberdorf, Füssen und nach Absprache auch in München oder an deinem Wunschort.",
+      "In Kaufbeuren, Neugablonz, Marktoberdorf, Buchloe, Biessenhofen, Kempten, Füssen und im gesamten Ostallgäu. Nach Absprache auch in München oder an deinem Wunschort.",
+  },
+  {
+    question: "Wie schnell bekomme ich eine Antwort auf meine Anfrage?",
+    answer:
+      "In der Regel innerhalb von 24 Stunden. Du bekommst sofort nach dem Absenden eine Bestätigung per E-Mail, danach meldet sich Regina persönlich.",
   },
   {
     question: "Wie lange dauert die Bildbearbeitung?",
@@ -66,11 +84,18 @@ export default async function Home() {
   const activePromotion = promotions[0] || null;
 
   return (
-    <main className="bg-[#e7dfd3] text-black">
+    <main className="bg-sand text-ink">
+      <script {...jsonLdScript(buildFaqJsonLd(faqItems))} />
       <PromotionBar promotion={activePromotion} />
-      <HeroSlider />
+      <Hero />
 
-      <FeaturedImageWall />
+      {/*
+        Reihenfolge nach Kaufentscheidung: erst zeigen, was sie bekommt
+        (Arbeiten), dann was es gibt (Leistungen), dann wer dahintersteht,
+        dann der Beleg von Dritten.
+      */}
+      <SelectedWork />
+      <LivingGallery />
       <ServicesAccordion />
       <AboutEditorial />
 
@@ -83,53 +108,55 @@ export default async function Home() {
         compact
       />
 
-      <section className="px-6 py-24 md:px-10 md:py-28">
-        <div className="mx-auto max-w-7xl border-y border-black/10 py-16 md:py-24">
-          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-            <div>
-              <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-                FAQ
-              </p>
-              <h2 className="mt-5 text-4xl font-light leading-[1] md:text-6xl">
-                Fragen, bevor
-                <br />
-                du anfragst?
-              </h2>
-              <p className="mt-6 max-w-xl text-base leading-8 text-black/62 md:text-lg">
-                Hier findest du die wichtigsten Antworten. Alles Weitere klären
-                wir persönlich.
-              </p>
-            </div>
+      <section className="bg-sand px-[var(--shell-x)] py-24 md:py-36">
+        <div className="mx-auto grid max-w-[110rem] gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-24">
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <p className="eyebrow rise text-ink/55">Fragen</p>
+            <h2 className="display-lg rise mt-5 text-ink">
+              Bevor du
+              <br />
+              <span className="accent-italic">anfragst</span>
+            </h2>
+            <p className="rise mt-6 max-w-md text-lg leading-8 text-ink/72">
+              Die häufigsten Fragen, offen beantwortet. Alles Weitere klären
+              wir persönlich.
+            </p>
 
-            <div className="divide-y divide-black/10">
-              {faqItems.map((item) => (
-                <div key={item.question} className="py-8 first:pt-0">
-                  <h3 className="text-xl font-medium leading-tight text-black">
-                    {item.question}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-black/64 md:text-base md:leading-8">
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-12 flex flex-wrap items-center gap-4 lg:ml-[calc(42.5%+2rem)]">
             <Link
               href="/kontakt"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
+              className="group rise mt-8 inline-flex min-h-[58px] items-center gap-3 rounded-full bg-ink px-8 text-base font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
             >
               Shooting anfragen
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-500 group-hover:translate-x-1"
+              >
+                →
+              </span>
             </Link>
+          </div>
 
-            <Link
-              href="/gutscheine"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
-            >
-              Gutschein ansehen
-            </Link>
+          {/* Aufklappbar statt acht offene Blöcke: die Sektion war vorher
+              die längste der Seite und drückte den Abschluss nach unten. */}
+          <div className="divide-y divide-ink/12 border-y border-ink/12">
+            {faqItems.map((item) => (
+              <details key={item.question} className="group py-6">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-xl text-ink">
+                  <h3 className="font-display text-xl leading-snug">
+                    {item.question}
+                  </h3>
+                  <span
+                    aria-hidden="true"
+                    className="mt-1 shrink-0 text-2xl leading-none text-ink/35 transition-transform duration-500 group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 max-w-2xl text-base leading-8 text-ink/72">
+                  {item.answer}
+                </p>
+              </details>
+            ))}
           </div>
         </div>
       </section>

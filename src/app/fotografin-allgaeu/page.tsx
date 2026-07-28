@@ -1,16 +1,20 @@
 import Link from "next/link";
-import Image from "next/image";
+import PageHeader from "@/components/layout/PageHeader";
 import type { Metadata } from "next";
+import {
+  buildBreadcrumbJsonLd,
+  buildServiceJsonLd,
+  jsonLdScript,
+} from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title:
-    "Fotografin Allgäu | Hochzeiten, Portraits & Familie | R.ArtPhotographie",
+  // Eigenes, hochwertiges Keyword statt Dublette zur Startseite.
+  title: "Hochzeitsfotograf Allgäu – Kempten, Füssen & Umgebung",
   description:
-    "Professionelle Fotografin im Allgäu für Hochzeiten, Portraits, Familien, Babybauch und Newborn in Kaufbeuren, Kempten, Füssen und Umgebung.",
+    "Hochzeitsfotograf im Allgäu für Standesamt, freie Trauung und Reportage. Auch Portrait, Familie und Babybauch in Kempten, Füssen, Marktoberdorf und Kaufbeuren.",
   alternates: { canonical: "/fotografin-allgaeu" },
   openGraph: {
-    title:
-      "Fotografin Allgäu | Hochzeiten, Portraits & Familie | R.ArtPhotographie",
+    title: "Fotograf Allgäu – Hochzeit, Portrait & Familie",
     description:
       "Hochzeitsfotografie, Portraits, Familie, Babybauch und Newborn im Allgäu.",
     url: "/fotografin-allgaeu",
@@ -38,38 +42,44 @@ const services = [
 
 export default function FotografinAllgaeuPage() {
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
-      <section className="px-6 pb-16 md:px-10">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-          <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-              Allgäu
-            </p>
-            <h1 className="mt-4 max-w-5xl text-4xl font-light leading-[0.98] md:text-6xl">
-              Fotografin im Allgäu für Hochzeiten, Portraits & Familie
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
-              ★ 5,0 Google Bewertung · 47 Rezensionen
-            </p>
-          </div>
+    <main className="bg-sand pb-24 text-ink">
+      <script
+        {...jsonLdScript(
+          buildServiceJsonLd({
+            name: "Fotograf Allgäu – Hochzeit, Portrait, Familie",
+            description:
+              "Hochzeits- und Portraitfotografie im Allgäu: Kempten, Füssen, Marktoberdorf und Umgebung.",
+            path: "/fotografin-allgaeu",
+            city: "Allgäu",
+          })
+        )}
+      />
+      <script
+        {...jsonLdScript(
+          buildBreadcrumbJsonLd([
+            { name: "Fotograf Allgäu", path: "/fotografin-allgaeu" },
+          ])
+        )}
+      />
 
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-            <Image
-              src="/images/weddings/wedding-3.jpg"
-              alt="Hochzeitsfotografin Allgäu R.ArtPhotographie"
-              fill
-              sizes="(max-width: 1024px) 100vw, 44vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Allgäu"
+        heading="Hochzeitsfotograf im"
+        accent="Allgäu"
+        intro="Standesamt, freie Trauung und ganztägige Reportage in Kempten, Füssen, Marktoberdorf und im gesamten Allgäu."
+        image={{
+          src: "/images/weddings/wedding-13.jpg",
+          alt: "Hochzeitsfotografie im Allgäu von R.ArtPhotographie",
+        }}
+        meta="Hochzeitspakete ab 350 € · auch Portrait, Familie und Babybauch"
+        primaryAction={{ href: "/kontakt?shooting=Hochzeit", label: "Hochzeit anfragen" }}
+        showPhone
+      />
 
       <section className="px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-ink/65">
               Kaufbeuren · Kempten · Füssen
             </p>
             <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
@@ -77,7 +87,7 @@ export default function FotografinAllgaeuPage() {
             </h2>
           </div>
 
-          <div className="space-y-6 text-base leading-8 text-black/66 md:text-lg md:leading-9">
+          <div className="space-y-6 text-base leading-8 text-ink/66 md:text-lg md:leading-9">
             <p>
               R.ArtPhotographie steht für professionelle Fotografie im Allgäu:
               ruhig, emotional und hochwertig. Von Kaufbeuren aus begleite ich
@@ -159,14 +169,13 @@ export default function FotografinAllgaeuPage() {
             <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:flex-wrap">
               <Link
                 href="/kontakt"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:opacity-90"
               >
                 Shooting anfragen
               </Link>
               <Link
                 href="/gutscheine#checkout"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-ink/25 bg-transparent px-7 py-3 text-sm font-semibold text-ink transition hover:border-ink/40 hover:bg-transparent hover:text-ink"
               >
                 Gutschein kaufen
               </Link>
@@ -177,7 +186,7 @@ export default function FotografinAllgaeuPage() {
 
       <section className="px-6 py-14 md:px-10 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-ink/65">
             Leistungen
           </p>
           <h2 className="mt-4 text-3xl font-light md:text-5xl">
@@ -187,10 +196,10 @@ export default function FotografinAllgaeuPage() {
             {services.map((service) => (
               <article
                 key={service.title}
-                className="border-t border-black/12 pt-6"
+                className="border-t border-ink/12 pt-6"
               >
                 <h3 className="text-xl font-medium">{service.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-black/62">
+                <p className="mt-4 text-sm leading-7 text-ink/62">
                   {service.text}
                 </p>
               </article>

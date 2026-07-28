@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageHeader from "@/components/layout/PageHeader";
 import type { Metadata } from "next";
 import GalerieGridClient, {
   type GalleryImageItem,
@@ -140,61 +141,28 @@ export default async function GaleriePage() {
       : toFallbackImages(fallbackImages);
 
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
-      <section className="px-6 pb-12 md:px-10 md:pb-16">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-            Galerie
-          </p>
-
-          <div className="mt-5 grid gap-8 xl:grid-cols-[0.9fr_1.1fr] xl:items-end">
-            <div>
-              <h1 className="text-4xl font-light leading-[0.98] md:text-6xl">
-                Arbeiten, die man
-                <br />
-                wirklich sehen will
-              </h1>
-            </div>
-
-            <div>
-              <p className="max-w-3xl text-lg leading-8 text-black/62 md:text-xl md:leading-9">
-                Eine ruhige Gesamtgalerie aus Portraits, Familienmomenten,
-                Babybauch, Hochzeiten und besonderen Augenblicken.
-              </p>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  href="/kontakt"
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90"
-                  style={{ color: "#ffffff" }}
-                >
-                  Shooting anfragen
-                </Link>
-
-                <Link
-                  href="/preise"
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-4 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
-                >
-                  Preise ansehen
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main className="bg-sand pb-24 text-ink">
+      <PageHeader
+        eyebrow="Galerie"
+        heading="Arbeiten aus"
+        accent="Kaufbeuren"
+        intro="Portraits, Familienmomente, Babybäuche, Newborns und Hochzeiten – aus Kaufbeuren, dem Ostallgäu und dem gesamten Allgäu."
+        primaryAction={{ href: "/kontakt", label: "Shooting anfragen" }}
+        showPhone
+      />
 
       <GalerieGridClient images={images} />
 
       <section className="px-6 pt-10 md:px-10 md:pt-14">
-        <div className="mx-auto max-w-7xl border-t border-black/10 pt-12 md:flex md:items-end md:justify-between md:gap-10 md:pt-16">
+        <div className="mx-auto max-w-7xl border-t border-ink/10 pt-12 md:flex md:items-end md:justify-between md:gap-10 md:pt-16">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-ink/65">
               Anfrage
             </p>
             <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
               Du möchtest solche Bilder von dir?
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-ink/62 md:text-lg">
               Erzähl kurz, was du dir vorstellst – ich melde mich persönlich
               zurück.
             </p>
@@ -203,15 +171,14 @@ export default async function GaleriePage() {
           <div className="mt-8 flex flex-wrap gap-4 md:mt-0 md:shrink-0">
             <Link
               href="/kontakt"
-              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:opacity-90"
             >
               Shooting anfragen
             </Link>
 
             <Link
               href="/preise"
-              className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full border border-ink/25 bg-transparent px-7 py-3 text-sm font-semibold text-ink transition hover:border-ink/40 hover:bg-transparent hover:text-ink"
             >
               Preise ansehen
             </Link>

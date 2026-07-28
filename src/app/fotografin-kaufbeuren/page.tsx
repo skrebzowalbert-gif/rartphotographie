@@ -1,18 +1,24 @@
 import Link from "next/link";
-import Image from "next/image";
+import PageHeader from "@/components/layout/PageHeader";
 import type { Metadata } from "next";
+import {
+  buildBreadcrumbJsonLd,
+  buildServiceJsonLd,
+  jsonLdScript,
+} from "@/lib/schema";
 
 export const metadata: Metadata = {
-  title:
-    "Fotografin Kaufbeuren | Portrait, Hochzeit & Familie | R.ArtPhotographie",
+  // Bewusst NICHT "Fotograf Kaufbeuren": darauf zielt bereits die Startseite.
+  // Zwei Seiten mit demselben Keyword konkurrieren gegeneinander, statt sich
+  // zu ergänzen. Diese Seite bedient die Shooting-orientierte Suche.
+  title: "Fotoshooting Kaufbeuren – Ablauf, Orte & Termine",
   description:
-    "R.ArtPhotographie ist deine Fotografin in Kaufbeuren für Portraitshootings, Hochzeiten, Familienfotos, Babybauch und Newborn. Jetzt Shooting anfragen.",
+    "Fotoshooting in Kaufbeuren: Portrait, Hochzeit, Familie, Babybauch und Newborn. Shootings in Kaufbeuren, Neugablonz, Marktoberdorf und Buchloe. Feste Preise ab 200 €.",
   alternates: { canonical: "/fotografin-kaufbeuren" },
   openGraph: {
-    title:
-      "Fotografin Kaufbeuren | Portrait, Hochzeit & Familie | R.ArtPhotographie",
+    title: "Fotograf Kaufbeuren – Portrait, Hochzeit & Familie",
     description:
-      "Portraitfotografie, Hochzeitsfotografie, Familienfotos, Babybauch und Newborn in Kaufbeuren.",
+      "Portrait, Hochzeit, Familie, Babybauch und Newborn in Kaufbeuren und im Ostallgäu.",
     url: "/fotografin-kaufbeuren",
   },
 };
@@ -38,38 +44,44 @@ const services = [
 
 export default function FotografinKaufbeurenPage() {
   return (
-    <main className="bg-[#e7dfd3] pb-24 text-black">
-      <section className="px-6 pb-16 md:px-10">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
-          <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-              Kaufbeuren
-            </p>
-            <h1 className="mt-4 max-w-5xl text-4xl font-light leading-[0.98] md:text-6xl">
-              Fotografin in Kaufbeuren für Portrait, Hochzeit & Familie
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-black/62 md:text-lg">
-              ★ 5,0 Google Bewertung · 47 Rezensionen
-            </p>
-          </div>
+    <main className="bg-sand pb-24 text-ink">
+      <script
+        {...jsonLdScript(
+          buildServiceJsonLd({
+            name: "Fotograf Kaufbeuren – Portrait, Hochzeit, Familie",
+            description:
+              "Fotografie in Kaufbeuren: Portraitshootings, Hochzeitsreportagen, Familienfotos, Babybauch- und Newborn-Shootings.",
+            path: "/fotografin-kaufbeuren",
+            city: "Kaufbeuren",
+          })
+        )}
+      />
+      <script
+        {...jsonLdScript(
+          buildBreadcrumbJsonLd([
+            { name: "Fotograf Kaufbeuren", path: "/fotografin-kaufbeuren" },
+          ])
+        )}
+      />
 
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-            <Image
-              src="/images/portrait/portrait-2.jpg"
-              alt="Fotografin Kaufbeuren Portraitshooting R.ArtPhotographie"
-              fill
-              sizes="(max-width: 1024px) 100vw, 48vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Kaufbeuren"
+        heading="Fotoshooting in"
+        accent="Kaufbeuren"
+        intro="Portrait, Hochzeit, Familie, Babybauch und Newborn – in Kaufbeuren, Neugablonz, Marktoberdorf, Buchloe und im gesamten Ostallgäu."
+        image={{
+          src: "/images/portrait/portrait-30.jpg",
+          alt: "Portraitshooting in Kaufbeuren von R.ArtPhotographie",
+        }}
+        meta="Feste Preise ab 200 € · 40 bearbeitete Bilder · Antwort in der Regel innerhalb von 24 Stunden"
+        primaryAction={{ href: "/kontakt?shooting=Portraitshooting", label: "Shooting anfragen" }}
+        showPhone
+      />
 
       <section className="px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+            <p className="text-sm uppercase tracking-[0.32em] text-ink/65">
               Fotografie vor Ort
             </p>
             <h2 className="mt-4 text-3xl font-light leading-tight md:text-5xl">
@@ -77,7 +89,7 @@ export default function FotografinKaufbeurenPage() {
             </h2>
           </div>
 
-          <div className="space-y-6 text-base leading-8 text-black/66 md:text-lg md:leading-9">
+          <div className="space-y-6 text-base leading-8 text-ink/66 md:text-lg md:leading-9">
             <p>
               R.ArtPhotographie ist deine Fotografin in Kaufbeuren, wenn du
               Bilder suchst, die hochwertig wirken und trotzdem natürlich
@@ -153,14 +165,13 @@ export default function FotografinKaufbeurenPage() {
             <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:flex-wrap">
               <Link
                 href="/kontakt"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-                style={{ color: "#ffffff" }}
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:opacity-90"
               >
                 Shooting anfragen
               </Link>
               <Link
                 href="/preise"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/25 bg-transparent px-7 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-ink/25 bg-transparent px-7 py-3 text-sm font-semibold text-ink transition hover:border-ink/40 hover:bg-transparent hover:text-ink"
               >
                 Preise ansehen
               </Link>
@@ -171,7 +182,7 @@ export default function FotografinKaufbeurenPage() {
 
       <section className="px-6 py-14 md:px-10 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/38">
+          <p className="text-sm uppercase tracking-[0.32em] text-ink/65">
             Leistungen
           </p>
           <h2 className="mt-4 text-3xl font-light md:text-5xl">
@@ -181,10 +192,10 @@ export default function FotografinKaufbeurenPage() {
             {services.map((service) => (
               <article
                 key={service.title}
-                className="border-t border-black/12 pt-6"
+                className="border-t border-ink/12 pt-6"
               >
                 <h3 className="text-xl font-medium">{service.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-black/62">
+                <p className="mt-4 text-sm leading-7 text-ink/62">
                   {service.text}
                 </p>
               </article>

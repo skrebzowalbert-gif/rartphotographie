@@ -13,11 +13,19 @@ type ContactPayload = {
   phone?: string;
   type?: string;
   message?: string;
+  /** Honeypot – muss leer bleiben. */
+  website?: string;
 };
 
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as ContactPayload;
+
+    // Bots füllen versteckte Felder aus. Wir antworten bewusst mit Erfolg,
+    // damit der Bot keinen Hinweis auf die Erkennung bekommt.
+    if (clean(body.website, 200)) {
+      return Response.json({ success: true, message: "Vielen Dank." });
+    }
 
     const name = clean(body.name, 120);
     const email = clean(body.email, 180);
@@ -98,10 +106,16 @@ export async function POST(req: Request) {
     });
 
     if (error) {
+      // Ohne dieses Log bleibt ein Ausfall des Mailversands unsichtbar –
+      // die Anfrage wäre schlicht verloren.
+      console.error("[contact] Benachrichtigung fehlgeschlagen:", error);
       return Response.json({ error: "E-Mail konnte nicht gesendet werden." }, { status: 500 });
     }
 
-    await resendConfig.resend.emails
+    // Eingangsbestätigung an den Interessenten. Schlägt zwingend fehl,
+    // solange als Absender die Resend-Testdomain onboarding@resend.dev
+    // eingetragen ist – die darf ausschließlich an die Konto-Adresse senden.
+    const { error: confirmationError } = await resendConfig.resend.emails
       .send({
         from: `R.ArtPhotographie <${resendConfig.fromEmail}>`,
         to: [email],
@@ -124,7 +138,18 @@ export async function POST(req: Request) {
           `Datum: ${submittedAt}`,
         ].join("\n"),
       })
-      .catch(() => null);
+      .catch((cause: unknown) => ({ error: cause }));
+
+    if (confirmationError) {
+      // Die Anfrage selbst ist angekommen – nur die Bestätigung an den
+      // Kunden nicht. Das darf den Erfolg nicht kippen, muss aber sichtbar
+      // sein, sonst wartet der Kunde vergeblich auf eine Rückmeldung.
+      console.error(
+        "[contact] Eingangsbestätigung an den Kunden fehlgeschlagen. " +
+          "Absenderdomain in Resend verifiziert?",
+        confirmationError
+      );
+    }
 
     return Response.json({
       success: true,

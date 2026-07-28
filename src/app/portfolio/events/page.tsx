@@ -35,16 +35,16 @@ const images = [
 
 export default function EventsPage() {
   return (
-    <main className="min-h-screen bg-[#e7dfd3] text-black">
+    <main className="min-h-screen bg-sand text-ink">
       <section className="px-6 pb-16 md:px-10">
         <div className="mx-auto max-w-5xl">
-          <p className="text-sm uppercase tracking-[0.35em] text-black/40">
+          <p className="text-sm uppercase tracking-[0.35em] text-ink/65">
             Portfolio / Events
           </p>
-          <h1 className="mt-6 text-4xl font-light md:text-6xl">
+          <h1 className="display-lg mt-6 text-ink">
             Events mit Energie, Licht und Präsenz
           </h1>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-black/60">
+          <p className="mt-6 max-w-3xl text-base leading-8 text-ink/60">
             Feiern, Veranstaltungen und besondere Abende mit Dynamik, Stimmung
             und klarer Bildsprache.
           </p>
@@ -52,13 +52,13 @@ export default function EventsPage() {
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/kontakt?shooting=Eventfotografie"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-black px-8 py-3 text-sm font-medium text-white transition hover:opacity-85"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-ink px-8 py-3 text-sm font-medium text-paper transition hover:opacity-85"
             >
               Event anfragen
             </Link>
             <Link
               href="/preise"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 bg-transparent px-8 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-ink/25 bg-transparent px-8 py-3 text-sm font-semibold text-ink transition hover:border-ink/40 hover:bg-transparent hover:text-ink"
             >
               Preise ansehen
             </Link>
@@ -74,12 +74,14 @@ export default function EventsPage() {
               href={src}
               target="_blank"
               rel="noreferrer"
-              className="group overflow-hidden bg-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.04)]"
+              className="group overflow-hidden bg-paper/20 shadow-[0_10px_30px_rgba(0,0,0,0.04)]"
             >
               <div className="relative aspect-[4/5] w-full">
                 <Image
                   src={src}
-                  alt={`Event ${index + 1}`}
+                  alt={`Eventfotografie in Kaufbeuren und im Allgäu von R.ArtPhotographie – Bild ${
+                    index + 1
+                  }`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition duration-500 group-hover:scale-[1.02]"

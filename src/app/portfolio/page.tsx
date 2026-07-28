@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PageHeader from "@/components/layout/PageHeader";
 import Image from "next/image";
 import type { Metadata } from "next";
 
@@ -25,17 +26,24 @@ const mainCategories = [
   },
   {
     title: "Familie",
-    href: "/preise#familie",
-    image: "/images/family/family-1.jpg",
-    alt: "Familienfotografie Allgäu R.ArtPhotographie",
-    text: "Familienshootings, Babybauch und Newborn in einer ruhigen, persönlichen und hochwertigen Bildsprache.",
+    href: "/familienfotograf-kaufbeuren",
+    image: "/images/family/family-2.jpg",
+    alt: "Familienfotografie in Kaufbeuren von R.ArtPhotographie",
+    text: "Familienshootings, Babybauch und Newborn – ruhig begleitet, mit genug Zeit.",
   },
   {
     title: "Hochzeiten",
     href: "/portfolio/weddings",
-    image: "/images/weddings/wedding-3.jpg",
-    alt: "Hochzeitsfotografin Allgäu R.ArtPhotographie",
-    text: "Emotionale Erinnerungen mit hochwertiger Bildsprache und Ruhe im Look.",
+    image: "/images/weddings/wedding-13.jpg",
+    alt: "Hochzeitsfotografie im Allgäu von R.ArtPhotographie",
+    text: "Vom Standesamt bis zur ganztägigen Reportage.",
+  },
+  {
+    title: "Events",
+    href: "/portfolio/events",
+    image: "/images/events/event-1.jpg",
+    alt: "Eventfotografie in Kaufbeuren und im Allgäu",
+    text: "Feiern, Firmenfeste und besondere Abende.",
   },
 ];
 
@@ -52,36 +60,23 @@ const additionalAreas = [
 
 export default function PortfolioPage() {
   return (
-    <main className="bg-[#e7dfd3] px-6 pb-24 text-black md:px-10">
-      <section className="mx-auto max-w-7xl">
-        <p className="text-sm uppercase tracking-[0.32em] text-black/38">
-          Portfolio
-        </p>
+    <main className="bg-sand pb-24 text-ink">
+      <PageHeader
+        eyebrow="Portfolio"
+        heading="Nach Anlass"
+        accent="sortiert"
+        intro="Portrait, Hochzeit und Events – jeder Bereich als eigene Strecke. Termine für 2026 sind noch buchbar."
+        primaryAction={{ href: "/kontakt", label: "Shooting anfragen" }}
+        showPhone
+      />
 
-        <h1 className="mt-4 max-w-5xl text-4xl font-light leading-[0.98] md:text-6xl">
-          Ausgewählte Arbeiten mit
-          <br />
-          klarer Bildsprache
-        </h1>
-
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-black/62">
-          Drei Hauptbereiche führen durch das Portfolio. Zusätzlich gibt es
-          spezialisierte Shootings und detaillierte Pakete, die direkt
-          angefragt werden können.
-        </p>
-
-        <p className="mt-4 text-base font-medium text-black/70">
-          Jetzt Termine für 2026 sichern.
-        </p>
-      </section>
-
-      <section className="mx-auto mt-16 grid max-w-7xl gap-8 md:grid-cols-3">
+      <section className="mx-auto grid max-w-[110rem] gap-8 px-[var(--shell-x)] sm:grid-cols-2 xl:grid-cols-4">
         {mainCategories.map((group) => (
           <article
             key={group.title}
-            className="group overflow-hidden rounded-xl bg-black/5"
+            className="group overflow-hidden"
           >
-            <div className="relative h-[560px] overflow-hidden">
+            <div className="unveil relative aspect-[3/4] overflow-hidden">
               <Image
                 src={group.image}
                 alt={group.alt}
@@ -92,23 +87,22 @@ export default function PortfolioPage() {
 
               <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.74)_0%,rgba(0,0,0,0.42)_34%,rgba(0,0,0,0.12)_66%,rgba(0,0,0,0.03)_100%)]" />
 
-              <div className="absolute inset-x-0 bottom-0 p-7 text-white">
-                <p className="text-xs font-medium uppercase tracking-[0.28em] text-white/82">
+              <div className="absolute inset-x-0 bottom-0 p-7 text-paper">
+                <p className="text-xs font-medium uppercase tracking-[0.28em] text-paper/82">
                   Kategorie
                 </p>
 
-                <h2 className="mt-3 text-3xl font-semibold text-white">
+                <h2 className="mt-3 font-display text-3xl text-paper">
                   {group.title}
                 </h2>
 
-                <p className="mt-4 max-w-sm text-base leading-7 text-white/92">
+                <p className="mt-4 max-w-sm text-base leading-7 text-paper/92">
                   {group.text}
                 </p>
 
                 <Link
                   href={group.href}
-                  className="mt-6 inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/28 bg-black/22 px-5 py-3 text-sm font-medium text-white transition hover:border-white/46 hover:bg-white/12"
-                  style={{ color: "#ffffff" }}
+                  className="mt-6 inline-flex min-h-[52px] items-center justify-center rounded-full border border-white/28 bg-ink/22 px-5 py-3 text-sm font-medium text-paper transition hover:border-white/46 hover:bg-paper/12"
                 >
                   Bereich öffnen
                 </Link>
@@ -118,20 +112,17 @@ export default function PortfolioPage() {
         ))}
       </section>
 
-      <section className="mx-auto mt-20 max-w-7xl">
-        <div className="rounded-xl border border-black/8 bg-white/22 p-8 md:p-10">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/42">
-            Weitere Bereiche
-          </p>
+      <section className="mx-auto mt-24 max-w-[110rem] px-[var(--shell-x)]">
+        <div className="border-t border-ink/12 pt-12">
+          <p className="eyebrow rise text-ink/55">Weitere Bereiche</p>
 
-          <h2 className="mt-4 text-3xl font-light md:text-4xl">
-            Weitere Shootings und Pakete auf einen Blick
+          <h2 className="display-lg rise mt-5 text-ink">
+            Alle Shootings <span className="accent-italic">im Überblick</span>
           </h2>
 
-          <p className="mt-4 max-w-3xl text-base leading-8 text-black/66">
-            Neben den drei Hauptkategorien gibt es weitere spezialisierte
-            Leistungen wie Familie, Babybauch, Newborn oder detaillierte
-            Hochzeitspakete.
+          <p className="rise mt-6 max-w-2xl text-lg leading-8 text-ink/72">
+            Neben den Hauptbereichen gibt es spezialisierte Leistungen wie
+            Babybauch, Newborn oder die einzelnen Hochzeitspakete.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -139,7 +130,7 @@ export default function PortfolioPage() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-black/25 bg-transparent px-5 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="inline-flex min-h-[48px] items-center justify-center rounded-full border border-ink/25 bg-transparent px-5 py-3 text-sm font-semibold text-ink transition hover:border-ink/40 hover:bg-transparent hover:text-ink"
               >
                 {item.title}
               </Link>
@@ -149,8 +140,7 @@ export default function PortfolioPage() {
           <div className="mt-8">
             <Link
               href="/preise"
-              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-7 py-3 text-sm font-medium text-white transition hover:opacity-90"
-              style={{ color: "#ffffff" }}
+              className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-ink px-7 py-3 text-sm font-medium text-paper transition hover:opacity-90"
             >
               Alle Preise und Pakete ansehen
             </Link>

@@ -1,111 +1,90 @@
 import Link from "next/link";
 import { reviews } from "@/data/reviews";
+import { googleBusinessProfileUrl, googleReviews } from "@/lib/site";
 
-function Stars({ count }: { count: number }) {
-  return <div className="tracking-[0.22em] text-[#b8892f]">{"★".repeat(count)}</div>;
-}
-
+/**
+ * Bewertungen.
+ *
+ * Bewusst als dunkle Sektion. Die Seite bestand vorher durchgehend aus
+ * beigen Flächen mit Kästen darauf – ohne Kontrastwechsel entsteht kein
+ * Rhythmus, und jede Sektion wirkt gleich wichtig.
+ *
+ * Der erste Beleg trägt die Fläche als großes Zitat, die übrigen stehen
+ * schlank daneben. Keine Karten, keine Rahmen.
+ */
 export default function ReviewsSection() {
-  const featured = reviews.items[0];
-  const sideItems = reviews.items.slice(1, 4);
-  const bottomItems = reviews.items.slice(4);
+  const [featured, ...rest] = reviews.items;
+  const rating = googleReviews?.rating ?? reviews.rating;
+  const count = googleReviews?.count ?? reviews.total;
 
   return (
-    <section className="relative overflow-hidden px-6 py-24 text-black md:px-10 md:py-28">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_30%)]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-black/8" />
-
-      <div className="relative mx-auto max-w-[1500px]">
-        <div className="grid gap-12 xl:grid-cols-[0.72fr_1.28fr] xl:items-end">
+    <section className="bg-ink px-[var(--shell-x)] py-24 text-paper md:py-36">
+      <div className="mx-auto max-w-[110rem]">
+        <div className="grid gap-16 lg:grid-cols-[1.15fr_0.85fr] lg:gap-24">
           <div>
-            <p className="text-sm uppercase tracking-[0.35em] text-black/38">
-              Bewertungen
-            </p>
+            <p className="eyebrow rise text-paper/50">Was Kundinnen sagen</p>
 
-            <h2 className="mt-4 max-w-xl text-4xl font-light leading-[0.98] md:text-6xl">
-              Vertrauen, das
-              <br />
-              sichtbar wird
-            </h2>
+            <blockquote className="rise mt-8">
+              <p className="display-lg text-paper">
+                &bdquo;{featured.text.split(".")[0]}.&ldquo;
+              </p>
+              <footer className="mt-6 text-sm text-paper/55">
+                {featured.name}
+              </footer>
+            </blockquote>
 
-            <div className="mt-8 flex items-end gap-5">
-              <div className="text-6xl font-light leading-none">
-                {reviews.rating.toFixed(1)}
-              </div>
-
-              <div className="pb-1">
-                <Stars count={5} />
-                <p className="mt-2 text-sm text-black/55">
-                  {reviews.total} Bewertungen · {reviews.sourceLabel}
-                </p>
-              </div>
+            <div className="rise mt-14 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-paper/15 pt-8">
+              <span className="font-display text-5xl text-paper">
+                {rating.toFixed(1).replace(".", ",")}
+              </span>
+              <span
+                aria-hidden="true"
+                className="tracking-[0.25em] text-[#c9a227]"
+              >
+                ★★★★★
+              </span>
+              <span className="text-sm text-paper/60">
+                {count} Bewertungen bei Google
+              </span>
             </div>
 
-            <p className="mt-8 max-w-md text-base leading-8 text-black/60">
-              Gute Bilder entstehen leichter, wenn man sich wohlfühlt. Genau
-              das sagen viele Kundinnen und Kunden nach dem Shooting.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="rise mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link
                 href="/kontakt"
-                className="rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition hover:opacity-85"
+                className="group inline-flex min-h-[58px] items-center gap-3 rounded-full bg-paper px-8 text-base font-medium text-ink transition-opacity duration-500 hover:opacity-90"
               >
                 Shooting anfragen
+                <span
+                  aria-hidden="true"
+                  className="transition-transform duration-500 group-hover:translate-x-1"
+                >
+                  →
+                </span>
               </Link>
-
               <a
-                href="https://www.google.com/search?q=R.ArtPhotographie+Kaufbeuren"
+                href={googleBusinessProfileUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-black/25 bg-transparent px-6 py-3 text-sm font-semibold text-[#1f1714] transition hover:border-black/40 hover:bg-transparent hover:text-[#1f1714]"
+                className="link-sweep text-base font-medium text-paper/75"
               >
                 Bei Google ansehen
               </a>
             </div>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-12">
-            <article className="lg:col-span-7">
-              <div className="max-w-3xl">
-                <Stars count={featured.stars} />
-                <p className="mt-6 text-[1.5rem] font-light leading-[1.45] md:text-[1.9rem]">
-                  “{featured.text}”
+          {/* Weitere Stimmen – schlanke Spalte, nur durch Linien getrennt. */}
+          <div className="stagger divide-y divide-paper/12 border-t border-paper/12">
+            {rest.map((review) => (
+              <figure key={review.name} className="py-7">
+                <p className="text-base leading-7 text-paper/78">
+                  {review.text}
                 </p>
-                <p className="mt-6 text-sm uppercase tracking-[0.28em] text-black/42">
-                  {featured.name}
-                </p>
-              </div>
-            </article>
-
-            <div className="grid gap-8 lg:col-span-5">
-              {sideItems.map((item) => (
-                <article key={item.name}>
-                  <Stars count={item.stars} />
-                  <p className="mt-4 text-base leading-8 text-black/65">
-                    “{item.text}”
-                  </p>
-                  <p className="mt-4 text-xs uppercase tracking-[0.28em] text-black/42">
-                    {item.name}
-                  </p>
-                </article>
-              ))}
-            </div>
+                <figcaption className="mt-3 text-sm text-paper/50">
+                  {review.name}
+                </figcaption>
+              </figure>
+            ))}
           </div>
-        </div>
-
-        <div className="mt-20 grid gap-x-12 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
-          {bottomItems.map((item) => (
-            <article key={item.name} className="max-w-[32rem]">
-              <Stars count={item.stars} />
-              <p className="mt-4 text-base leading-8 text-black/65">
-                “{item.text}”
-              </p>
-              <p className="mt-4 text-xs uppercase tracking-[0.28em] text-black/42">
-                {item.name}
-              </p>
-            </article>
-          ))}
         </div>
       </div>
     </section>
