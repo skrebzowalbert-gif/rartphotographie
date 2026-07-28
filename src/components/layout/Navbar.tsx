@@ -51,9 +51,9 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed left-0 top-0 z-50 w-full border-b bg-sand/95 text-black backdrop-blur-md transition-shadow duration-300 ${
+      className={`fixed left-0 top-0 z-50 w-full border-b bg-sand/95 text-ink backdrop-blur-md transition-shadow duration-300 ${
         scrolled
-          ? "border-black/10 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+          ? "border-ink/10 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
           : "border-transparent"
       }`}
     >
@@ -79,7 +79,7 @@ export default function Navbar() {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={`text-sm transition ${
-                    isActive ? "text-black" : "text-black/75 hover:text-black"
+                    isActive ? "text-ink" : "text-ink/75 hover:text-ink"
                   }`}
                 >
                   {item.label}
@@ -93,7 +93,7 @@ export default function Navbar() {
               <a
                 href={phoneHref}
                 aria-label={`Anrufen: ${phoneDisplay}`}
-                className="hidden items-center gap-2 rounded-full border border-black/25 px-4 py-2 text-sm font-medium transition hover:border-black/50 sm:inline-flex"
+                className="hidden items-center gap-2 rounded-full border border-ink/25 px-4 py-2 text-sm font-medium transition hover:border-ink/50 sm:inline-flex"
               >
                 <svg
                   aria-hidden="true"
@@ -112,7 +112,7 @@ export default function Navbar() {
             {/* Der auffälligste Button führt zur Anfrage, nicht zu Instagram. */}
             <Link
               href="/kontakt"
-              className="hidden rounded-full bg-black px-5 py-2.5 text-sm font-medium text-white transition hover:bg-black/85 sm:inline-flex"
+              className="hidden rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper transition hover:bg-ink/85 sm:inline-flex"
             >
               Shooting anfragen
             </Link>
@@ -122,16 +122,16 @@ export default function Navbar() {
               aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
-              className="relative z-10 flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border border-black/20 bg-black/[0.04] transition lg:hidden"
+              className="relative z-10 flex h-11 w-11 touch-manipulation items-center justify-center rounded-full border border-ink/20 bg-ink/04 transition lg:hidden"
             >
               <span className="flex w-4 flex-col gap-1.5">
                 <span
-                  className={`h-px w-full bg-black transition ${
+                  className={`h-px w-full bg-ink transition ${
                     menuOpen ? "translate-y-[3px] rotate-45" : ""
                   }`}
                 />
                 <span
-                  className={`h-px w-full bg-black transition ${
+                  className={`h-px w-full bg-ink transition ${
                     menuOpen ? "-translate-y-[3px] -rotate-45" : ""
                   }`}
                 />
@@ -147,19 +147,19 @@ export default function Navbar() {
             type="button"
             aria-label="Menü schließen"
             onClick={closeMenu}
-            className="absolute inset-0 h-full w-full bg-black/30"
+            className="absolute inset-0 h-full w-full bg-ink/30"
           />
 
           <nav
             aria-label="Mobile Navigation"
-            className="fixed inset-x-4 top-20 z-50 flex flex-col overflow-hidden rounded-xl border border-black/10 bg-sand p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
+            className="fixed inset-x-4 top-20 z-50 flex flex-col overflow-hidden rounded-xl border border-ink/10 bg-sand p-4 shadow-[0_24px_70px_rgba(0,0,0,0.22)]"
           >
             {mainNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={closeMenu}
-                className="border-b border-black/8 py-4 text-[0.95rem] uppercase tracking-[0.2em] text-black/85 transition hover:text-black"
+                className="border-b border-ink/8 py-4 text-[0.95rem] uppercase tracking-[0.2em] text-ink/85 transition hover:text-ink"
               >
                 {item.label}
               </Link>
@@ -168,7 +168,7 @@ export default function Navbar() {
             <Link
               href="/kontakt"
               onClick={closeMenu}
-              className="mt-4 inline-flex min-h-[52px] items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white"
+              className="mt-4 inline-flex min-h-[52px] items-center justify-center rounded-full bg-ink px-6 text-sm font-medium text-paper"
             >
               Shooting anfragen
             </Link>
@@ -177,7 +177,7 @@ export default function Navbar() {
               <a
                 href={phoneHref}
                 onClick={closeMenu}
-                className="mt-3 inline-flex min-h-[52px] items-center justify-center rounded-full border border-black/25 px-6 text-sm font-medium"
+                className="mt-3 inline-flex min-h-[52px] items-center justify-center rounded-full border border-ink/25 px-6 text-sm font-medium"
               >
                 {phoneDisplay} anrufen
               </a>

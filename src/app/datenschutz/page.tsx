@@ -9,19 +9,19 @@ export const metadata: Metadata = {
 
 export default function DatenschutzPage() {
   return (
-    <main className="min-h-screen bg-sand px-6 pb-24 text-black md:px-10">
+    <main className="min-h-screen bg-sand px-[var(--shell-x)] pb-24 text-ink">
       <div className="mx-auto max-w-4xl">
-        <p className="text-sm uppercase tracking-[0.35em] text-black/65">
+        <p className="eyebrow text-ink/55">
           Rechtliches
         </p>
 
-        <h1 className="mt-4 text-4xl font-light md:text-6xl">
+        <h1 className="display-lg mt-5 text-ink">
           Datenschutzerklärung
         </h1>
 
-        <div className="mt-12 space-y-10 text-base leading-8 text-black/75">
+        <div className="mt-12 space-y-10 text-base leading-8 text-ink/75">
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               1. Allgemeine Hinweise
             </h2>
             <p className="mt-4">
@@ -34,7 +34,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               2. Verantwortliche Stelle
             </h2>
             <div className="mt-4">
@@ -49,7 +49,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               3. Erhebung und Verarbeitung personenbezogener Daten
             </h2>
             <p className="mt-4">
@@ -61,7 +61,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               4. Technische Zugriffsdaten und Server-Logs
             </h2>
             <p className="mt-4">
@@ -80,7 +80,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               5. Hosting über Vercel
             </h2>
             <p className="mt-4">
@@ -97,7 +97,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               6. Kontaktformular und Anfragen
             </h2>
             <p className="mt-4">
@@ -119,7 +119,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               7. E-Mail-Versand über Resend
             </h2>
             <p className="mt-4">
@@ -138,7 +138,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               8. Gutschein-Kauf und Zahlungsabwicklung über Stripe
             </h2>
             <p className="mt-4">
@@ -164,7 +164,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               9. Galerie und Promotion-Inhalte über Sanity
             </h2>
             <p className="mt-4">
@@ -178,7 +178,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               10. Cookies, Analyse und Marketing
             </h2>
             <p className="mt-4">
@@ -197,7 +197,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               11. Externe Links
             </h2>
             <p className="mt-4">
@@ -209,7 +209,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               12. Speicherdauer
             </h2>
             <p className="mt-4">
@@ -222,7 +222,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               13. Rechte der betroffenen Personen
             </h2>
             <p className="mt-4">
@@ -240,7 +240,7 @@ export default function DatenschutzPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               14. Beschwerderecht
             </h2>
             <p className="mt-4">

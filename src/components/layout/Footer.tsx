@@ -37,7 +37,7 @@ const legalLinks = [
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-black/10 bg-sand px-6 py-14 text-black md:px-10">
+    <footer className="mt-20 border-t border-ink/10 bg-sand px-6 py-14 text-ink md:px-10">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/*
@@ -49,7 +49,7 @@ export default function Footer() {
             <p className="text-sm font-semibold uppercase tracking-[0.22em]">
               R.ArtPhotographie
             </p>
-            <address className="mt-4 not-italic text-sm leading-7 text-black/70">
+            <address className="mt-4 not-italic text-sm leading-7 text-ink/70">
               {business.legalName}
               <br />
               {business.street}
@@ -63,14 +63,14 @@ export default function Footer() {
               {phoneHref && (
                 <a
                   href={phoneHref}
-                  className="font-medium text-black underline underline-offset-4 hover:opacity-70"
+                  className="font-medium text-ink underline underline-offset-4 hover:opacity-70"
                 >
                   {phoneDisplay}
                 </a>
               )}
               <a
                 href={`mailto:${publicContactEmail}`}
-                className="break-words text-black/70 underline underline-offset-4 hover:text-black [overflow-wrap:anywhere]"
+                className="break-words text-ink/70 underline underline-offset-4 hover:text-ink [overflow-wrap:anywhere]"
               >
                 {publicContactEmail}
               </a>
@@ -78,7 +78,7 @@ export default function Footer() {
                 href={instagramUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-black/70 underline underline-offset-4 hover:text-black"
+                className="text-ink/70 underline underline-offset-4 hover:text-ink"
               >
                 Instagram
               </a>
@@ -89,10 +89,10 @@ export default function Footer() {
             <p className="text-sm font-semibold uppercase tracking-[0.22em]">
               Shootings
             </p>
-            <ul className="mt-4 space-y-2 text-sm text-black/70">
+            <ul className="mt-4 space-y-2 text-sm text-ink/70">
               {serviceLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="hover:text-black">
+                  <Link href={link.href} className="hover:text-ink">
                     {link.label}
                   </Link>
                 </li>
@@ -104,10 +104,10 @@ export default function Footer() {
             <p className="text-sm font-semibold uppercase tracking-[0.22em]">
               Seiten
             </p>
-            <ul className="mt-4 space-y-2 text-sm text-black/70">
+            <ul className="mt-4 space-y-2 text-sm text-ink/70">
               {siteLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="hover:text-black">
+                  <Link href={link.href} className="hover:text-ink">
                     {link.label}
                   </Link>
                 </li>
@@ -119,20 +119,20 @@ export default function Footer() {
             <p className="text-sm font-semibold uppercase tracking-[0.22em]">
               Einzugsgebiet
             </p>
-            <p className="mt-4 text-sm leading-7 text-black/70">
+            <p className="mt-4 text-sm leading-7 text-ink/70">
               {areaServed.join(" · ")}
             </p>
 
             <Link
               href="/kontakt"
-              className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white transition hover:bg-black/85"
+              className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink px-6 text-sm font-medium text-paper transition hover:bg-ink/85"
             >
               Shooting anfragen
             </Link>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-black/10 pt-6 text-sm text-black/65 md:flex-row md:items-center md:justify-between">
+        <div className="mt-12 flex flex-col gap-4 border-t border-ink/10 pt-6 text-sm text-ink/65 md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} R.ArtPhotographie · Fotograf in
             Kaufbeuren &amp; im Allgäu
@@ -140,7 +140,7 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {legalLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="hover:text-black">
+              <Link key={link.href} href={link.href} className="hover:text-ink">
                 {link.label}
               </Link>
             ))}

@@ -20,12 +20,12 @@ export const metadata: Metadata = {
 
 export default function WiderrufPage() {
   return (
-    <main className="min-h-screen bg-sand px-6 pb-24 text-black md:px-10">
+    <main className="min-h-screen bg-sand px-[var(--shell-x)] pb-24 text-ink">
       <div className="mx-auto max-w-4xl">
-        <p className="text-sm uppercase tracking-[0.3em] text-black/60">
+        <p className="eyebrow text-ink/55">
           Rechtliches
         </p>
-        <h1 className="mt-4 text-4xl font-light md:text-6xl">
+        <h1 className="display-lg mt-5 text-ink">
           Widerrufsbelehrung
         </h1>
 
@@ -40,9 +40,9 @@ export default function WiderrufPage() {
           <code>noindex</code> gesetzt.
         </div>
 
-        <div className="mt-12 space-y-10 text-base leading-8 text-black/80">
+        <div className="mt-12 space-y-10 text-base leading-8 text-ink/80">
           <section>
-            <h2 className="text-2xl font-medium text-black">Widerrufsrecht</h2>
+            <h2 className="font-display text-2xl text-ink">Widerrufsrecht</h2>
             <p className="mt-4">
               Du hast das Recht, binnen vierzehn Tagen ohne Angabe von Gründen
               diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn
@@ -67,7 +67,7 @@ export default function WiderrufPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               Folgen des Widerrufs
             </h2>
             <p className="mt-4">
@@ -89,7 +89,7 @@ export default function WiderrufPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               Vorzeitiges Erlöschen des Widerrufsrechts
             </h2>
             <p className="mt-4">
@@ -111,14 +111,14 @@ export default function WiderrufPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               Muster-Widerrufsformular
             </h2>
-            <p className="mt-4 text-sm text-black/70">
+            <p className="mt-4 text-sm text-ink/70">
               (Wenn du den Vertrag widerrufen willst, fülle bitte dieses
               Formular aus und sende es zurück.)
             </p>
-            <div className="mt-4 rounded-md border border-black/15 bg-white/55 p-5 text-sm leading-8">
+            <div className="mt-4 rounded-md border border-ink/15 bg-paper/55 p-5 text-sm leading-8">
               <p>
                 An {business.legalName}, {business.street},{" "}
                 {business.postalCode} {business.city}, E-Mail:{" "}
@@ -137,7 +137,7 @@ export default function WiderrufPage() {
                 Papier)
               </p>
               <p className="mt-4">Datum</p>
-              <p className="mt-6 text-black/60">(*) Unzutreffendes streichen.</p>
+              <p className="mt-6 text-ink/60">(*) Unzutreffendes streichen.</p>
             </div>
           </section>
         </div>

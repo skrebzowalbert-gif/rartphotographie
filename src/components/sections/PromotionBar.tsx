@@ -42,14 +42,14 @@ export default function PromotionBar({ promotion }: PromotionBarProps) {
               href={buttonLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-full border border-[#f6efe4]/20 px-5 py-2 text-sm font-medium text-[#f6efe4] transition hover:border-[#f6efe4]/45 hover:bg-white/8"
+              className="inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-full border border-[#f6efe4]/20 px-5 py-2 text-sm font-medium text-[#f6efe4] transition hover:border-[#f6efe4]/45 hover:bg-paper/8"
             >
               {buttonText}
             </a>
           ) : (
             <Link
               href={buttonLink}
-              className="inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-full border border-[#f6efe4]/20 px-5 py-2 text-sm font-medium text-[#f6efe4] transition hover:border-[#f6efe4]/45 hover:bg-white/8"
+              className="inline-flex min-h-[40px] shrink-0 items-center justify-center rounded-full border border-[#f6efe4]/20 px-5 py-2 text-sm font-medium text-[#f6efe4] transition hover:border-[#f6efe4]/45 hover:bg-paper/8"
             >
               {buttonText}
             </Link>

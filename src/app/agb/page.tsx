@@ -103,12 +103,12 @@ const sections = [
 
 export default function AgbPage() {
   return (
-    <main className="min-h-screen bg-sand px-6 pb-24 text-black md:px-10">
+    <main className="min-h-screen bg-sand px-[var(--shell-x)] pb-24 text-ink">
       <div className="mx-auto max-w-4xl">
-        <p className="text-sm uppercase tracking-[0.3em] text-black/60">
+        <p className="eyebrow text-ink/55">
           Rechtliches
         </p>
-        <h1 className="mt-4 text-4xl font-light md:text-6xl">
+        <h1 className="display-lg mt-5 text-ink">
           Allgemeine Geschäftsbedingungen
         </h1>
 
@@ -123,10 +123,10 @@ export default function AgbPage() {
           lassen. Diese Seite ist derzeit auf <code>noindex</code> gesetzt.
         </div>
 
-        <div className="mt-12 space-y-10 text-base leading-8 text-black/80">
+        <div className="mt-12 space-y-10 text-base leading-8 text-ink/80">
           {sections.map((section) => (
             <section key={section.title}>
-              <h2 className="text-2xl font-medium text-black">
+              <h2 className="font-display text-2xl text-ink">
                 {section.title}
               </h2>
               {section.paragraphs.map((paragraph) => (
@@ -138,7 +138,7 @@ export default function AgbPage() {
           ))}
 
           <section>
-            <h2 className="text-2xl font-medium text-black">Kontakt</h2>
+            <h2 className="font-display text-2xl text-ink">Kontakt</h2>
             <address className="mt-4 not-italic">
               {business.legalName}
               <br />

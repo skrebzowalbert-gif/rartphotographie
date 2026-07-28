@@ -9,17 +9,17 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <main className="min-h-screen bg-sand px-6 pb-24 text-black md:px-10">
+    <main className="min-h-screen bg-sand px-[var(--shell-x)] pb-24 text-ink">
       <div className="mx-auto max-w-4xl">
-        <p className="text-sm uppercase tracking-[0.35em] text-black/65">
+        <p className="eyebrow text-ink/55">
           Rechtliches
         </p>
 
-        <h1 className="mt-4 text-4xl font-light md:text-6xl">Impressum</h1>
+        <h1 className="display-lg mt-5 text-ink">Impressum</h1>
 
-        <div className="mt-12 space-y-10 text-base leading-8 text-black/75">
+        <div className="mt-12 space-y-10 text-base leading-8 text-ink/75">
           <section>
-            <h2 className="text-2xl font-medium text-black">Angaben gemäß § 5 TMG</h2>
+            <h2 className="font-display text-2xl text-ink">Angaben gemäß § 5 TMG</h2>
             <div className="mt-4">
               <p>Regina Gerdt</p>
               <p>R.ArtPhotographie</p>
@@ -30,7 +30,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">Kontakt</h2>
+            <h2 className="font-display text-2xl text-ink">Kontakt</h2>
             <div className="mt-4">
               {/*
                 § 5 Abs. 1 Nr. 2 TMG verlangt Angaben, die eine unmittelbare
@@ -54,7 +54,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">Umsatzsteuer</h2>
+            <h2 className="font-display text-2xl text-ink">Umsatzsteuer</h2>
             <p className="mt-4 rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-4 py-3 text-sm text-amber-950">
               Hinweis für die Betreiberin: Hier gehört die zutreffende Angabe
               hin – entweder die Umsatzsteuer-Identifikationsnummer nach § 27 a
@@ -64,7 +64,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               Verbraucherstreitbeilegung
             </h2>
             <p className="mt-4">
@@ -76,7 +76,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">
+            <h2 className="font-display text-2xl text-ink">
               Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
             </h2>
             <div className="mt-4">
@@ -87,7 +87,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">Haftung für Inhalte</h2>
+            <h2 className="font-display text-2xl text-ink">Haftung für Inhalte</h2>
             <p className="mt-4">
               Die Inhalte dieser Website wurden mit größtmöglicher Sorgfalt erstellt.
               Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte wird
@@ -96,7 +96,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">Haftung für Links</h2>
+            <h2 className="font-display text-2xl text-ink">Haftung für Links</h2>
             <p className="mt-4">
               Diese Website enthält Links zu externen Websites Dritter, auf deren
               Inhalte kein Einfluss besteht. Deshalb wird für diese fremden Inhalte
@@ -106,7 +106,7 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-medium text-black">Urheberrecht</h2>
+            <h2 className="font-display text-2xl text-ink">Urheberrecht</h2>
             <p className="mt-4">
               Die auf dieser Website veröffentlichten Inhalte und Werke unterliegen
               dem deutschen Urheberrecht. Jede Art der Verwertung außerhalb der

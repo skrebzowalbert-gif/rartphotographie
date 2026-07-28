@@ -109,7 +109,7 @@ export default function GalerieGridClient({ images }: GalerieGridClientProps) {
 
       {activeImage && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/88 px-4 py-6 text-white"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-ink/88 px-4 py-6 text-paper"
           role="dialog"
           aria-modal="true"
           onClick={closeLightbox}
@@ -117,7 +117,7 @@ export default function GalerieGridClient({ images }: GalerieGridClientProps) {
           <button
             type="button"
             onClick={closeLightbox}
-            className="absolute right-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/22 bg-black/42 text-2xl leading-none text-white backdrop-blur transition hover:bg-white/12"
+            className="absolute right-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/22 bg-ink/42 text-2xl leading-none text-paper backdrop-blur transition hover:bg-paper/12"
             aria-label="Galerie schließen"
           >
             ×
@@ -129,18 +129,18 @@ export default function GalerieGridClient({ images }: GalerieGridClientProps) {
               event.stopPropagation();
               showPrevious();
             }}
-            className="absolute left-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/32 text-3xl leading-none text-white backdrop-blur transition hover:bg-white/12 sm:inline-flex"
+            className="absolute left-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-ink/32 text-3xl leading-none text-paper backdrop-blur transition hover:bg-paper/12 sm:inline-flex"
             aria-label="Vorheriges Bild"
           >
             ‹
           </button>
 
           <div
-            className="relative h-[82vh] w-full max-w-5xl bg-black/30"
+            className="relative h-[82vh] w-full max-w-5xl bg-ink/30"
             onClick={(event) => event.stopPropagation()}
           >
             {!activeLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center text-sm text-white/80">
+              <div className="absolute inset-0 flex items-center justify-center text-sm text-paper/80">
                 Bild lädt
               </div>
             )}
@@ -164,7 +164,7 @@ export default function GalerieGridClient({ images }: GalerieGridClientProps) {
               event.stopPropagation();
               showNext();
             }}
-            className="absolute right-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/32 text-3xl leading-none text-white backdrop-blur transition hover:bg-white/12 sm:inline-flex"
+            className="absolute right-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-ink/32 text-3xl leading-none text-paper backdrop-blur transition hover:bg-paper/12 sm:inline-flex"
             aria-label="Nächstes Bild"
           >
             ›

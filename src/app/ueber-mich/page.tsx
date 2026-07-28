@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import PageHeader from "@/components/layout/PageHeader";
 import {
   buildBreadcrumbJsonLd,
   jsonLdScript,
@@ -10,8 +10,6 @@ import {
   areaServed,
   business,
   instagramUrl,
-  phoneDisplay,
-  phoneHref,
   siteUrl,
 } from "@/lib/site";
 
@@ -86,7 +84,7 @@ export default function UeberMichPage() {
   };
 
   return (
-    <main className="bg-sand pb-24 text-black">
+    <main className="bg-sand pb-24 text-ink">
       <script {...jsonLdScript(personJsonLd)} />
       <script
         {...jsonLdScript(
@@ -94,51 +92,18 @@ export default function UeberMichPage() {
         )}
       />
 
-      <section className="px-6 md:px-10">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-black/65">
-              Über mich
-            </p>
-            <h1 className="mt-4 text-4xl font-light leading-[1.03] md:text-6xl">
-              Hallo, ich bin Regina
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-black/78">
-              Ich fotografiere in Kaufbeuren und im Allgäu – Babybauch,
-              Newborn, Familie, Portrait und Hochzeiten. Mir ist wichtig, dass
-              du dich vor der Kamera nicht verstellen musst.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link
-                href="/kontakt"
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 text-base font-medium text-white transition hover:bg-black/85"
-              >
-                Shooting anfragen
-              </Link>
-              {phoneHref && (
-                <a
-                  href={phoneHref}
-                  className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-7 text-base font-medium transition hover:border-black/60"
-                >
-                  {phoneDisplay}
-                </a>
-              )}
-            </div>
-          </div>
-
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] md:rounded-[2rem]">
-            <Image
-              src="/images/about/regina_about1.jpg"
-              alt="Regina Gerdt, Fotografin bei R.ArtPhotographie in Kaufbeuren"
-              fill
-              preload
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        eyebrow="Über mich"
+        heading="Hallo, ich bin"
+        accent="Regina"
+        intro="Ich fotografiere in Kaufbeuren und im Allgäu – Babybauch, Newborn, Familie, Portrait und Hochzeiten. Mir ist wichtig, dass du dich vor der Kamera nicht verstellen musst."
+        image={{
+          src: "/images/about/regina_about1.jpg",
+          alt: "Regina Gerdt, Fotografin bei R.ArtPhotographie in Kaufbeuren",
+        }}
+        primaryAction={{ href: "/kontakt", label: "Shooting anfragen" }}
+        showPhone
+      />
 
       {/*
         TODO REGINA: Dieser Abschnitt ist der wichtigste der ganzen Seite und
@@ -173,7 +138,7 @@ export default function UeberMichPage() {
           <h2 className="mt-12 text-3xl font-light md:text-4xl">
             Wie ich arbeite
           </h2>
-          <div className="mt-6 space-y-5 text-base leading-8 text-black/78 md:text-lg">
+          <div className="mt-6 space-y-5 text-base leading-8 text-ink/78 md:text-lg">
             <p>
               Die meisten Menschen, die zu mir kommen, sagen im Vorgespräch
               denselben Satz: &bdquo;Ich bin nicht fotogen.&ldquo; Fast nie stimmt
@@ -203,7 +168,7 @@ export default function UeberMichPage() {
           <h2 className="text-3xl font-light md:text-4xl">
             So läuft ein Shooting ab
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-8 text-black/75">
+          <p className="mt-4 max-w-2xl text-base leading-8 text-ink/75">
             Von der ersten Nachricht bis zu den fertigen Bildern.
           </p>
 
@@ -211,13 +176,13 @@ export default function UeberMichPage() {
             {steps.map((step, index) => (
               <li
                 key={step.title}
-                className="rounded-xl border border-black/12 bg-white/45 p-6"
+                className="rounded-xl border border-ink/12 bg-paper/45 p-6"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-sm font-medium text-white">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-sm font-medium text-paper">
                   {index + 1}
                 </span>
                 <h3 className="mt-4 text-xl font-medium">{step.title}</h3>
-                <p className="mt-3 text-[15px] leading-7 text-black/75">
+                <p className="mt-3 text-[15px] leading-7 text-ink/75">
                   {step.text}
                 </p>
               </li>
@@ -227,31 +192,31 @@ export default function UeberMichPage() {
       </section>
 
       <section className="px-6 py-16 md:px-10 md:py-20">
-        <div className="mx-auto max-w-5xl rounded-xl border border-black/12 bg-white/45 p-8 md:p-10">
+        <div className="mx-auto max-w-5xl rounded-xl border border-ink/12 bg-paper/45 p-8 md:p-10">
           <h2 className="text-3xl font-light md:text-4xl">Gut zu wissen</h2>
           <dl className="mt-8 grid gap-8 sm:grid-cols-2">
             <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-black/70">
+              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/70">
                 Wo ich fotografiere
               </dt>
-              <dd className="mt-2 leading-7 text-black/78">
+              <dd className="mt-2 leading-7 text-ink/78">
                 {areaServed.join(" · ")}. Weitere Orte nach Absprache.
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-black/70">
+              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/70">
                 Was enthalten ist
               </dt>
-              <dd className="mt-2 leading-7 text-black/78">
+              <dd className="mt-2 leading-7 text-ink/78">
                 Bei den meisten Shootings 40 bearbeitete Bilder als digitale
                 Dateien über eine Online-Galerie.
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-black/70">
+              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/70">
                 Preise
               </dt>
-              <dd className="mt-2 leading-7 text-black/78">
+              <dd className="mt-2 leading-7 text-ink/78">
                 Ab 200 €, offen einsehbar auf der{" "}
                 <Link
                   href="/preise"
@@ -263,10 +228,10 @@ export default function UeberMichPage() {
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-black/70">
+              <dt className="text-sm font-semibold uppercase tracking-[0.18em] text-ink/70">
                 Anfrage
               </dt>
-              <dd className="mt-2 leading-7 text-black/78">
+              <dd className="mt-2 leading-7 text-ink/78">
                 Unverbindlich und kostenlos. Antwort in der Regel innerhalb von
                 24 Stunden.
               </dd>
@@ -276,13 +241,13 @@ export default function UeberMichPage() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Link
               href="/kontakt"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 text-base font-medium text-white transition hover:bg-black/85"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-ink px-8 text-base font-medium text-paper transition hover:bg-ink/85"
             >
               Shooting anfragen
             </Link>
             <Link
               href="/galerie"
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-8 text-base font-medium transition hover:border-black/60"
+              className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-ink/30 px-8 text-base font-medium transition hover:border-ink/60"
             >
               Arbeiten ansehen
             </Link>

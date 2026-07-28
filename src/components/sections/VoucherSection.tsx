@@ -37,7 +37,7 @@ export default function VoucherSection({
         {/* Inhalt auf normaler Breite */}
         <div className="relative z-10 flex min-h-[560px] items-center px-6 py-10 md:min-h-[720px] md:px-12 md:py-16">
           <div className="ml-0 max-w-[560px] md:ml-[6vw]">
-            <p className="text-sm uppercase tracking-[0.34em] text-black/65">
+            <p className="text-sm uppercase tracking-[0.34em] text-ink/65">
               Gutscheine
             </p>
 
@@ -91,12 +91,12 @@ export default function VoucherSection({
   </span>
 </h2>
 
-            <p className="mt-7 max-w-[34rem] text-base leading-8 text-black/68 md:mt-8 md:text-[18px] md:leading-9">
+            <p className="mt-7 max-w-[34rem] text-base leading-8 text-ink/68 md:mt-8 md:text-[18px] md:leading-9">
               Verschenke einen frei wählbaren Wertgutschein ab 50 € für
               Portrait, Familie, Schwangerschaft, Newborn oder Hochzeit.
             </p>
 
-            <p className="mt-4 max-w-[34rem] text-base leading-8 text-black/68 md:mt-5 md:text-[18px] md:leading-9">
+            <p className="mt-4 max-w-[34rem] text-base leading-8 text-ink/68 md:mt-5 md:text-[18px] md:leading-9">
               Jeder Gutschein wird auf hochwertigem Papier vorbereitet und auf
               Wunsch per Post versendet.
             </p>
@@ -104,7 +104,7 @@ export default function VoucherSection({
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap md:mt-10 md:gap-4">
               <Link
                 href="/gutscheine#checkout"
-                className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-black px-6 py-3 text-center text-sm font-medium text-white transition hover:opacity-90 md:min-h-[56px] md:px-8 md:py-4"
+                className="inline-flex min-h-[54px] items-center justify-center rounded-full bg-ink px-6 py-3 text-center text-sm font-medium text-paper transition hover:opacity-90 md:min-h-[56px] md:px-8 md:py-4"
               >
                 Wertgutschein kaufen
               </Link>

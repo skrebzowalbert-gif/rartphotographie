@@ -172,6 +172,35 @@ test.describe("seo essentials", () => {
     }
   });
 
+  test("every page ships exactly one h1 in the server HTML", async ({
+    request,
+  }) => {
+    // Bewusst ohne Browser: geprüft wird das AUSGELIEFERTE HTML.
+    // Auf /kontakt lag die gesamte Seite in einer Suspense-Grenze, weil das
+    // Formular useSearchParams nutzt – der Server lieferte nur den leeren
+    // Platzhalter, die h1 entstand erst nach der Hydration.
+    const paths = [
+      "/",
+      "/preise",
+      "/galerie",
+      "/gutscheine",
+      "/portfolio",
+      "/ueber-mich",
+      "/kontakt",
+      "/babybauch-shooting-kaufbeuren",
+      "/newborn-fotograf-kaufbeuren",
+      "/familienfotograf-kaufbeuren",
+      "/fotografin-kaufbeuren",
+      "/fotografin-allgaeu",
+    ];
+
+    for (const path of paths) {
+      const html = await (await request.get(path)).text();
+      const count = (html.match(/<h1[\s>]/g) || []).length;
+      expect(count, `h1 im Server-HTML von ${path}`).toBe(1);
+    }
+  });
+
   test("homepage exposes local business and FAQ structured data", async ({
     page,
   }) => {

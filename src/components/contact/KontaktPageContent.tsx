@@ -3,6 +3,7 @@
 import { Suspense, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import PageHeader from "@/components/layout/PageHeader";
 import {
   business,
   instagramUrl,
@@ -70,9 +71,9 @@ const INITIAL_FORM: FormState = {
 };
 
 const inputClass =
-  "min-h-[52px] w-full rounded-md border border-black/20 bg-white px-4 text-base text-black outline-none transition placeholder:text-black/65 focus:border-black focus:ring-2 focus:ring-black/15 md:min-h-[56px]";
+  "min-h-[52px] w-full rounded-md border border-ink/20 bg-paper px-4 text-base text-ink outline-none transition placeholder:text-ink/65 focus:border-ink focus:ring-2 focus:ring-ink/15 md:min-h-[56px]";
 
-const labelClass = "text-sm font-medium text-black/80";
+const labelClass = "text-sm font-medium text-ink/80";
 
 function KontaktForm() {
   const searchParams = useSearchParams();
@@ -184,48 +185,8 @@ function KontaktForm() {
   }
 
   return (
-    <main className="bg-sand px-4 pb-24 text-black md:px-10">
-      <div className="mx-auto max-w-6xl">
-        <header className="mx-auto max-w-3xl text-center">
-          <p className="text-sm uppercase tracking-[0.32em] text-black/60">
-            Kontakt
-          </p>
-          <h1 className="mt-4 text-4xl font-light leading-[1.02] md:text-6xl">
-            Shooting anfragen
-          </h1>
-          <p className="mt-5 text-base leading-8 text-black/75 md:text-lg">
-            Erzähl kurz, was du dir vorstellst. Unverbindlich, kostenlos und in
-            der Regel innerhalb von 24 Stunden beantwortet.
-          </p>
-        </header>
-
-        {/* Direkte Kontaktwege zuerst – wer anrufen will, soll nicht scrollen. */}
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          {phoneHref && (
-            <a
-              href={phoneHref}
-              className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-7 text-sm font-medium text-white transition hover:bg-black/85"
-            >
-              {phoneDisplay} anrufen
-            </a>
-          )}
-          <a
-            href={`mailto:${publicContactEmail}`}
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-7 text-sm font-medium text-black transition hover:border-black/60"
-          >
-            E-Mail schreiben
-          </a>
-          <a
-            href={instagramUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex min-h-[56px] items-center justify-center rounded-full border border-black/30 px-7 text-sm font-medium text-black transition hover:border-black/60"
-          >
-            Instagram
-          </a>
-        </div>
-
-        <section className="mt-14 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+    <div className="mx-auto max-w-[110rem] px-[var(--shell-x)] pb-24">
+      <section className="grid gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:items-start lg:gap-20">
           {/*
             Das Formular steht im Markup VOR dem Fließtext. Vorher lagen auf
             dem Handy rund 1160 px Text über dem ersten Eingabefeld.
@@ -233,10 +194,10 @@ function KontaktForm() {
           <form
             onSubmit={handleSubmit}
             noValidate={false}
-            className="rounded-xl border border-black/12 bg-white/55 p-5 md:p-8"
+            className="rounded-xl border border-ink/12 bg-paper/55 p-5 md:p-8"
           >
             <h2 className="text-2xl font-medium">Anfrageformular</h2>
-            <p className="mt-2 text-sm leading-6 text-black/70">
+            <p className="mt-2 text-sm leading-6 text-ink/70">
               Felder mit <span aria-hidden="true">*</span> sind Pflicht.
             </p>
 
@@ -277,7 +238,7 @@ function KontaktForm() {
 
               <div className="grid gap-2">
                 <label htmlFor="phone" className={labelClass}>
-                  Telefon <span className="text-black/65">(optional)</span>
+                  Telefon <span className="text-ink/65">(optional)</span>
                 </label>
                 <input
                   id="phone"
@@ -319,7 +280,7 @@ function KontaktForm() {
 
               <div className="grid gap-2">
                 <label htmlFor="preferredDate" className={labelClass}>
-                  Wunschdatum <span className="text-black/65">(optional)</span>
+                  Wunschdatum <span className="text-ink/65">(optional)</span>
                 </label>
                 <input
                   id="preferredDate"
@@ -336,11 +297,11 @@ function KontaktForm() {
                 "Mit Premium-Fahrzeug kombinieren"-Link der Preisseite kommt.
               */}
               {hasVehicleInterest && (
-                <div className="grid gap-2 rounded-md border border-black/15 bg-white/60 p-4">
-                  <p className="text-sm font-medium text-black">
+                <div className="grid gap-2 rounded-md border border-ink/15 bg-paper/60 p-4">
+                  <p className="text-sm font-medium text-ink">
                     Premium-Fahrzeug zum Shooting
                   </p>
-                  <p className="text-sm leading-6 text-black/70">
+                  <p className="text-sm leading-6 text-ink/70">
                     Die Fahrzeugbuchung läuft separat über unseren Partner und
                     ist nicht im Shootingpreis enthalten. Dein Interesse wird
                     mit der Anfrage übermittelt.
@@ -374,7 +335,7 @@ function KontaktForm() {
                   placeholder="Wunschort, Uhrzeit, Anlass, Anzahl der Personen – alles hilft."
                   value={form.message}
                   onChange={handleChange}
-                  className="min-h-[150px] w-full rounded-md border border-black/20 bg-white px-4 py-4 text-base text-black outline-none transition placeholder:text-black/65 focus:border-black focus:ring-2 focus:ring-black/15 md:min-h-[170px]"
+                  className="min-h-[150px] w-full rounded-md border border-ink/20 bg-paper px-4 py-4 text-base text-ink outline-none transition placeholder:text-ink/65 focus:border-ink focus:ring-2 focus:ring-ink/15 md:min-h-[170px]"
                   required
                 />
               </div>
@@ -402,12 +363,12 @@ function KontaktForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-1 inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 text-base font-medium text-white transition hover:bg-black/85 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-1 inline-flex min-h-[56px] items-center justify-center rounded-full bg-ink px-8 text-base font-medium text-paper transition hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Wird gesendet…" : "Anfrage kostenlos senden"}
               </button>
 
-              <p className="text-sm leading-6 text-black/70">
+              <p className="text-sm leading-6 text-ink/70">
                 Mit dem Absenden werden deine Angaben zur Bearbeitung der
                 Anfrage verarbeitet. Details in der{" "}
                 <Link
@@ -421,8 +382,8 @@ function KontaktForm() {
             </div>
           </form>
 
-          <div className="text-base leading-8 text-black/75">
-            <h2 className="text-2xl font-medium text-black">
+          <div className="text-base leading-8 text-ink/75">
+            <h2 className="text-2xl font-medium text-ink">
               So läuft die Anfrage ab
             </h2>
             <ol className="mt-5 space-y-4">
@@ -433,7 +394,7 @@ function KontaktForm() {
                 "Erst danach wird der Termin verbindlich gebucht.",
               ].map((step, index) => (
                 <li key={step} className="flex gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-sm font-medium text-white">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink text-sm font-medium text-paper">
                     {index + 1}
                   </span>
                   <span className="text-base leading-7">{step}</span>
@@ -441,7 +402,7 @@ function KontaktForm() {
               ))}
             </ol>
 
-            <h2 className="mt-10 text-2xl font-medium text-black">
+            <h2 className="mt-10 text-2xl font-medium text-ink">
               Wo finden die Shootings statt?
             </h2>
             <p className="mt-4 leading-8">
@@ -451,11 +412,11 @@ function KontaktForm() {
               Absprache möglich.
             </p>
 
-            <div className="mt-8 rounded-xl border border-black/12 bg-white/45 p-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-black/70">
+            <div className="mt-8 rounded-xl border border-ink/12 bg-paper/45 p-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-ink/70">
                 Standort
               </p>
-              <address className="mt-3 not-italic leading-7 text-black/80">
+              <address className="mt-3 not-italic leading-7 text-ink/80">
                 {business.name}
                 <br />
                 {business.street}
@@ -474,20 +435,56 @@ function KontaktForm() {
               </a>
             </div>
           </div>
-        </section>
-      </div>
-    </main>
+      </section>
+    </div>
   );
 }
 
 export default function KontaktPageContent() {
   return (
-    <Suspense
-      fallback={
-        <main className="bg-sand px-6 pb-24 text-black md:px-10" />
-      }
-    >
-      <KontaktForm />
-    </Suspense>
+    <main className="bg-sand text-ink">
+      {/*
+        Kopf und Kontaktwege stehen bewusst AUSSERHALB der Suspense-Grenze.
+        Vorher lag die gesamte Seite darin – weil das Formular useSearchParams
+        nutzt, lieferte der Server nur den leeren Platzhalter aus, und die h1
+        existierte im HTML überhaupt nicht. Sie erschien erst nach der
+        Hydration im Browser.
+      */}
+      <PageHeader
+        eyebrow="Kontakt"
+        heading="Erzähl mir von"
+        accent="eurem Vorhaben"
+        intro="Unverbindlich, kostenlos und in der Regel innerhalb von 24 Stunden beantwortet."
+      >
+        <div className="rise mt-9 flex flex-wrap gap-4">
+          {phoneHref && (
+            <a
+              href={phoneHref}
+              className="group inline-flex min-h-[58px] items-center gap-3 rounded-full bg-ink px-8 text-base font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
+            >
+              {phoneDisplay} anrufen
+            </a>
+          )}
+          <a
+            href={`mailto:${publicContactEmail}`}
+            className="inline-flex min-h-[58px] items-center rounded-full border border-ink/25 px-8 text-base font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+          >
+            E-Mail schreiben
+          </a>
+          <a
+            href={instagramUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-[58px] items-center rounded-full border border-ink/25 px-8 text-base font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+          >
+            Instagram
+          </a>
+        </div>
+      </PageHeader>
+
+      <Suspense fallback={<div className="min-h-[70svh]" />}>
+        <KontaktForm />
+      </Suspense>
+    </main>
   );
 }

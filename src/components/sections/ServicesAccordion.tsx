@@ -21,7 +21,7 @@ const services: Service[] = [
     title: "Familie",
     text: "Familienfotos, Babybauch und Newborn ohne Druck, mit genug Zeit für Nähe, Pausen und kleine Situationen.",
     href: "/familienfotograf-kaufbeuren",
-    image: "/images/family/family-1.jpg",
+    image: "/images/family/family-2.jpg",
     alt: "Familienfotografie Allgäu R.ArtPhotographie",
   },
   {
@@ -91,22 +91,22 @@ export default function ServicesAccordion() {
                 />
 
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.78)_0%,rgba(0,0,0,0.46)_34%,rgba(0,0,0,0.14)_66%,rgba(0,0,0,0.02)_100%)]" />
-                <div className="pointer-events-none absolute inset-0 bg-black/8 opacity-100 transition duration-700 group-hover/service:opacity-0 group-focus-within/service:opacity-0 motion-reduce:transition-none" />
+                <div className="pointer-events-none absolute inset-0 bg-ink/8 opacity-100 transition duration-700 group-hover/service:opacity-0 group-focus-within/service:opacity-0 motion-reduce:transition-none" />
 
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7 lg:p-6 xl:p-8">
-                  <p className="text-xs uppercase tracking-[0.28em] text-white/80">
+                <div className="absolute inset-x-0 bottom-0 p-6 text-paper md:p-7 lg:p-6 xl:p-8">
+                  <p className="text-xs uppercase tracking-[0.28em] text-paper/80">
                     R.ArtPhotographie
                   </p>
 
-                  <h3 className="mt-3 text-3xl font-medium leading-none text-white md:text-4xl lg:text-[2.05rem] xl:text-4xl">
+                  <h3 className="mt-3 text-3xl font-medium leading-none text-paper md:text-4xl lg:text-[2.05rem] xl:text-4xl">
                     {service.title}
                   </h3>
 
-                  <p className="mt-4 max-w-[22rem] text-sm leading-7 text-white/82 transition duration-500 group-hover/service:translate-y-0 group-hover/service:text-white/92 group-focus-within/service:translate-y-0 group-focus-within/service:text-white/92 motion-reduce:transition-none lg:translate-y-4 lg:opacity-90">
+                  <p className="mt-4 max-w-[22rem] text-sm leading-7 text-paper/82 transition duration-500 group-hover/service:translate-y-0 group-hover/service:text-paper/92 group-focus-within/service:translate-y-0 group-focus-within/service:text-paper/92 motion-reduce:transition-none lg:translate-y-4 lg:opacity-90">
                     {service.text}
                   </p>
 
-                  <span className="mt-6 inline-flex min-h-[46px] items-center rounded-full bg-white/12 px-5 py-3 text-sm font-medium text-white backdrop-blur transition duration-300 group-hover/service:bg-white group-hover/service:text-black group-focus-within/service:bg-white group-focus-within/service:text-black motion-reduce:transition-none">
+                  <span className="mt-6 inline-flex min-h-[46px] items-center rounded-full bg-paper/12 px-5 py-3 text-sm font-medium text-paper backdrop-blur transition duration-300 group-hover/service:bg-white group-hover/service:text-ink group-focus-within/service:bg-white group-focus-within/service:text-ink motion-reduce:transition-none">
                     Ansehen
                   </span>
                 </div>

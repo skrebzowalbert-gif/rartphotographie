@@ -18,11 +18,11 @@ export default function MobileCtaBar() {
   if (pathname === "/kontakt") return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/10 bg-sand/97 px-4 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-sand/97 px-4 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
       <div className="flex items-center gap-3 py-3">
         <Link
           href="/kontakt"
-          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full bg-black px-5 text-sm font-medium text-white"
+          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-full bg-ink px-5 text-sm font-medium text-paper"
         >
           Shooting anfragen
         </Link>
@@ -31,7 +31,7 @@ export default function MobileCtaBar() {
           <a
             href={phoneHref}
             aria-label={`Anrufen: ${phoneDisplay}`}
-            className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full border border-black/25 text-black"
+            className="inline-flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full border border-ink/25 text-ink"
           >
             <svg
               aria-hidden="true"

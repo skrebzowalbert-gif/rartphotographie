@@ -148,26 +148,26 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div>
-            <p className="text-sm uppercase tracking-[0.32em] text-black/65">
+            <p className="eyebrow text-ink/55">
               Direkt kaufen
             </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-light leading-[1] md:text-5xl">
+            <h2 className="display-lg mt-4 max-w-3xl text-ink">
               Wertgutschein auswählen und sicher bezahlen
             </h2>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-black/64 md:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-ink/64 md:text-lg">
               Du bestimmst den Betrag ab 50 €. Die Zahlung läuft sicher über
               Stripe Checkout; Zahlungsdaten werden nicht auf dieser Webseite
               gespeichert.
             </p>
 
             {promotion && hasVoucherPromotion && (
-              <div className="mt-7 border-y border-black/10 py-5">
+              <div className="mt-7 border-y border-ink/10 py-5">
                 {promoBadge && (
-                  <p className="text-xs uppercase tracking-[0.28em] text-black/65">
+                  <p className="text-xs uppercase tracking-[0.28em] text-ink/65">
                     {promoBadge}
                   </p>
                 )}
-                <p className="mt-2 text-sm leading-7 text-black/62">
+                <p className="mt-2 text-sm leading-7 text-ink/62">
                   {promotionPercent} % Rabatt auf Wertgutscheine werden beim
                   Checkout automatisch berücksichtigt.
                 </p>
@@ -175,29 +175,29 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
             )}
 
             {searchParams.get("zahlung") === "abgebrochen" && (
-              <p className="mt-5 rounded-lg border border-black/10 bg-white/24 px-4 py-3 text-sm leading-7 text-black/66">
+              <p className="mt-5 rounded-lg border border-ink/10 bg-paper/24 px-4 py-3 text-sm leading-7 text-ink/66">
                 Die Zahlung wurde abgebrochen. Du kannst den Wertgutschein
                 jederzeit erneut kaufen oder Regina direkt kontaktieren.
               </p>
             )}
 
-            <div className="mt-10 border-y border-black/10 py-6">
-              <p className="text-xs uppercase tracking-[0.28em] text-black/65">
+            <div className="mt-10 border-y border-ink/10 py-6">
+              <p className="text-xs uppercase tracking-[0.28em] text-ink/65">
                 Wertgutschein
               </p>
-              <p className="mt-3 text-3xl font-light text-black">
+              <p className="mt-3 text-3xl font-light text-ink">
                 {displayedAmount}
               </p>
-              <p className="mt-4 text-sm leading-7 text-black/62">
+              <p className="mt-4 text-sm leading-7 text-ink/62">
                 Der Gutschein wird nach dem Kauf hochwertig vorbereitet und
                 versendet. Er kann für Portrait, Familie, Babybauch, Newborn
                 oder Hochzeit eingesetzt werden.
               </p>
               {hasValidVoucherAmount && (
-                <div className="mt-5 grid gap-2 text-sm leading-6 text-black/62">
+                <div className="mt-5 grid gap-2 text-sm leading-6 text-ink/62">
                   <div className="flex items-center justify-between gap-4">
                     <span>Gutscheinwert</span>
-                    <span className="text-black">
+                    <span className="text-ink">
                       {formatEuro(customAmountInCents)}
                     </span>
                   </div>
@@ -206,12 +206,12 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                       <span>
                         {promoBadge || "Aktionsrabatt"} ({discount.percent} %)
                       </span>
-                      <span className="text-black">
+                      <span className="text-ink">
                         -{formatEuro(discount.discountAmount)}
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center justify-between gap-4 border-t border-black/10 pt-2 text-base text-black">
+                  <div className="flex items-center justify-between gap-4 border-t border-ink/10 pt-2 text-base text-ink">
                     <span>Zu zahlen</span>
                     <span>{formatEuro(discount.paymentAmount)}</span>
                   </div>
@@ -222,18 +222,18 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
 
           <form
             onSubmit={handleSubmit}
-            className="relative z-10 rounded-md border border-black/10 bg-white/26 p-4 md:p-8"
+            className="relative z-10 rounded-md border border-ink/10 bg-paper/26 p-4 md:p-8"
           >
-            <p className="text-sm uppercase tracking-[0.28em] text-black/65">
+            <p className="text-sm uppercase tracking-[0.28em] text-ink/65">
               Kaufdaten
             </p>
-            <h3 className="mt-3 text-2xl font-light text-black">
+            <h3 className="mt-3 text-2xl font-light text-ink">
               Wertgutschein R.ArtPhotographie
             </h3>
 
             <div className="mt-7 grid gap-4">
               <label className="grid gap-2">
-                <span className="text-sm text-black/62">
+                <span className="text-sm text-ink/62">
                   Gewünschter Gutscheinbetrag *
                 </span>
                 <input
@@ -245,7 +245,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                   placeholder="z. B. 100 €"
                   value={form.voucherCustomAmount}
                   onChange={updateField}
-                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                  className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                   required
                 />
               </label>
@@ -255,7 +255,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="Name *"
                 value={form.name}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                 required
               />
               <input
@@ -264,7 +264,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="E-Mail *"
                 value={form.email}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                 required
               />
               <input
@@ -272,14 +272,14 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="Telefon (optional)"
                 value={form.phone}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
               />
               <input
                 name="recipient"
                 placeholder="Gutschein für wen? *"
                 value={form.recipient}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                 required
               />
               <textarea
@@ -287,14 +287,14 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 placeholder="Nachricht auf dem Gutschein (optional)"
                 value={form.message}
                 onChange={updateField}
-                className="min-h-[120px] w-full rounded-md border border-black/10 bg-white/76 px-4 py-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[130px]"
+                className="min-h-[120px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 py-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[130px]"
               />
               <input
                 name="street"
                 placeholder="Straße und Hausnummer *"
                 value={form.street}
                 onChange={updateField}
-                className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                 required
               />
               <div className="grid gap-4 md:grid-cols-[160px_1fr]">
@@ -303,7 +303,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                   placeholder="PLZ *"
                   value={form.zip}
                   onChange={updateField}
-                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                  className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                   required
                 />
                 <input
@@ -311,7 +311,7 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                   placeholder="Ort *"
                   value={form.city}
                   onChange={updateField}
-                  className="min-h-[52px] w-full rounded-md border border-black/10 bg-white/76 px-4 text-base text-black outline-none placeholder:text-black/65 md:min-h-[56px]"
+                  className="min-h-[52px] w-full rounded-md border border-ink/10 bg-paper/76 px-4 text-base text-ink outline-none placeholder:text-ink/65 md:min-h-[56px]"
                   required
                 />
               </div>
@@ -320,8 +320,8 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
                 <p
                   className={`rounded-xl border px-4 py-3 text-sm leading-7 ${
                     status.type === "error"
-                      ? "border-black/12 bg-white/24 text-black/70"
-                      : "border-black/10 bg-white/34 text-black/72"
+                      ? "border-ink/12 bg-paper/24 text-ink/70"
+                      : "border-ink/10 bg-paper/34 text-ink/72"
                   }`}
                 >
                   {status.message}
@@ -331,12 +331,12 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-black px-8 py-4 text-sm font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-[56px] items-center justify-center rounded-full bg-ink px-8 py-4 text-sm font-medium text-paper transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Weiter zu Stripe..." : "Wertgutschein kaufen"}
               </button>
 
-              <p className="text-sm leading-7 text-black/65">
+              <p className="text-sm leading-7 text-ink/65">
                 Nach erfolgreicher Zahlung wird der Wertgutschein vorbereitet.
                 Die Zahlungsdaten werden sicher über Stripe verarbeitet und
                 nicht auf dieser Webseite gespeichert.
