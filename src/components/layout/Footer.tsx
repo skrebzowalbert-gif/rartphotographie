@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ConsentSettingsLink from "@/components/analytics/ConsentSettingsLink";
 import {
   areaServed,
   business,
@@ -144,6 +145,7 @@ export default function Footer() {
                 {link.label}
               </Link>
             ))}
+            <ConsentSettingsLink className="hover:text-ink" />
           </div>
         </div>
       </div>

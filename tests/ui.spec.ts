@@ -274,6 +274,50 @@ test.describe("gutschein api", () => {
   });
 });
 
+test.describe("datenschutz und messung", () => {
+  test("no consent banner and no Google requests without a measurement id", async ({
+    page,
+  }) => {
+    /*
+      Die Testumgebung setzt NEXT_PUBLIC_GA_ID nicht. Ohne Mess-ID darf weder
+      ein Banner erscheinen noch irgendein Aufruf an Google gehen – die Seite
+      bleibt dann so cookiefrei wie vor der Einrichtung.
+    */
+    const googleRequests: string[] = [];
+    page.on("request", (request) => {
+      if (/googletagmanager|google-analytics/i.test(request.url())) {
+        googleRequests.push(request.url());
+      }
+    });
+
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+
+    await expect(
+      page.locator('[role="dialog"][aria-label*="Einwilligung"]')
+    ).toHaveCount(0);
+    expect(googleRequests, "Aufrufe an Google ohne Mess-ID").toEqual([]);
+  });
+
+  test("privacy policy documents both measurement services", async ({
+    page,
+  }) => {
+    await page.goto("/datenschutz");
+
+    // Die Erklärung behauptete früher, es werde kein Google Analytics genutzt.
+    await expect(page.getByText(/Google Analytics 4/).first()).toBeVisible();
+    await expect(
+      page.getByText(/Ohne deine\s+Einwilligung wird Google Analytics nicht geladen/)
+    ).toBeVisible();
+    await expect(page.getByText(/Vercel Web Analytics/).first()).toBeVisible();
+  });
+
+  test("search console verification tag is present", async ({ request }) => {
+    const html = await (await request.get("/")).text();
+    expect(html).toMatch(/<meta name="google-site-verification" content="[^"]+"/);
+  });
+});
+
 test.describe("seo essentials", () => {
   // Der teuerste Fehler der bisherigen Version: canonical zeigte auf den
   // Host ohne www, der per 307 auf www zurückleitet.

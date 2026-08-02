@@ -1,7 +1,10 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import SiteShell from "@/components/layout/SiteShell";
+import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
+import GoogleAnalytics from "@/components/analytics/Analytics";
+import ConsentBanner from "@/components/analytics/ConsentBanner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { siteUrl } from "@/lib/site";
@@ -65,8 +68,16 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  /*
+    Search-Console-Verifizierung über eine Umgebungsvariable, mit dem bisher
+    fest eingetragenen Wert als Rückfall. Damit lässt sich eine neue Property
+    verifizieren, ohne den Code anzufassen – und ein leerer Wert erzeugt kein
+    kaputtes Meta-Tag.
+  */
   verification: {
-    google: "1S78GFngR4SKMPSWw6KQGZxRKAog87OpV6WtaNiu_VQ",
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ||
+      "1S78GFngR4SKMPSWw6KQGZxRKAog87OpV6WtaNiu_VQ",
   },
 };
 
@@ -85,8 +96,17 @@ export default function RootLayout({
           ob ein Ausbleiben von Anfragen an fehlendem Traffic oder an der
           Conversion liegt – genau das war hier fünf Monate lang unklar.
         */}
+        {/* Cookielos, ohne Einwilligung zulässig – liefert Zahlen auch dann,
+            wenn Besucher Google Analytics ablehnen. */}
         <Analytics />
         <SpeedInsights />
+
+        {/* Google Analytics lädt ausschließlich nach Einwilligung.
+            useSearchParams im Inneren verlangt eine Suspense-Grenze. */}
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
+        <ConsentBanner />
       </body>
     </html>
   );

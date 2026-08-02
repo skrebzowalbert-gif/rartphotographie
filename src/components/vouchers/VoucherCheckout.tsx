@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { calculateVoucherDiscount } from "@/lib/promotions";
 import { formatEuro } from "@/lib/vouchers";
+import { trackEvent } from "@/lib/analytics";
 import type { SanityPromotion } from "@/sanity/queries";
 
 type FormState = {
@@ -156,6 +157,12 @@ export default function VoucherCheckout({ promotion }: VoucherCheckoutProps) {
       if (!response.ok || !data?.url) {
         throw new Error(data?.error || "Checkout konnte nicht gestartet werden.");
       }
+
+      // Vor der Weiterleitung melden – danach läuft kein Code dieser Seite mehr.
+      trackEvent("gutschein_checkout_gestartet", {
+        betrag_euro: Math.round(customAmountInCents / 100),
+        zustellung: form.delivery,
+      });
 
       window.location.href = data.url;
     } catch (error) {
