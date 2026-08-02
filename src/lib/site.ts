@@ -37,6 +37,7 @@ export const business: {
   region: string;
   country: string;
   phone: string;
+  economicIdNumber: string;
   latitude: number;
   longitude: number;
   openingHours:
@@ -58,6 +59,20 @@ export const business: {
    * Muss zeichengenau mit dem Google-Unternehmensprofil übereinstimmen.
    */
   phone: "+49 176 81302747",
+
+  /**
+   * Wirtschafts-Identifikationsnummer nach § 139c AO, vergeben am 25.07.2026.
+   *
+   * NICHT zu verwechseln mit der Umsatzsteuer-Identifikationsnummer nach
+   * § 27a UStG: Beide beginnen mit "DE" und haben neun Ziffern, sind aber
+   * verschiedene Nummern. § 5 Abs. 1 Nr. 6 DDG nennt sie ausdrücklich als
+   * gleichwertige Pflichtangabe im Impressum, "sofern vorhanden".
+   *
+   * Die Steuernummer aus demselben Bescheid gehört bewusst NICHT hierher.
+   * Sie ist keine Pflichtangabe und hat auf einer öffentlichen Seite nichts
+   * verloren.
+   */
+  economicIdNumber: "DE463954616",
 
   /** Koordinaten Hirtenstraße 16, 87600 Kaufbeuren */
   latitude: 47.8809,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { phoneDisplay, publicContactEmail } from "@/lib/site";
+import { business, phoneDisplay, publicContactEmail } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Impressum",
@@ -54,12 +54,18 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl text-ink">Umsatzsteuer</h2>
-            <p className="mt-4 rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-4 py-3 text-sm text-amber-950">
-              Hinweis für die Betreiberin: Hier gehört die zutreffende Angabe
-              hin – entweder die Umsatzsteuer-Identifikationsnummer nach § 27 a
-              UStG oder der Hinweis auf die Kleinunternehmerregelung: „Gemäß
-              § 19 UStG wird keine Umsatzsteuer berechnet.&ldquo;
+            {/*
+              § 5 Abs. 1 Nr. 6 DDG verlangt die Umsatzsteuer-Identifikations-
+              nummer nach § 27a UStG ODER die Wirtschafts-Identifikationsnummer
+              nach § 139c AO, sofern vorhanden. Regina hat letztere; damit ist
+              die Pflichtangabe erfüllt.
+            */}
+            <h2 className="font-display text-2xl text-ink">
+              Wirtschafts-Identifikationsnummer
+            </h2>
+            <p className="mt-4">
+              Wirtschafts-Identifikationsnummer nach § 139c AO:{" "}
+              {business.economicIdNumber}
             </p>
           </section>
 
