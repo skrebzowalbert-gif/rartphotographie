@@ -79,20 +79,24 @@ export const business: {
   longitude: 10.6215,
 
   /**
-   * TODO REGINA: Telefonische Erreichbarkeit eintragen, z. B.
+   * Zeichengenau übernommen aus dem Google-Unternehmensprofil (Stand 2.8.2026:
+   * Mo–Fr 10–18 Uhr, Sa 10–14 Uhr, So geschlossen).
    *
-   *   openingHours: [
-   *     { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-   *       opens: "09:00", closes: "18:00" },
-   *     { days: ["Saturday"], opens: "10:00", closes: "16:00" },
-   *   ],
+   * Beide Quellen müssen identisch bleiben. Google gleicht die Angabe ab, und
+   * wer nach der genannten Zeit anruft und niemanden erreicht, ist als Kunde
+   * weg. Ändert Regina die Zeiten im Profil, gehören sie auch hierher.
    *
-   * Bewusst auf null: Falsche Öffnungszeiten im Schema sind schädlicher als
-   * gar keine. Wer nach der angegebenen Zeit anruft und niemanden erreicht,
-   * ist als Kunde weg – und Google gleicht die Angabe mit dem
-   * Unternehmensprofil ab. Beide Quellen müssen identisch sein.
+   * Sonntag steht bewusst nicht in der Liste: Ein fehlender Tag bedeutet im
+   * schema.org-Markup „geschlossen".
    */
-  openingHours: null,
+  openingHours: [
+    {
+      days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "10:00",
+      closes: "18:00",
+    },
+    { days: ["Saturday"], opens: "10:00", closes: "14:00" },
+  ],
 };
 
 /** Telefonnummer als tel:-Link, oder null wenn keine hinterlegt ist. */
@@ -115,15 +119,17 @@ export const areaServed = [
 ] as const;
 
 /**
- * TODO REGINA: Muss exakt dem Google-Unternehmensprofil entsprechen.
- * Erfundene oder veraltete Zahlen sind ein Verstoß gegen Googles
- * Richtlinien für strukturierte Daten. Auf null setzen, wenn die Zahl
- * nicht öffentlich bei Google nachprüfbar ist – dann wird das
- * Bewertungs-Markup komplett weggelassen.
+ * Am 2.8.2026 im Google-Unternehmensprofil nachgeprüft: 5,0 bei 48
+ * Rezensionen. Vorher standen hier 46 – die Zahl war überholt.
+ *
+ * Muss regelmäßig abgeglichen werden. Untertreiben verschenkt Vertrauen,
+ * Übertreiben verstößt gegen Googles Richtlinien für strukturierte Daten.
+ * Auf null setzen, wenn die Zahl nicht mehr öffentlich nachprüfbar ist –
+ * dann entfällt das Bewertungs-Markup vollständig.
  */
 export const googleReviews: { rating: number; count: number } | null = {
   rating: 5.0,
-  count: 46,
+  count: 48,
 };
 
 /** Link zum Google-Unternehmensprofil (für "Bei Google ansehen"). */
