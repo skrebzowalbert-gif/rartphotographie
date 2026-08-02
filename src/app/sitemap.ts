@@ -15,6 +15,7 @@ const routes = [
   { path: "/kontakt", priority: 0.95, changeFrequency: "monthly" as const },
   { path: "/preise", priority: 0.9, changeFrequency: "monthly" as const },
   { path: "/gutscheine", priority: 0.85, changeFrequency: "monthly" as const },
+  { path: "/ueber-mich", priority: 0.8, changeFrequency: "monthly" as const },
   { path: "/galerie", priority: 0.75, changeFrequency: "weekly" as const },
   { path: "/portfolio", priority: 0.7, changeFrequency: "monthly" as const },
   { path: "/portfolio/portrait", priority: 0.65, changeFrequency: "monthly" as const },

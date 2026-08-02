@@ -361,6 +361,37 @@ test.describe("seo essentials", () => {
     }
   });
 
+  test("no page in the sitemap is excluded from the index", async ({
+    request,
+  }) => {
+    // Eine Seite anzumelden und Google im selben Atemzug zu verbieten, sie
+    // aufzunehmen, ist ein Widerspruch – und genau der lag hier vor:
+    // /agb und /widerruf standen in der Sitemap und trugen noindex.
+    const xml = await (await request.get("/sitemap.xml")).text();
+    const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+
+    expect(urls.length).toBeGreaterThan(10);
+
+    for (const url of urls) {
+      const path = new URL(url).pathname;
+      const response = await request.get(path);
+
+      expect(response.status(), `Status von ${path}`).toBe(200);
+      expect(await response.text(), `robots-Meta auf ${path}`).not.toContain(
+        "noindex"
+      );
+    }
+  });
+
+  test("the personal about page is reachable from the sitemap", async ({
+    request,
+  }) => {
+    // Vertrauensseite: Sie fehlte in der Sitemap komplett, obwohl sie nach
+    // der Galerie am zweithäufigsten angesteuert wird.
+    const xml = await (await request.get("/sitemap.xml")).text();
+    expect(xml).toContain("/ueber-mich");
+  });
+
   test("every page ships exactly one h1 in the server HTML", async ({
     request,
   }) => {
