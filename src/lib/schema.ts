@@ -242,7 +242,63 @@ export function buildServiceJsonLd(params: {
 export function buildVoucherProductJsonLd(params: {
   lowPrice: number;
   highPrice: number;
+  /** Die auf der Seite angebotenen Betragsstufen. */
+  tiers: { amount: number; label: string }[];
 }) {
+  /**
+   * Digitale Zustellung: kein Versand, keine Lieferzeit, keine Kosten.
+   * Genau diese Angaben nutzt Google, um "sofort verfügbar" auszuspielen –
+   * das entscheidende Signal bei Geschenksuchen kurz vor einem Anlass.
+   */
+  const digitalDelivery = {
+    "@type": "ParcelDelivery",
+    name: "Sofort als PDF per E-Mail",
+  };
+
+  const shipping = {
+    "@type": "OfferShippingDetails",
+    shippingRate: {
+      "@type": "MonetaryAmount",
+      value: 0,
+      currency: "EUR",
+    },
+    deliveryTime: {
+      "@type": "ShippingDeliveryTime",
+      handlingTime: {
+        "@type": "QuantitativeValue",
+        minValue: 0,
+        maxValue: 0,
+        unitCode: "DAY",
+      },
+      transitTime: {
+        "@type": "QuantitativeValue",
+        minValue: 0,
+        maxValue: 0,
+        unitCode: "DAY",
+      },
+    },
+  };
+
+  const offer = (amount: number, name: string) => ({
+    "@type": "Offer",
+    name,
+    price: amount,
+    priceCurrency: "EUR",
+    availability: "https://schema.org/InStock",
+    itemCondition: "https://schema.org/NewCondition",
+    url: `${siteUrl}/gutscheine#checkout`,
+    seller: { "@id": businessId },
+    availableDeliveryMethod: "https://schema.org/OnSitePickup",
+    deliveryLeadTime: {
+      "@type": "QuantitativeValue",
+      minValue: 0,
+      maxValue: 0,
+      unitCode: "DAY",
+    },
+    shippingDetails: shipping,
+    areaServed: areaServed.map((city) => ({ "@type": "City", name: city })),
+  });
+
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -253,19 +309,35 @@ export function buildVoucherProductJsonLd(params: {
     url: `${siteUrl}/gutscheine`,
     image: `${siteUrl}/images/gutschein/gutschein-main.jpg`,
     brand: { "@type": "Brand", name: business.name },
+    isFamilyFriendly: true,
+    // Der Gutschein ist ein digitales Produkt, das per E-Mail zugestellt wird.
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "Zustellung",
+        value: "Digital als PDF, sofort nach dem Kauf",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "Gültigkeit",
+        value: "3 Jahre ab Ausstellung",
+      },
+    ],
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "EUR",
       lowPrice: params.lowPrice,
       highPrice: params.highPrice,
-      offerCount: 4,
+      offerCount: params.tiers.length,
       availability: "https://schema.org/InStock",
-      // Digitaler Versand: keine Lieferzeit, keine Versandkosten.
-      itemCondition: "https://schema.org/NewCondition",
       url: `${siteUrl}/gutscheine`,
       seller: { "@id": businessId },
       areaServed: areaServed.map((city) => ({ "@type": "City", name: city })),
+      // Einzelangebote je Betragsstufe – dadurch kann Google konkrete Preise
+      // statt nur einer Spanne anzeigen.
+      offers: params.tiers.map((tier) => offer(tier.amount, tier.label)),
     },
+    hasDeliveryMethod: digitalDelivery,
   };
 }
 

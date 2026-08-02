@@ -19,29 +19,45 @@ const PROCESSED_FLAG = "voucherIssuedAt";
  * seinen Gutschein, weil die Erfolgsseite ihn direkt zum Download anbietet.
  */
 async function claimOrder(stripe: Stripe, session: Stripe.Checkout.Session) {
+  const now = new Date().toISOString();
+
   const paymentIntentId =
     typeof session.payment_intent === "string"
       ? session.payment_intent
       : session.payment_intent?.id;
 
-  if (!paymentIntentId) {
-    // Ohne PaymentIntent lässt sich keine Marke setzen. Lieber einmal zu viel
-    // verarbeiten als den Gutschein gar nicht auszuliefern – das wird geloggt.
-    console.warn(
-      "[webhook] Kein PaymentIntent an der Session, Idempotenz nicht möglich:",
-      session.id
-    );
+  // Erste Wahl: der PaymentIntent. Er ist der beste Schlüssel, weil pro
+  // Zahlung genau einer existiert – selbst wenn Stripe für dieselbe Zahlung
+  // mehrere unterschiedliche Ereignisse schickt, greift die Marke.
+  //
+  // Bewusst NICHT die Event-ID: Die schützt nur gegen die Wiederholung
+  // desselben Ereignisses. Ein zweites, anderes Ereignis zur selben Zahlung
+  // würde damit erneut einen Gutschein auslösen.
+  if (paymentIntentId) {
+    const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (intent.metadata?.[PROCESSED_FLAG]) {
+      return { alreadyProcessed: true as const };
+    }
+
+    await stripe.paymentIntents.update(paymentIntentId, {
+      metadata: { ...intent.metadata, [PROCESSED_FLAG]: now },
+    });
+
     return { alreadyProcessed: false as const };
   }
 
-  const intent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  // Zweite Wahl: die Checkout-Session selbst. Nicht jede Zahlungsart erzeugt
+  // einen PaymentIntent – vorher lief dieser Fall komplett ungeschützt durch
+  // und hätte bei einem Wiederholungsversuch einen zweiten Gutschein erzeugt.
+  const fresh = await stripe.checkout.sessions.retrieve(session.id);
 
-  if (intent.metadata?.[PROCESSED_FLAG]) {
+  if (fresh.metadata?.[PROCESSED_FLAG]) {
     return { alreadyProcessed: true as const };
   }
 
-  await stripe.paymentIntents.update(paymentIntentId, {
-    metadata: { ...intent.metadata, [PROCESSED_FLAG]: new Date().toISOString() },
+  await stripe.checkout.sessions.update(session.id, {
+    metadata: { ...(fresh.metadata || {}), [PROCESSED_FLAG]: now },
   });
 
   return { alreadyProcessed: false as const };

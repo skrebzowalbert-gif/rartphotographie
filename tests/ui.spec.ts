@@ -160,6 +160,34 @@ test.describe("mobile ui interactions", () => {
 test.describe("gutschein checkout", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
+  test("the page shows what the voucher will look like", async ({ page }) => {
+    await page.goto("/gutscheine");
+    await page.waitForLoadState("networkidle");
+
+    // Vor dem Kauf sehen, was die beschenkte Person bekommt.
+    const preview = page.getByRole("img", { name: /Beispiel des Gutscheins/i });
+    await expect(preview).toBeVisible();
+  });
+
+  test("gift occasions are present for search intent", async ({ page }) => {
+    await page.goto("/gutscheine");
+    await page.waitForLoadState("networkidle");
+
+    for (const occasion of [
+      /Zum Geburtstag/,
+      /Muttertag/,
+      /Zur Geburt/,
+      /Jahrestag/,
+      /Weihnachten/,
+      /Last Minute/,
+    ]) {
+      await expect(
+        page.getByRole("heading", { name: occasion }),
+        `Anlass ${occasion}`
+      ).toBeVisible();
+    }
+  });
+
   test("amount presets fill the field", async ({ page }) => {
     await page.goto("/gutscheine");
     await page.waitForLoadState("networkidle");
