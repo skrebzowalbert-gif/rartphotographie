@@ -49,3 +49,6 @@ ppppp.png
 # Playwright-Artefakte – Ergebnis des letzten lokalen Laufs, nichts zum Teilen.
 test-results/
 playwright-report/
+
+# Die Vorlage enthaelt keine Werte und gehoert ins Repository.
+!.env.portal.example
