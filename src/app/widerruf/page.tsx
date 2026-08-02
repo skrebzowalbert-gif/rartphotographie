@@ -2,20 +2,24 @@ import type { Metadata } from "next";
 import { business, publicContactEmail, phoneDisplay } from "@/lib/site";
 
 /**
- * ENTWURF – VOR DEM LIVEGANG ANWALTLICH PRÜFEN LASSEN.
+ * Keine Rechtsberatung, aber eng am gesetzlichen Muster (Anlage 1 zu
+ * Art. 246a § 1 Abs. 2 EGBGB) gehalten.
  *
- * Diese Seite ist ein Textgerüst, keine Rechtsberatung. Sie ist erforderlich,
- * weil über /gutscheine Wertgutscheine an Verbraucher verkauft werden
- * (Fernabsatzvertrag, §§ 312g, 355 BGB). Fehlende oder fehlerhafte
- * Widerrufsbelehrungen verlängern die Widerrufsfrist auf zwölf Monate und
- * vierzehn Tage und sind ein klassischer Abmahngrund.
+ * Erforderlich, weil über /gutscheine Wertgutscheine an Verbraucher verkauft
+ * werden (Fernabsatzvertrag, §§ 312g, 355 BGB). Eine fehlende oder fehlerhafte
+ * Belehrung verlängert die Widerrufsfrist auf zwölf Monate und vierzehn Tage.
+ *
+ * Bewusste Entscheidung: Der Checkout holt KEINE Zustimmung zum vorzeitigen
+ * Erlöschen des Widerrufsrechts ein. Das Recht bleibt beim Gutscheinkauf also
+ * volle vierzehn Tage bestehen. Ob ein Wertgutschein überhaupt als "digitaler
+ * Inhalt" im Sinne des § 356 Abs. 5 BGB gilt, ist umstritten – die sichere
+ * und zugleich kundenfreundliche Variante ist, das Recht stehen zu lassen.
  */
 export const metadata: Metadata = {
   title: "Widerrufsbelehrung",
   description:
     "Widerrufsbelehrung und Muster-Widerrufsformular für den Kauf von Gutscheinen bei R.ArtPhotographie in Kaufbeuren.",
   alternates: { canonical: "/widerruf" },
-  robots: { index: false, follow: true },
 };
 
 export default function WiderrufPage() {
@@ -29,16 +33,11 @@ export default function WiderrufPage() {
           Widerrufsbelehrung
         </h1>
 
-        <div
-          role="note"
-          className="mt-8 rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-5 py-4 text-sm leading-7 text-amber-950"
-        >
-          <strong>Hinweis für die Betreiberin:</strong> Dieser Text ist ein
-          unverbindlicher Entwurf und ersetzt keine Rechtsberatung. Bitte vor
-          der Veröffentlichung anwaltlich prüfen oder durch einen geprüften
-          Rechtstext-Generator ersetzen. Diese Seite ist derzeit auf{" "}
-          <code>noindex</code> gesetzt.
-        </div>
+        <p className="mt-6 max-w-2xl text-base leading-8 text-ink/70">
+          Wenn du einen Gutschein gekauft hast und es dir anders überlegst,
+          bekommst du dein Geld zurück. Eine kurze Nachricht genügt, eine
+          Begründung brauche ich nicht.
+        </p>
 
         <div className="mt-12 space-y-10 text-base leading-8 text-ink/80">
           <section>
@@ -93,12 +92,19 @@ export default function WiderrufPage() {
               Vorzeitiges Erlöschen des Widerrufsrechts
             </h2>
             <p className="mt-4">
-              Das Widerrufsrecht erlischt bei einem Vertrag über die Erbringung
-              von Dienstleistungen, wenn ich die Dienstleistung vollständig
-              erbracht habe und mit der Ausführung erst begonnen habe, nachdem
-              du dazu deine ausdrückliche Zustimmung gegeben und gleichzeitig
-              deine Kenntnis davon bestätigt hast, dass du dein Widerrufsrecht
-              bei vollständiger Vertragserfüllung verlierst.
+              <strong>Beim Gutscheinkauf gilt das nicht.</strong> Auch wenn du
+              das PDF sofort nach der Zahlung bekommst, bleibt dein
+              Widerrufsrecht die vollen vierzehn Tage bestehen. Ich lasse mir
+              beim Kauf ausdrücklich nicht bestätigen, dass du darauf
+              verzichtest.
+            </p>
+            <p className="mt-4">
+              Allgemein erlischt das Widerrufsrecht bei einem Vertrag über die
+              Erbringung von Dienstleistungen erst dann, wenn die Leistung
+              vollständig erbracht wurde und mit der Ausführung erst begonnen
+              wurde, nachdem du ausdrücklich zugestimmt und zugleich bestätigt
+              hast, dass du dein Widerrufsrecht bei vollständiger
+              Vertragserfüllung verlierst.
             </p>
             <p className="mt-4">
               <strong>Hinweis zu Fototerminen:</strong> Für die Buchung eines

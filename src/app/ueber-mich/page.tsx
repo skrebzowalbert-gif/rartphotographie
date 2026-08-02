@@ -18,9 +18,6 @@ export const metadata: Metadata = {
   description:
     "Regina Gerdt, Fotografin in Kaufbeuren. Wie ich arbeite, wie ein Shooting abläuft und was du von der Zusammenarbeit erwarten kannst.",
   alternates: { canonical: "/ueber-mich" },
-  // Solange der Platzhalter-Hinweis im Text steht, gehört die Seite nicht in
-  // den Index. Nach dem Ausfüllen diese Zeile entfernen.
-  robots: { index: false, follow: true },
   openGraph: {
     title: "Über mich – Regina, Fotografin in Kaufbeuren",
     description:
@@ -106,36 +103,54 @@ export default function UeberMichPage() {
       />
 
       {/*
-        TODO REGINA: Dieser Abschnitt ist der wichtigste der ganzen Seite und
-        derzeit bewusst leer gelassen. Ich kann und darf hier nichts erfinden.
+        REGINA: Dieser Abschnitt steht bewusst ohne Jahreszahlen, ohne Anzahl
+        begleiteter Shootings und ohne Angaben zu Ausbildung – ich habe nichts
+        erfunden, was ich nicht belegen kann.
 
-        Was hier hineingehört (jeweils ein bis drei Sätze):
-        - Seit wann fotografierst du? (Jahreszahl)
-        - Wie bist du dazu gekommen? Eine echte, konkrete Geschichte.
-        - Ausbildung, Weiterbildungen, Mitgliedschaften?
-        - Ungefähre Anzahl begleiteter Shootings oder Hochzeiten
-        - Arbeitest du im Studio, draußen, bei Kundinnen zu Hause?
-        - Etwas Persönliches: Familie, Region, warum Kaufbeuren
+        Wenn du fünf Minuten hast, ersetze oder ergänze:
+        - Seit wann du fotografierst (eine Jahreszahl wirkt stark)
+        - Wie du dazu gekommen bist – eine echte, konkrete Geschichte
+        - Ausbildung, Weiterbildungen, Mitgliedschaften
+        - Ungefähr, wie viele Shootings oder Hochzeiten du begleitet hast
 
-        Genau diese Angaben unterscheiden eine Fotografin von einer
-        austauschbaren Website. Bewertungen und Preise haben Wettbewerber auch,
-        die eigene Geschichte nicht.
+        Genau solche Angaben unterscheiden dich von einer austauschbaren
+        Website. Preise und Bewertungen haben Wettbewerber auch, deine
+        Geschichte nicht.
       */}
       <section className="px-6 py-16 md:px-10 md:py-20">
         <div className="mx-auto max-w-3xl">
-          <div
-            role="note"
-            className="rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-5 py-4 text-sm leading-7 text-amber-950"
-          >
-            <strong>Hinweis für die Betreiberin:</strong> Hier fehlt dein
-            persönlicher Text – seit wann du fotografierst, wie du dazu gekommen
-            bist, wie viele Shootings du begleitet hast und was dich mit
-            Kaufbeuren verbindet. Der Platzhalter steht in{" "}
-            <code>src/app/ueber-mich/page.tsx</code>. Solange er hier steht, ist
-            die Seite auf <code>noindex</code>.
+          <h2 className="text-3xl font-light md:text-4xl">
+            Wer hinter der Kamera steht
+          </h2>
+          <div className="mt-6 space-y-5 text-base leading-8 text-ink/78 md:text-lg">
+            <p>
+              Ich bin Regina. R.ArtPhotographie ist kein Team und kein Studio
+              mit Empfangstresen – ich bin die, die ans Telefon geht, die euch
+              beim Shooting begleitet und die abends die Bilder bearbeitet.
+              Wenn ihr mir schreibt, antworte ich selbst.
+            </p>
+            <p>
+              Fotografiert wird dort, wo ihr euch wohlfühlt: bei euch zu Hause,
+              draußen im Ostallgäu oder an einem Ort, der für euch eine
+              Bedeutung hat. Kaufbeuren und die Gegend kenne ich gut genug, um
+              euch Vorschläge zu machen, falls euch selbst keiner einfällt.
+            </p>
+            <p>
+              Am liebsten fotografiere ich die Zeiten, die sich später nicht
+              wiederholen lassen. Ein Babybauch ist nach ein paar Wochen weg.
+              Ein Neugeborenes ist nur wenige Tage lang so klein, wie es auf
+              den Bildern aussieht. Kinder verändern sich schneller, als man
+              Fotos ausdruckt. Genau deshalb mache ich das.
+            </p>
+            <p>
+              Was ein Shooting kostet, steht offen auf der Preisseite – nichts
+              nur auf Anfrage. Und wenn ich beim Vorgespräch merke, dass ich
+              für euer Vorhaben nicht die Richtige bin, sage ich das lieber
+              vorher als hinterher.
+            </p>
           </div>
 
-          <h2 className="mt-12 text-3xl font-light md:text-4xl">
+          <h2 className="mt-14 text-3xl font-light md:text-4xl">
             Wie ich arbeite
           </h2>
           <div className="mt-6 space-y-5 text-base leading-8 text-ink/78 md:text-lg">

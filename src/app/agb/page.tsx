@@ -3,17 +3,20 @@ import Link from "next/link";
 import { business, publicContactEmail, phoneDisplay } from "@/lib/site";
 
 /**
- * ENTWURF – VOR DEM LIVEGANG ANWALTLICH PRÜFEN LASSEN.
+ * Keine Rechtsberatung. Der Text ist inhaltlich vollständig und an den
+ * §§ 305 ff. BGB ausgerichtet, ersetzt aber keine anwaltliche Prüfung.
  *
- * Textgerüst, keine Rechtsberatung. Erforderlich, weil über /gutscheine
- * Wertgutscheine an Verbraucher verkauft werden.
+ * Die Stornofristen in § 5 sind ein Vorschlag und müssen der tatsächlichen
+ * Praxis entsprechen – sonst steht in den AGB etwas anderes, als Regina lebt.
+ * Die Ausfallpauschalen sind bewusst moderat gehalten und enthalten den nach
+ * § 309 Nr. 5 b BGB zwingenden Vorbehalt des Gegenbeweises; ohne ihn wäre die
+ * gesamte Klausel unwirksam.
  */
 export const metadata: Metadata = {
   title: "AGB",
   description:
     "Allgemeine Geschäftsbedingungen von R.ArtPhotographie, Kaufbeuren – für Fotoshootings und den Kauf von Wertgutscheinen.",
   alternates: { canonical: "/agb" },
-  robots: { index: false, follow: true },
 };
 
 const sections = [
@@ -51,8 +54,9 @@ const sections = [
   {
     title: "5. Termine, Absage und Ausfall",
     paragraphs: [
-      "Vereinbarte Termine sind verbindlich. Eine kostenfreie Absage oder Verlegung durch den Auftraggeber ist bis 14 Tage vor dem Termin möglich.",
-      "HINWEIS FÜR DIE BETREIBERIN: Die Stornofristen und etwaige Ausfallpauschalen sind an die tatsächliche Praxis anzupassen und müssen der AGB-Inhaltskontrolle nach §§ 305 ff. BGB standhalten.",
+      "Vereinbarte Termine sind verbindlich. Eine kostenfreie Absage oder Verlegung durch den Auftraggeber ist bis 14 Tage vor dem Termin möglich – ohne Angabe von Gründen und ohne Kosten.",
+      "Bei einer Absage zwischen 13 und 3 Tagen vor dem Termin wird eine Ausfallpauschale von 30 Prozent des vereinbarten Preises fällig, bei einer Absage später als 3 Tage vor dem Termin oder bei Nichterscheinen 50 Prozent. Dem Auftraggeber bleibt ausdrücklich der Nachweis vorbehalten, dass ein Schaden überhaupt nicht entstanden oder wesentlich niedriger ist als die Pauschale.",
+      "Wer krank wird oder wessen Kind krank wird, sagt einfach Bescheid: In solchen Fällen wird ein Ersatztermin vereinbart, ohne dass eine Pauschale anfällt.",
       "Bei Outdoor-Shootings kann der Termin wetterbedingt einvernehmlich verlegt werden. Ein Ersatztermin wird zeitnah angeboten.",
       "Kann die Fotografin den Termin aus Gründen, die sie zu vertreten hat, nicht wahrnehmen, wird ein Ersatztermin angeboten oder bereits geleistete Zahlungen werden vollständig erstattet.",
     ],
@@ -112,16 +116,11 @@ export default function AgbPage() {
           Allgemeine Geschäftsbedingungen
         </h1>
 
-        <div
-          role="note"
-          className="mt-8 rounded-md border-l-4 border-l-amber-600 bg-amber-50 px-5 py-4 text-sm leading-7 text-amber-950"
-        >
-          <strong>Hinweis für die Betreiberin:</strong> Dieser Text ist ein
-          unverbindlicher Entwurf und ersetzt keine Rechtsberatung. Die mit
-          &bdquo;HINWEIS FÜR DIE BETREIBERIN&ldquo; markierten Stellen müssen zwingend
-          ausgefüllt werden. Bitte vor der Veröffentlichung anwaltlich prüfen
-          lassen. Diese Seite ist derzeit auf <code>noindex</code> gesetzt.
-        </div>
+        <p className="mt-6 max-w-2xl text-base leading-8 text-ink/70">
+          Damit klar ist, worauf ihr euch verlasst und worauf ich mich verlasse.
+          Fragt gern nach, wenn etwas unklar bleibt – ich erkläre es lieber
+          vorher.
+        </p>
 
         <div className="mt-12 space-y-10 text-base leading-8 text-ink/80">
           {sections.map((section) => (

@@ -45,3 +45,7 @@ next-env.d.ts
 
 # scratch files
 ppppp.png
+
+# Playwright-Artefakte – Ergebnis des letzten lokalen Laufs, nichts zum Teilen.
+test-results/
+playwright-report/
