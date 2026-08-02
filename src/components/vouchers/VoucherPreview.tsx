@@ -19,12 +19,11 @@ const INK = "#16120f";
 const INK_SOFT = "#59504a";
 
 /*
-  Schriftfamilien absichtlich NICHT die Marken-Schriften: pdf-lib bettet die
-  PDF-Standardschriften ein (Times und Helvetica). Würde die Vorschau Playfair
-  und Inter zeigen, verspräche sie etwas, das im gedruckten Gutschein nicht
-  ankommt.
+  Die Vorschau muss zeigen, was wirklich gedruckt wird – nicht mehr und nicht
+  weniger. Im PDF ist Playfair Display eingebettet, für die Kleinschrift bleibt
+  Helvetica (siehe Begründung in voucher-pdf.ts). Genau so steht es hier.
 */
-const SERIF = "'Times New Roman', Times, serif";
+const SERIF = "var(--font-playfair), Georgia, serif";
 const SANS = "Helvetica, Arial, sans-serif";
 
 const LEFT = 74;
