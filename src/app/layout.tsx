@@ -75,9 +75,15 @@ export const metadata: Metadata = {
     kaputtes Meta-Tag.
   */
   verification: {
+    /*
+      Bestätigung der Search-Console-Property von skrebzowalbert@gmail.com.
+      Der vorherige Code (1S78GF…) gehörte zu keiner erreichbaren Property und
+      hat nichts bestätigt. Das Meta-Tag muss dauerhaft stehen bleiben, sonst
+      verliert Google die Inhaberschaft wieder.
+    */
     google:
       process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim() ||
-      "1S78GFngR4SKMPSWw6KQGZxRKAog87OpV6WtaNiu_VQ",
+      "ifkFuZYhUFr_rOPRQ7k7onBLdFXkjtQD-BCOf7LGFjw",
   },
 };
 
