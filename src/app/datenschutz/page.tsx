@@ -182,17 +182,62 @@ export default function DatenschutzPage() {
               10. Cookies, Analyse und Marketing
             </h2>
             <p className="mt-4">
-              Auf dieser Website werden nach aktuellem Stand keine
-              Analyse- oder Marketing-Cookies eingesetzt. Es werden keine
-              Dienste wie Google Analytics, Google Tag Manager, Meta/Facebook
-              Pixel, TikTok Pixel, Hotjar oder vergleichbare Tracking-Dienste
-              aktiv geladen.
+              <strong className="text-ink">
+                Cookielose Reichweitenmessung (ohne Einwilligung).
+              </strong>{" "}
+              Wir nutzen Vercel Web Analytics und Vercel Speed Insights. Diese
+              Dienste setzen keine Cookies, vergeben keine geräteübergreifende
+              Kennung und speichern keine IP-Adressen. Erhoben werden
+              ausschließlich aggregierte Angaben wie aufgerufene Seite,
+              Herkunftsseite, ungefähre Region, Gerätetyp und Ladezeiten. Eine
+              Zuordnung zu einer Person ist damit nicht möglich. Rechtsgrundlage
+              ist Art. 6 Abs. 1 lit. f DSGVO; unser berechtigtes Interesse ist
+              der technisch fehlerfreie Betrieb und die Verbesserung der
+              Website. Anbieter: Vercel Inc., 440 N Barranca Ave #4133, Covina,
+              CA 91723, USA.
+            </p>
+
+            <p className="mt-4">
+              <strong className="text-ink">
+                Google Analytics 4 (nur mit Einwilligung).
+              </strong>{" "}
+              Sofern du im Einwilligungsbanner zustimmst, setzen wir Google
+              Analytics 4 ein, einen Dienst der Google Ireland Limited, Gordon
+              House, Barrow Street, Dublin 4, Irland. Google Analytics
+              verwendet Cookies und ähnliche Technologien, um deine Nutzung der
+              Website auszuwerten. Erfasst werden unter anderem aufgerufene
+              Seiten, Verweildauer, Herkunftsseite, ungefähre Region sowie
+              ausgelöste Ereignisse (abgesendete Anfrage, Klick auf die
+              Telefonnummer, gestarteter Gutschein-Kauf). Die IP-Adresse wird
+              gekürzt verarbeitet.
             </p>
             <p className="mt-4">
-              Ein Cookie-Banner ist daher für diese Website derzeit nicht
-              vorgesehen. Sollte sich der Einsatz externer Analyse- oder
-              Marketingdienste ändern, wird diese Datenschutzerklärung
-              entsprechend angepasst.
+              <strong className="text-ink">Wichtig:</strong> Ohne deine
+              Einwilligung wird Google Analytics nicht geladen. Es werden dann
+              keinerlei Daten an Google übertragen und keine Cookies dieses
+              Dienstes gesetzt. Rechtsgrundlage für den Zugriff auf dein
+              Endgerät ist § 25 Abs. 1 TDDDG, für die anschließende
+              Verarbeitung Art. 6 Abs. 1 lit. a DSGVO – jeweils deine
+              Einwilligung.
+            </p>
+            <p className="mt-4">
+              Eine Übermittlung in die USA ist nicht ausgeschlossen. Google ist
+              nach dem EU-US Data Privacy Framework zertifiziert; ergänzend
+              gelten die Standardvertragsklauseln der EU-Kommission. Trotz
+              dieser Garantien besteht bei einer Übermittlung in die USA das
+              Restrisiko eines Zugriffs durch dortige Behörden.
+            </p>
+            <p className="mt-4">
+              <strong className="text-ink">Widerruf.</strong> Du kannst deine
+              Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen.
+              Klicke dafür im Fußbereich jeder Seite auf
+              &bdquo;Cookie-Einstellungen&ldquo; und wähle &bdquo;Ablehnen&ldquo;. Die Rechtmäßigkeit
+              der bis zum Widerruf erfolgten Verarbeitung bleibt unberührt.
+            </p>
+            <p className="mt-4">
+              Weitere Analyse- oder Marketingdienste wie Google Tag Manager,
+              Meta/Facebook Pixel, TikTok Pixel oder Hotjar werden nicht
+              eingesetzt.
             </p>
           </section>
 

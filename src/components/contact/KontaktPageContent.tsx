@@ -3,6 +3,7 @@
 import { Suspense, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import PageHeader from "@/components/layout/PageHeader";
 import {
   business,
@@ -158,6 +159,9 @@ function KontaktForm() {
         } | null;
         throw new Error(data?.error || "Request failed");
       }
+
+      // Erst nach bestätigtem Erfolg melden, nicht beim Absenden.
+      trackEvent("anfrage_gesendet", { art: form.type || "unbekannt" });
 
       setSubmitStatus({
         type: "success",
