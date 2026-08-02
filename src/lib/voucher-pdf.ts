@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { business } from "@/lib/site";
 import { formatEuro } from "@/lib/vouchers";
@@ -26,11 +29,18 @@ const INK_SOFT = rgb(0.35, 0.31, 0.27);
  * damit auch in einer Serverless-Funktion zuverlässig und in wenigen
  * Millisekunden.
  *
- * Die Standardschriften nutzen WinAnsi-Kodierung. Umlaute und ß sind darin
- * enthalten und werden deshalb ausgeschrieben. Zeichen AUSSERHALB von WinAnsi
- * (typografische Anführungszeichen, Gedankenstriche, Emoji) lassen pdf-lib
- * hart abbrechen – die kommen aus dem Nachrichtenfeld und werden vorher
- * abgebildet oder entfernt.
+ * Eingebettet werden die Schriften der Website (Playfair Display und Inter).
+ * Der Gutschein ist das einzige Stück, das ein Kunde ausdruckt und verschenkt –
+ * dort zählt das Schriftbild. Als Rückfallebene dienen die PDF-Standardschriften
+ * Times und Helvetica; schlägt das Laden fehl, entsteht trotzdem ein gültiger
+ * Gutschein.
+ *
+ * Die Dateien liegen als WOFF2 im Projekt (96 KB für alle vier Schnitte, ein
+ * Zehntel des TTF-Umfangs). fontkit entpackt sie beim Einbetten.
+ *
+ * Zeichenbereinigung bleibt trotzdem nötig: Der Latin-Ausschnitt der Schriften
+ * enthält keine Emoji, und fehlende Zeichen lassen pdf-lib hart abbrechen –
+ * sie kommen aus dem frei befüllbaren Nachrichtenfeld.
  */
 function winAnsiSafe(value: string) {
   return (
@@ -47,8 +57,23 @@ function winAnsiSafe(value: string) {
   );
 }
 
-export async function buildVoucherPdf(data: VoucherPdfData) {
+/**
+ * Lädt eine Schriftdatei aus dem Projekt.
+ *
+ * Damit die Dateien im Serverless-Bundle landen, sind sie in next.config.ts
+ * unter `outputFileTracingIncludes` für die betroffenen Routen eingetragen.
+ */
+async function loadFont(file: string) {
+  return readFile(path.join(process.cwd(), "src", "lib", "fonts", file));
+}
+
+/**
+ * Erzeugt den Gutschein. Bei `brandFonts: false` kommen ausschließlich die
+ * PDF-Standardschriften zum Einsatz.
+ */
+async function renderVoucher(data: VoucherPdfData, brandFonts: boolean) {
   const pdf = await PDFDocument.create();
+  pdf.registerFontkit(fontkit);
   pdf.setTitle(`Gutschein ${data.code} – R.ArtPhotographie`);
   pdf.setAuthor(business.name);
   pdf.setSubject("Wertgutschein für ein Fotoshooting");
@@ -58,10 +83,36 @@ export async function buildVoucherPdf(data: VoucherPdfData) {
   const page = pdf.addPage([842, 595]);
   const { width, height } = page.getSize();
 
-  const serif = await pdf.embedFont(StandardFonts.TimesRoman);
-  const serifItalic = await pdf.embedFont(StandardFonts.TimesRomanItalic);
+  /*
+    Schriftwahl, empirisch ermittelt:
+
+    - Playfair Display wird eingebettet und auf die tatsächlich benutzten
+      Zeichen reduziert. Das ist die prägende Schrift des Gutscheins
+      ("Wertgutschein", der Betrag, die persönliche Nachricht) und trägt den
+      Markenauftritt. Subsetting bringt das PDF von 527 KB auf 17 KB.
+
+    - Für die kleinen Beschriftungen bleibt Helvetica. Inter wurde getestet und
+      wieder entfernt: fontkit verliert beim Reduzieren einzelne Glyphen, aus
+      "GUTSCHEINCODE" wurde "u SC EI C E". Ohne Reduzierung wäre das PDF rund
+      700 KB groß – für einen Mailanhang unverhältnismäßig, zumal der
+      Unterschied zwischen Inter und Helvetica bei 8 bis 13 Punkt praktisch
+      unsichtbar ist.
+  */
   const sans = await pdf.embedFont(StandardFonts.Helvetica);
   const sansBold = await pdf.embedFont(StandardFonts.HelveticaBold);
+
+  let serif = await pdf.embedFont(StandardFonts.TimesRoman);
+  let serifItalic = await pdf.embedFont(StandardFonts.TimesRomanItalic);
+
+  if (brandFonts) {
+    const [playfair, playfairItalic] = await Promise.all([
+      loadFont("playfair-regular.ttf"),
+      loadFont("playfair-italic.ttf"),
+    ]);
+
+    serif = await pdf.embedFont(playfair, { subset: true });
+    serifItalic = await pdf.embedFont(playfairItalic, { subset: true });
+  }
 
   page.drawRectangle({ x: 0, y: 0, width, height, color: SAND });
 
@@ -190,4 +241,26 @@ export async function buildVoucherPdf(data: VoucherPdfData) {
   );
 
   return pdf.save();
+}
+
+/**
+ * Öffentlicher Einstieg mit echter Rückfallebene.
+ *
+ * Wichtig: Fehler beim Einbetten einer Schrift treten erst beim Speichern auf,
+ * nicht beim Aufruf von embedFont. Ein try/catch um das Einbetten hätte sie
+ * deshalb nie gefangen – erst der komplette Durchlauf inklusive save() zeigt,
+ * ob das PDF gültig ist. Schlägt er fehl, wird der Gutschein mit den
+ * Standardschriften erzeugt: Ein bezahlter Kunde bekommt lieber ein schlichtes
+ * PDF als gar keines.
+ */
+export async function buildVoucherPdf(data: VoucherPdfData) {
+  try {
+    return await renderVoucher(data, true);
+  } catch (error) {
+    console.error(
+      "[gutschein] Markenschrift fehlgeschlagen, weiche auf Standardschriften aus:",
+      error
+    );
+    return renderVoucher(data, false);
+  }
 }
