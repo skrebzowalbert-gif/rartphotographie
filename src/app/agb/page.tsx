@@ -36,7 +36,7 @@ const sections = [
     title: "3. Preise und Zahlung",
     paragraphs: [
       "Es gelten die zum Zeitpunkt der Buchung auf der Preis-Seite ausgewiesenen Preise. Alle Preise verstehen sich als Endpreise.",
-      "HINWEIS FÜR DIE BETREIBERIN: Hier ist die zutreffende Umsatzsteuer-Angabe zu ergänzen – entweder der Ausweis der gesetzlichen Umsatzsteuer oder der Hinweis nach § 19 UStG (Kleinunternehmerregelung: es wird keine Umsatzsteuer berechnet).",
+      "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und daher auch nicht ausgewiesen (Kleinunternehmerregelung).",
       "Die Zahlung von Wertgutscheinen erfolgt über den Zahlungsdienstleister Stripe. Die Vergütung für Shootings ist, sofern nicht abweichend vereinbart, nach dem Termin und vor Auslieferung der bearbeiteten Bilder fällig.",
     ],
   },

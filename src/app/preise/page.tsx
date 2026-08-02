@@ -245,7 +245,8 @@ export default async function PreisePage() {
           <>
             Shootings im Raum Kaufbeuren und im Ostallgäu. Termine außerhalb,
             zum Beispiel München, sind möglich – die Anfahrt wird dann
-            individuell berechnet.
+            individuell berechnet. Alle Preise sind Endpreise; gemäß § 19 UStG
+            wird keine Umsatzsteuer berechnet.
           </>
         }
         primaryAction={{ href: "/kontakt", label: "Shooting anfragen" }}

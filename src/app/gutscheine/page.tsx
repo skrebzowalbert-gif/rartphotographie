@@ -171,7 +171,7 @@ export default async function GutscheinePage() {
           src: "/images/gutschein/gutschein-main.jpg",
           alt: "Fotoshooting-Gutschein von R.ArtPhotographie aus Kaufbeuren",
         }}
-        meta="Sofort als PDF per E-Mail · zum Ausdrucken oder digital verschenken · 3 Jahre gültig"
+        meta="Sofort als PDF per E-Mail · zum Ausdrucken oder digital verschenken · 3 Jahre gültig · Endpreis, gemäß § 19 UStG ohne Umsatzsteuer"
         primaryAction={{ href: "#checkout", label: "Gutschein kaufen" }}
       />
 

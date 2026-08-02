@@ -67,6 +67,15 @@ export default function ImpressumPage() {
               Wirtschafts-Identifikationsnummer nach § 139c AO:{" "}
               {business.economicIdNumber}
             </p>
+            {/*
+              Nicht im Impressum vorgeschrieben, aber die Angabe, nach der
+              Besucher hier suchen. Die preisrechtlich verpflichtende Stelle
+              ist die Preisangabe selbst (§ 3 PAngV) – dort steht sie ebenfalls.
+            */}
+            <p className="mt-4">
+              Gemäß § 19 UStG wird keine Umsatzsteuer berechnet und daher auch
+              nicht ausgewiesen.
+            </p>
           </section>
 
           <section>
