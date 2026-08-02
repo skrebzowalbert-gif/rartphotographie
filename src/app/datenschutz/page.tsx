@@ -209,7 +209,8 @@ export default function DatenschutzPage() {
               Seiten, Verweildauer, Herkunftsseite, ungefähre Region sowie
               ausgelöste Ereignisse (abgesendete Anfrage, Klick auf die
               Telefonnummer, gestarteter Gutschein-Kauf). Die IP-Adresse wird
-              gekürzt verarbeitet.
+              gekürzt verarbeitet. Die erhobenen Ereignis- und Nutzerdaten
+              werden nach 14 Monaten automatisch gelöscht.
             </p>
             <p className="mt-4">
               <strong className="text-ink">Wichtig:</strong> Ohne deine
