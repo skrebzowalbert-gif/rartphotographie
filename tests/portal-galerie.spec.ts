@@ -179,6 +179,69 @@ test.describe("Kundengalerie", () => {
     ).toBeVisible();
   });
 
+  test("ein neues Passwort ersetzt das alte", async ({ page, browser }) => {
+    test.skip(!slug, "Vorbereitung fehlgeschlagen");
+
+    /*
+      Dieser Test braucht eine eigene Admin-Anmeldung: Jeder Test bekommt einen
+      frischen Browser, und der Passkey aus der Vorbereitung steckt in einem
+      anderen Kontext. Also Zugänge leeren und hier neu einrichten.
+    */
+    const sql = neon(process.env.DATABASE_URL!);
+    await sql`delete from admin_credentials`;
+    await sql`delete from admin_users`;
+
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("WebAuthn.enable");
+    await cdp.send("WebAuthn.addVirtualAuthenticator", {
+      options: {
+        protocol: "ctap2",
+        transport: "internal",
+        hasResidentKey: true,
+        hasUserVerification: true,
+        isUserVerified: true,
+        automaticPresenceSimulation: true,
+      },
+    });
+
+    await page.goto(
+      `/admin/einrichten?token=${encodeURIComponent(process.env.PORTAL_SETUP_TOKEN!)}`
+    );
+    await page.getByRole("button", { name: /Passkey anlegen/ }).click();
+    await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    await page.goto("/admin");
+    await page.getByRole("link", { name: /Testgalerie Kunde 1/ }).click();
+    await page.getByRole("button", { name: /Neues Passwort erzeugen/ }).click();
+
+    const neu = (
+      await page.locator("p.font-mono.text-2xl").innerText()
+    ).trim();
+    expect(neu).toMatch(/^[a-z2-9]{4}-[a-z2-9]{4}-[a-z2-9]{4}$/);
+    expect(neu).not.toBe(password);
+
+    // … das alte darf nicht mehr funktionieren.
+    const kunde = await browser.newContext();
+    const kundenSeite = await kunde.newPage();
+    await kundenSeite.goto(`/galerie/${slug}`);
+    await kundenSeite.getByLabel("Passwort").fill(password);
+    await kundenSeite.getByRole("button", { name: /Galerie öffnen/ }).click();
+    await expect(
+      kundenSeite.getByText(/Das Passwort stimmt nicht/),
+      "Das alte Passwort muss abgewiesen werden"
+    ).toBeVisible({ timeout: 15_000 });
+
+    // … das neue schon.
+    await kundenSeite.getByLabel("Passwort").fill(neu);
+    await kundenSeite.getByRole("button", { name: /Galerie öffnen/ }).click();
+    await expect(kundenSeite.getByRole("heading", { level: 1 })).toBeVisible({
+      timeout: 20_000,
+    });
+    await kunde.close();
+
+    password = neu;
+  });
+
   test("Kundengalerien sind für Suchmaschinen gesperrt", async ({ request }) => {
     test.skip(!slug, "Vorbereitung fehlgeschlagen");
 

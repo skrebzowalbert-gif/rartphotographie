@@ -7,6 +7,7 @@ import { db, schema } from "@/lib/db";
 import { record } from "@/lib/portal/audit";
 import { getAdminUser } from "@/lib/portal/session";
 import { deleteAssetObjects } from "@/lib/portal/r2";
+import { generateGalleryPassword, hashPassword } from "@/lib/portal/password";
 
 const schemaWatermark = z.object({
   projectId: z.uuid(),
@@ -117,4 +118,51 @@ export async function deleteAsset(formData: FormData) {
 
   revalidatePath(`/admin/projekt/${projectId.data}`);
   revalidatePath("/admin");
+}
+
+export type ResetState = { password?: string; error?: string };
+
+/**
+ * Ein neues Galerie-Passwort erzeugen.
+ *
+ * Das alte lässt sich nicht anzeigen – gespeichert ist nur eine nicht
+ * umkehrbare Prüfsumme. Wer die Datenbank erbeutet, bekommt damit keinen
+ * Zugang zu einer einzigen Galerie. Der Preis dafür ist genau diese Funktion:
+ * Vergessen heißt neu setzen, nicht nachschlagen.
+ *
+ * Bestehende Sitzungen bleiben absichtlich gültig. Ein Paar, das gerade
+ * mitten in der Auswahl ist, soll nicht herausfliegen, nur weil Regina den
+ * Link an die Eltern weitergeben will.
+ */
+export async function resetGalleryPassword(
+  _previous: ResetState,
+  formData: FormData
+): Promise<ResetState> {
+  const admin = await getAdminUser();
+  if (!admin) return { error: "Nicht angemeldet." };
+
+  const projectId = z.uuid().safeParse(formData.get("projectId"));
+  if (!projectId.success) return { error: "Ungültige Anfrage." };
+
+  const password = generateGalleryPassword();
+
+  const updated = await db()
+    .update(schema.projects)
+    .set({ passwordHash: await hashPassword(password), updatedAt: new Date() })
+    .where(eq(schema.projects.id, projectId.data))
+    .returning({ id: schema.projects.id });
+
+  if (updated.length === 0) return { error: "Galerie nicht gefunden." };
+
+  await record({
+    actor: "admin",
+    actorId: admin.userId,
+    projectId: projectId.data,
+    action: "project.password.reset",
+  });
+
+  revalidatePath(`/admin/projekt/${projectId.data}`);
+
+  // Wie beim Anlegen: einmal zurückgeben, nie über die Adresszeile.
+  return { password };
 }

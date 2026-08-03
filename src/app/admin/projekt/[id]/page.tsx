@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { eq, asc } from "drizzle-orm";
 import AssetGrid from "@/components/portal/AssetGrid";
+import PasswordReset from "@/components/portal/PasswordReset";
 import SelectionList from "@/components/portal/SelectionList";
 import Uploader from "@/components/portal/Uploader";
 import { db, schema } from "@/lib/db";
@@ -71,7 +72,14 @@ export default async function ProjektPage({
         {siteUrl}/galerie/{project.slug}
       </p>
 
-      <div className="mt-8 flex flex-wrap gap-4">
+      <div className="mt-8">
+        <PasswordReset
+          projectId={project.id}
+          galleryUrl={`${siteUrl}/galerie/${project.slug}`}
+        />
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-4">
         <form action={setWatermark}>
           <input type="hidden" name="projectId" value={project.id} />
           <input
