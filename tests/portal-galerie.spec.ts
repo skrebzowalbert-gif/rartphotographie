@@ -479,3 +479,55 @@ test.describe("Kundengalerie", () => {
     await fremd.close();
   });
 });
+
+test.describe("Aufräumauftrag", () => {
+  /*
+    Diese Route loescht Kundendaten. Waere sie ungeschuetzt erreichbar, koennte
+    jeder mit der Adresse eine Galerie leeren - und es saehe aus wie ein
+    planmaessiger Ablauf. Deshalb wird hier ausdruecklich geprueft, dass sie
+    ohne das Geheimnis NICHTS tut und sich auch nicht als vorhanden zu
+    erkennen gibt.
+  */
+  test("ohne Geheimnis antwortet der Aufräumauftrag wie eine tote Adresse", async ({
+    browser,
+  }) => {
+    const fremd = await browser.newContext();
+
+    for (const kopf of [
+      undefined,
+      { authorization: "Bearer falsch" },
+      { authorization: "Bearer " },
+      { authorization: "irgendwas" },
+    ]) {
+      const antwort = await fremd.request.get("/api/cron/aufraeumen", {
+        headers: kopf,
+        failOnStatusCode: false,
+      });
+
+      // 404, nicht 401: Wer probiert, soll nicht einmal erfahren, dass es die
+      // Adresse gibt.
+      expect(antwort.status(), `Kopf: ${JSON.stringify(kopf)}`).toBe(404);
+    }
+
+    await fremd.close();
+  });
+
+  test("mit dem richtigen Geheimnis läuft er und meldet Zahlen", async ({
+    browser,
+  }) => {
+    const geheim = process.env.CRON_SECRET;
+    test.skip(!geheim, "CRON_SECRET nicht gesetzt");
+
+    const fremd = await browser.newContext();
+    const antwort = await fremd.request.get("/api/cron/aufraeumen", {
+      headers: { authorization: `Bearer ${geheim}` },
+      failOnStatusCode: false,
+    });
+
+    expect(antwort.status()).toBe(200);
+    const daten = await antwort.json();
+    expect(typeof daten.erinnert).toBe("number");
+    expect(typeof daten.geloescht).toBe("number");
+    await fremd.close();
+  });
+});

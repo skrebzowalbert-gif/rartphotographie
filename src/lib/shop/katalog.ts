@@ -37,7 +37,14 @@ export type Variante = {
    * deshalb in dieser Zahl.
    */
   preisCent: number;
-  /** Einkauf inkl. Versand und Steuer, Stand 3.8.2026. Nur zur Orientierung. */
+  /**
+   * Einkauf inkl. Versand und Steuer, Stand 3.8.2026. Nur zur Orientierung.
+   *
+   * Bei Alben ist das der Grundpreis. Wie sich zusaetzliche Seiten auswirken,
+   * sagt erst das Angebot der Schnittstelle - deshalb steht der Verkaufspreis
+   * fuer Alben unter Vorbehalt, bis eine Bestellung mit Seitenzahl
+   * durchgerechnet ist.
+   */
   einkaufCa: number;
 };
 
@@ -49,6 +56,17 @@ export type Produkt = {
   herkunft: "Deutschland" | "Niederlande";
   /** Wie viele Bilder das Produkt aufnimmt. Ein Album mehrere, ein Bild eines. */
   bilder: "eins" | "mehrere";
+  /**
+   * Nur bei Alben: erlaubte Seitenzahl.
+   *
+   * Aus Prodigis Produktseite: 18 bis 122 Seiten, frei waehlbar. Das war
+   * laenger offen und stand als Frage in der Mail an Prodigi - Albert hat es
+   * im Dashboard gefunden, bevor die Antwort kam.
+   *
+   * Fuer den Album-Editor ist das die harte Grenze: Bei einem Bild pro Seite
+   * koennen es 18 bis 122 Bilder sein, nicht beliebig viele.
+   */
+  seiten?: { min: number; max: number };
   varianten: Variante[];
 };
 
@@ -58,9 +76,10 @@ export const KATALOG: Produkt[] = [
     name: "Layflat-Album",
     einzeiler: "Aufklappbar ohne Falz in der Mitte",
     beschreibung:
-      "Die Doppelseite läuft durch, ohne dass ein Bild im Bund verschwindet. Fester Einband, matt, Innenseiten auf 190 g. Gedruckt in Deutschland, Lieferung in ein bis zwei Tagen.",
+      "Die Doppelseite läuft durch, ohne dass ein Bild im Bund verschwindet. Fester Einband, matt, Innenseiten auf 190 g. 18 bis 122 Seiten. Gedruckt in Deutschland, Lieferung in ein bis zwei Tagen.",
     herkunft: "Deutschland",
     bilder: "mehrere",
+    seiten: { min: 18, max: 122 },
     varianten: [
       {
         sku: "BOOK-FE-A4-P-LF-G",
