@@ -53,15 +53,17 @@ export default function ProduktBereich({
     rechnen. Und der React-Compiler kann die Memoisierung hier ohnehin nicht
     erhalten, weil darunter ein frühes return steht.
   */
-  const pruefung =
-    variante && bild?.width && bild?.height
-      ? berechneZuschnitt({
-          quelleBreitePx: bild.width,
-          quelleHoehePx: bild.height,
-          zielBreiteCm: variante.breiteCm,
-          zielHoeheCm: variante.hoeheCm,
-        })
-      : null;
+  function pruefe(v: Variante) {
+    if (!bild?.width || !bild?.height) return null;
+    return berechneZuschnitt({
+      quelleBreitePx: bild.width,
+      quelleHoehePx: bild.height,
+      zielBreiteCm: v.breiteCm,
+      zielHoeheCm: v.hoeheCm,
+    });
+  }
+
+  const pruefung = variante ? pruefe(variante) : null;
 
   if (bilder.length === 0) return null;
 
@@ -88,7 +90,18 @@ export default function ProduktBereich({
                 type="button"
                 onClick={() => {
                   setFamilie(aktiv ? null : p.id);
-                  setSku(p.varianten[0].sku);
+                  /*
+                    Das groesste Format, das dieses Bild traegt – nicht
+                    stumpf das erste. Sonst startet die Auswahl bei einem
+                    ausgegrauten Eintrag und wirkt kaputt.
+                  */
+                  const passend = [...p.varianten]
+                    .reverse()
+                    .find((v) => {
+                      const g = pruefe(v);
+                      return !g || g.bestellbar;
+                    });
+                  setSku((passend ?? p.varianten[0]).sku);
                 }}
                 aria-pressed={aktiv}
                 className={`rounded-2xl border p-6 text-left transition-colors duration-300 ${
@@ -186,23 +199,43 @@ export default function ProduktBereich({
                   <legend className="text-sm font-medium text-paper/80">
                     Format
                   </legend>
+                  {/*
+                    Was nicht passt, ist ausgegraut – nicht erst nach der
+                    Auswahl abgelehnt. Wer ein Format anklicken kann, das er
+                    nicht bekommen kann, hat die Wahl umsonst getroffen.
+                  */}
                   <div className="mt-3 flex flex-col gap-2">
-                    {produkt.varianten.map((v) => (
-                      <button
-                        key={v.sku}
-                        type="button"
-                        onClick={() => setSku(v.sku)}
-                        aria-pressed={v.sku === variante.sku}
-                        className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-300 ${
-                          v.sku === variante.sku
-                            ? "border-paper/60 bg-paper/8 text-paper"
-                            : "border-paper/15 text-paper/70 hover:border-paper/35"
-                        }`}
-                      >
-                        <span>{v.bezeichnung}</span>
-                        <span>{preisText(v.preisCent)}</span>
-                      </button>
-                    ))}
+                    {produkt.varianten.map((v) => {
+                      const p = pruefe(v);
+                      const geht = !p || p.bestellbar;
+
+                      return (
+                        <button
+                          key={v.sku}
+                          type="button"
+                          onClick={() => geht && setSku(v.sku)}
+                          disabled={!geht}
+                          aria-pressed={v.sku === variante.sku}
+                          className={`flex flex-col rounded-xl border px-4 py-3 text-left text-sm transition-colors duration-300 ${
+                            !geht
+                              ? "cursor-not-allowed border-paper/10 text-paper/30"
+                              : v.sku === variante.sku
+                              ? "border-paper/60 bg-paper/8 text-paper"
+                              : "border-paper/15 text-paper/70 hover:border-paper/35"
+                          }`}
+                        >
+                          <span className="flex w-full items-center justify-between">
+                            <span>{v.bezeichnung}</span>
+                            <span>{preisText(v.preisCent)}</span>
+                          </span>
+                          {!geht && (
+                            <span className="mt-1 text-xs text-paper/35">
+                              Für dieses Bild zu groß
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </fieldset>
 

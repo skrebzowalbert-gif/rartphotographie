@@ -21,6 +21,18 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+/*
+  Das Datum wird auf dem Server formatiert.
+
+  Sonst haengt die Anzeige an der Zeitzone des Betrachters – und eine Frist,
+  die je nach Standort einen Tag frueher oder spaeter aussieht, ist keine.
+*/
+const datumsFormat = new Intl.DateTimeFormat("de-DE", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
 export default async function GaleriePage({
   params,
 }: {
@@ -43,6 +55,7 @@ export default async function GaleriePage({
         längst abgelaufene Galerie.
       */
       expired: sql<boolean>`${schema.projects.expiresAt} < now()`,
+      expiresAt: schema.projects.expiresAt,
       selectionSubmittedAt: schema.projects.selectionSubmittedAt,
     })
     .from(schema.projects)
@@ -121,6 +134,7 @@ export default async function GaleriePage({
               paketZuGross={
                 fertige.reduce((s, d) => s + d.byteSize, 0) > PAKET_GRENZE_BYTES
               }
+              verfuegbarBis={datumsFormat.format(project.expiresAt)}
             />
             <ProduktBereich
               bilder={fertige.map((d) => ({
@@ -203,6 +217,7 @@ export default async function GaleriePage({
           paketZuGross={
             fertige.reduce((s, d) => s + d.byteSize, 0) > PAKET_GRENZE_BYTES
           }
+          verfuegbarBis={datumsFormat.format(project.expiresAt)}
         />
       )}
 
