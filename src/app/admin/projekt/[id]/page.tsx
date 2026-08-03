@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { eq, asc } from "drizzle-orm";
+import AssetGrid from "@/components/portal/AssetGrid";
 import Uploader from "@/components/portal/Uploader";
 import { db, schema } from "@/lib/db";
 import { getAdminUser } from "@/lib/portal/session";
@@ -122,42 +123,12 @@ export default async function ProjektPage({
         </div>
 
         {previews.length > 0 && (
-          <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {previews.map((asset) => (
-              <li key={asset.id}>
-                {/*
-                  Bewusst ein einfaches img-Element statt next/image: Diese
-                  Bilder liegen hinter einer Anmeldung. Vercels Bildoptimierung
-                  wuerde sie holen und in einem gemeinsamen Zwischenspeicher
-                  ablegen – genau das, was bei Kundenfotos nicht passieren darf.
-                */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/api/portal/bild/${asset.id}?w=400`}
-                  alt={asset.fileName}
-                  loading="lazy"
-                  width={asset.width ?? undefined}
-                  height={asset.height ?? undefined}
-                  className="aspect-[4/5] w-full rounded-lg object-cover"
-                />
-                <div className="mt-2 flex items-baseline justify-between gap-2">
-                  <p className="truncate font-mono text-[11px] text-ink/50">
-                    {asset.fileName}
-                  </p>
-                  <form action={deleteAsset}>
-                    <input type="hidden" name="assetId" value={asset.id} />
-                    <input type="hidden" name="projectId" value={project.id} />
-                    <button
-                      type="submit"
-                      className="shrink-0 text-[11px] text-ink/45 underline underline-offset-2 transition-colors duration-300 hover:text-ink"
-                    >
-                      entfernen
-                    </button>
-                  </form>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <AssetGrid
+            assets={previews}
+            projectId={project.id}
+            watermarkEnabled={project.watermarkEnabled}
+            onDelete={deleteAsset}
+          />
         )}
       </section>
 

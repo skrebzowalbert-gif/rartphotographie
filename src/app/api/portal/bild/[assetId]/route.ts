@@ -60,9 +60,18 @@ export async function GET(
       return new NextResponse(null, { status: 404 });
     }
   } else {
-    // Regina sieht ihre Bilder ohne Wasserzeichen – sie muss beurteilen
-    // können, was sie hochgeladen hat.
-    watermark = false;
+    /*
+      Regina sieht ihre Bilder standardmäßig OHNE Wasserzeichen – sie muss
+      beurteilen können, was sie hochgeladen hat.
+
+      Mit ?ansicht=kunde bekommt sie dieselbe Fassung wie die Kundschaft.
+      Ohne diesen Schalter könnte sie nie prüfen, wie das Wasserzeichen auf
+      ihren eigenen Motiven wirkt – und genau das ist eine Geschmacksfrage,
+      die sie entscheiden muss, nicht ich.
+    */
+    const alsKunde =
+      new URL(request.url).searchParams.get("ansicht") === "kunde";
+    watermark = alsKunde && asset.watermarkEnabled;
   }
 
   const requested = Number(new URL(request.url).searchParams.get("w"));
