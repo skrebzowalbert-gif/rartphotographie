@@ -276,6 +276,45 @@ export const adminCredentials = pgTable(
   (table) => [index("admin_credentials_user_idx").on(table.userId)]
 );
 
+/**
+ * Einladungen für ein weiteres Gerät.
+ *
+ * Ein Passkey lässt sich nicht aus der Ferne für jemand anderen anlegen – er
+ * entsteht auf dem Gerät, das ihn später benutzt. Regina sitzt in Kaufbeuren,
+ * eingerichtet wurde das Portal in Kempten: Ohne diesen Weg käme sie nie an
+ * ihre eigene Verwaltung.
+ *
+ * Abgelegt wird nur der SHA-256-Abdruck des Tokens, nicht das Token selbst.
+ * Wer die Datenbank liest, hält damit keinen gültigen Einladungslink in der
+ * Hand. Ein Passwort-Hash mit Kostenfaktor wäre hier fehl am Platz: Das Token
+ * kommt aus 24 zufälligen Bytes, da gibt es nichts zu raten.
+ */
+export const adminInvites = pgTable(
+  "admin_invites",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+
+    /** SHA-256 des Tokens, hex. */
+    tokenHash: text("token_hash").notNull(),
+
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => adminUsers.id, { onDelete: "cascade" }),
+
+    /** Woran Regina das Gerät später wiedererkennt, z. B. "Reginas iPhone". */
+    label: text("label").notNull().default("Gerät"),
+
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+
+    /** Gesetzt, sobald der Link benutzt wurde – danach ist er wertlos. */
+    usedAt: timestamp("used_at", { withTimezone: true }),
+  },
+  (table) => [uniqueIndex("admin_invites_token_idx").on(table.tokenHash)]
+);
+
 /** Kurzlebige Challenges für die WebAuthn-Anmeldung. */
 export const adminChallenges = pgTable("admin_challenges", {
   id: uuid("id").primaryKey().defaultRandom(),

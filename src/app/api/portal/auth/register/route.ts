@@ -8,6 +8,7 @@ import {
   storeChallenge,
 } from "@/lib/portal/admin-auth";
 import { record } from "@/lib/portal/audit";
+import { consumeInvite, readInvite } from "@/lib/portal/invites";
 import { createAdminSession, getAdminUser } from "@/lib/portal/session";
 import {
   buildRegistrationOptions,
@@ -17,35 +18,48 @@ import {
 /*
   Anlegen eines Passkeys – in zwei Schritten, wie WebAuthn es vorsieht.
 
-  Zugelassen ist das in genau zwei Fällen:
+  Zugelassen ist das in genau drei Fällen:
   1. Es existiert noch kein Zugang und das Einrichtungs-Token stimmt.
   2. Regina ist bereits angemeldet und legt ein weiteres Gerät an.
+  3. Es liegt eine gültige, unbenutzte Geräteeinladung vor.
 
-  Der zweite Fall ist wichtiger, als er klingt: Wer nur einen Passkey hat und
-  das Telefon verliert, kommt nicht mehr an die eigenen Kundengalerien.
+  Fall 3 ist der Weg für ein Gerät, das ganz woanders steht: Ein Passkey lässt
+  sich nicht aus der Ferne für jemanden anlegen, er entsteht auf dem Gerät, das
+  ihn benutzt. Ohne diesen Fall käme Regina in Kaufbeuren nicht in eine
+  Verwaltung, die in Kempten eingerichtet wurde.
+
+  Fall 2 ist wichtiger, als er klingt: Wer nur einen Passkey hat und das
+  Telefon verliert, kommt nicht mehr an die eigenen Kundengalerien.
 */
 
 const optionsSchema = z.object({
   step: z.literal("options"),
   setupToken: z.string().optional(),
+  inviteToken: z.string().optional(),
   label: z.string().max(60).optional(),
 });
 
 const verifySchema = z.object({
   step: z.literal("verify"),
   setupToken: z.string().optional(),
+  inviteToken: z.string().optional(),
   label: z.string().max(60).optional(),
   response: z.looseObject({ id: z.string() }),
 });
 
 const bodySchema = z.discriminatedUnion("step", [optionsSchema, verifySchema]);
 
-async function resolveActor(setupToken?: string) {
+async function resolveActor(setupToken?: string, inviteToken?: string) {
   const existing = await getAdminUser();
-  if (existing) return { kind: "session" as const, user: existing };
+  if (existing) return { kind: "session" as const, user: existing, invite: null };
+
+  if (inviteToken) {
+    const invite = await readInvite(inviteToken);
+    if (invite) return { kind: "invite" as const, user: null, invite };
+  }
 
   if (setupToken && (await isSetupAllowed(setupToken))) {
-    return { kind: "setup" as const, user: null };
+    return { kind: "setup" as const, user: null, invite: null };
   }
 
   return null;
@@ -59,7 +73,7 @@ export async function POST(request: Request) {
   }
 
   const body = parsed.data;
-  const actor = await resolveActor(body.setupToken);
+  const actor = await resolveActor(body.setupToken, body.inviteToken);
 
   if (!actor) {
     // Bewusst dieselbe Antwort für "kein Token", "falsches Token" und "schon
@@ -76,6 +90,22 @@ export async function POST(request: Request) {
       userId = actor.user.userId;
       userName = actor.user.email;
       displayName = actor.user.displayName;
+    } else if (actor.kind === "invite") {
+      // Die Einladung gehört zu einem bestehenden Zugang – es entsteht kein
+      // zweiter Nutzer, nur ein weiterer Schlüssel zum selben.
+      const [user] = await db()
+        .select()
+        .from(schema.adminUsers)
+        .where(eq(schema.adminUsers.id, actor.invite.userId))
+        .limit(1);
+
+      if (!user) {
+        return NextResponse.json({ error: "Nicht berechtigt." }, { status: 403 });
+      }
+
+      userId = user.id;
+      userName = user.email;
+      displayName = user.displayName;
     } else {
       /*
         Erster Zugang. Einen bereits vorhandenen Nutzer ohne Passkey
@@ -156,25 +186,42 @@ export async function POST(request: Request) {
     );
   }
 
+  const label =
+    body.label?.trim() ||
+    (actor.kind === "invite" ? actor.invite.label : "") ||
+    "Gerät";
+
   await db().insert(schema.adminCredentials).values({
     id: credential.id,
     userId: stored.userId,
     publicKey: credential.publicKey,
     counter: credential.counter,
     transports: credential.transports,
-    label: body.label?.trim() || "Gerät",
+    label,
   });
+
+  /*
+    Erst jetzt die Einladung entwerten.
+
+    Nicht beim Aufruf der Seite und nicht beim Anfordern der Optionen: Bricht
+    Regina den Systemdialog ab oder klemmt der Fingerabdrucksensor, wäre der
+    Link sonst verbrannt und sie stünde ohne Zugang da – und ich müsste einen
+    neuen schicken, für einen Fehler, den sie nicht gemacht hat.
+  */
+  if (actor.kind === "invite") {
+    await consumeInvite(actor.invite.id);
+  }
 
   await record({
     actor: "admin",
     actorId: stored.userId,
     action: "admin.passkey.registered",
-    detail: { label: body.label?.trim() || "Gerät" },
+    detail: { label, weg: actor.kind },
   });
 
   // Nach der Einrichtung gleich angemeldet – sonst müsste Regina den frisch
   // angelegten Passkey sofort noch einmal benutzen.
-  if (actor.kind === "setup") {
+  if (actor.kind === "setup" || actor.kind === "invite") {
     await createAdminSession(stored.userId);
   }
 

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import GoogleAnalytics from "@/components/analytics/Analytics";
 import ConsentBanner from "@/components/analytics/ConsentBanner";
+import PublicOnly from "@/components/analytics/PublicOnly";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Inter, Playfair_Display } from "next/font/google";
 import { siteUrl } from "@/lib/site";
@@ -107,12 +108,16 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
 
-        {/* Google Analytics lädt ausschließlich nach Einwilligung.
-            useSearchParams im Inneren verlangt eine Suspense-Grenze. */}
+        {/* Google Analytics lädt ausschließlich nach Einwilligung – und nur
+            auf der öffentlichen Website, nie in einer Kundengalerie oder im
+            Verwaltungsbereich. useSearchParams im Inneren verlangt eine
+            Suspense-Grenze. */}
         <Suspense fallback={null}>
-          <GoogleAnalytics />
+          <PublicOnly>
+            <GoogleAnalytics />
+            <ConsentBanner />
+          </PublicOnly>
         </Suspense>
-        <ConsentBanner />
       </body>
     </html>
   );

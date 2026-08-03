@@ -36,9 +36,16 @@ export default async function AnmeldenPage() {
         <PasskeyButton mode="login">Mit Passkey anmelden</PasskeyButton>
       </div>
 
+      {/*
+        Hier stand vorher "lege auf einem bekannten Gerät einen weiteren
+        Passkey an". Das half niemandem, der genau dieses bekannte Gerät nicht
+        hat – und das ist der Normalfall, wenn ein Handy neu dazukommt. Was
+        wirklich zu tun ist: einen Einladungslink anfordern.
+      */}
       <p className="mt-12 text-sm leading-7 text-ink/60">
-        Neues Gerät? Melde dich zuerst auf einem bekannten Gerät an und lege
-        dort einen weiteren Passkey an.{" "}
+        Neues Gerät? Es braucht einen Einladungslink von einem Gerät, das schon
+        freigeschaltet ist. Der Link gilt dreißig Minuten und schaltet genau ein
+        Gerät frei.{" "}
         <Link href="/" className="underline underline-offset-4">
           Zurück zur Website
         </Link>
