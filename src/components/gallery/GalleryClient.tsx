@@ -27,6 +27,15 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
  *
  * – Das Seitenverhältnis steht fest, bevor ein Bild geladen ist. Ohne das
  *   springt beim Scrollen alles, und die Seite wirkt billig.
+ *
+ * – Jede Bildadresse trägt "ansicht=kunde". Das ist keine Zierde: Die
+ *   Bildroute entschied bisher allein danach, WER fragt – wer als Regina
+ *   angemeldet war, bekam die Fassung ohne Wasserzeichen, auch hier in der
+ *   Kundengalerie. Genau darüber sind Regina und Albert gestolpert: Sie
+ *   öffneten die Galerie im selben Browser, in dem sie in der Verwaltung
+ *   angemeldet waren, sahen keine Wasserzeichen und mussten annehmen, dass
+ *   die Kundschaft auch keine sieht. Nicht die Person entscheidet über die
+ *   Darstellung, sondern die Seite.
  */
 
 export type GalleryAsset = {
@@ -216,7 +225,7 @@ export default function GalleryClient({
       <header className="relative h-[78svh] min-h-[26rem] w-full overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={`/api/portal/bild/${hero.id}?w=1600`}
+          src={`/api/portal/bild/${hero.id}?w=1600&ansicht=kunde`}
           alt=""
           /*
             Das erste Bild ist das einzige, das sofort gebraucht wird – und
@@ -338,7 +347,7 @@ export default function GalleryClient({
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={`/api/portal/bild/${asset.id}?w=800`}
+                    src={`/api/portal/bild/${asset.id}?w=800&ansicht=kunde`}
                     alt=""
                     loading="lazy"
                     decoding="async"
@@ -406,7 +415,7 @@ export default function GalleryClient({
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`/api/portal/bild/${sichtbar[open].id}?w=1600`}
+            src={`/api/portal/bild/${sichtbar[open].id}?w=1600&ansicht=kunde`}
             alt=""
             onClick={(event) => event.stopPropagation()}
             onContextMenu={(event) => event.preventDefault()}

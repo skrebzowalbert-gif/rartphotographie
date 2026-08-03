@@ -319,6 +319,136 @@ test.describe("Kundengalerie", () => {
     expect(nachher.status()).toBe(502);
   });
 
+  test("auch als angemeldete Regina zeigt die Galerie Wasserzeichen", async ({
+    page,
+  }) => {
+    test.skip(!slug, "Vorbereitung fehlgeschlagen");
+    test.setTimeout(180_000);
+
+    /*
+      Der Fall, der Regina und Albert glauben liess, es gaebe keine
+      Wasserzeichen.
+
+      Die Bildroute entschied allein danach, WER fragt: Wer als Regina
+      angemeldet war, bekam die Fassung ohne Wasserzeichen – auch in der
+      Kundengalerie. Beide oeffneten die Galerie im selben Browser, in dem sie
+      in der Verwaltung angemeldet waren, sahen blanke Bilder und mussten
+      annehmen, die Kundschaft saehe dasselbe.
+
+      Geprueft wird deshalb genau diese Kombination: gueltige Anmeldung als
+      Regina UND Aufruf ueber die Kundengalerie. Die Seite muss die
+      Kundenfassung anfordern, nicht die Person die Darstellung bestimmen.
+    */
+    const setupToken = process.env.PORTAL_SETUP_TOKEN;
+    test.skip(!setupToken, "PORTAL_SETUP_TOKEN nicht gesetzt");
+
+    const sql = neon(process.env.DATABASE_URL!);
+    await sql`delete from admin_credentials`;
+    await sql`delete from admin_users`;
+
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("WebAuthn.enable");
+    await cdp.send("WebAuthn.addVirtualAuthenticator", {
+      options: {
+        protocol: "ctap2",
+        transport: "internal",
+        hasResidentKey: true,
+        hasUserVerification: true,
+        isUserVerified: true,
+        automaticPresenceSimulation: true,
+      },
+    });
+
+    await page.goto(
+      `/admin/einrichten?token=${encodeURIComponent(setupToken!)}`
+    );
+    await page.getByRole("button", { name: /Passkey anlegen/ }).click();
+    await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    // Eine eigene Galerie mit einem echten Foto – auf einem Testpixel gibt es
+    // nichts zu beschriften.
+    const titel = `Testgalerie Sicht ${Date.now()}`;
+    await page.goto("/admin/neu");
+    await page.getByLabel("Titel der Galerie").fill(titel);
+    await page.getByLabel("Kundin oder Kunde").fill("Testpaar");
+    await page.getByRole("button", { name: /Galerie anlegen/ }).click();
+    await expect(
+      page.getByRole("heading", { name: new RegExp(titel) })
+    ).toBeVisible({ timeout: 20_000 });
+
+    const link = await page.locator("dd.font-mono.text-sm").innerText();
+    const eigenerSlug = link.split("/galerie/")[1].trim();
+    const eigenesPasswort = (
+      await page.locator("dd.font-mono.text-2xl").innerText()
+    ).trim();
+
+    await page.goto("/admin");
+    await page.getByRole("link", { name: titel }).click();
+    await page
+      .locator('input[type="file"]')
+      .first()
+      .setInputFiles("public/images/portrait/portrait-4.jpg");
+    await expect(page.getByText("portrait-4.jpg").first()).toBeVisible({
+      timeout: 90_000,
+    });
+    await page
+      .getByRole("button", { name: /Für die Kundschaft freigeben/ })
+      .click();
+    await expect(page.getByText(/Auswahl läuft/).first()).toBeVisible({
+      timeout: 20_000,
+    });
+
+    // Dieselbe Seite, dieselbe Anmeldung – jetzt als Kundin.
+    await page.goto(`/galerie/${eigenerSlug}`);
+    await page.getByLabel("Passwort").fill(eigenesPasswort);
+    await page.getByRole("button", { name: /Galerie öffnen/ }).click();
+
+    /*
+      Ausdruecklich ein Bild aus dem Mosaik, nicht das Auftaktbild.
+
+      Erster Anlauf nahm schlicht das erste Bild der Seite – das ist der
+      Auftakt mit 1600 Pixeln Breite. Verglichen wurde es mit einer
+      800-Pixel-Fassung, und zwei verschiedene Groessen unterscheiden sich
+      immer. Der Test war gruen, egal was der Code tat.
+    */
+    const bild = page
+      .locator('img[src*="/api/portal/bild/"][src*="w=800"]')
+      .first();
+    await expect(bild).toBeVisible({ timeout: 20_000 });
+
+    const quelle = (await bild.getAttribute("src"))!;
+    const assetId = quelle.split("/api/portal/bild/")[1].split("?")[0];
+
+    // Der eigentliche Punkt: Die Seite muss die Kundenfassung anfordern.
+    expect(
+      quelle,
+      "Die Galerie fragt nicht nach der Kundenfassung – dann entscheidet wieder die Anmeldung"
+    ).toContain("ansicht=kunde");
+
+    const ausGalerie = await page.request.get(quelle);
+    const ohne = await page.request.get(`/api/portal/bild/${assetId}?w=800`);
+    expect(ausGalerie.status()).toBe(200);
+    expect(ohne.status()).toBe(200);
+
+    const sharp = (await import("sharp")).default;
+    const a = await sharp(await ohne.body()).raw().toBuffer({ resolveWithObject: true });
+    const b = await sharp(await ausGalerie.body())
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    // Gleiche Masse, sonst vergleicht die Schleife unten Aepfel mit Birnen.
+    expect(a.info.width).toBe(b.info.width);
+    expect(a.info.height).toBe(b.info.height);
+
+    let summe = 0;
+    for (let i = 0; i < a.data.length; i++) summe += Math.abs(a.data[i] - b.data[i]);
+
+    expect(
+      summe / a.data.length,
+      "Die Galerie liefert dieselben Bilder wie die Verwaltung – das Wasserzeichen fehlt"
+    ).toBeGreaterThan(1);
+  });
+
   test("Kundengalerien sind für Suchmaschinen gesperrt", async ({ request }) => {
     test.skip(!slug, "Vorbereitung fehlgeschlagen");
 
