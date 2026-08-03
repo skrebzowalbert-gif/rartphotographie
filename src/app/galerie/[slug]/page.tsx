@@ -53,7 +53,7 @@ export default async function GaleriePage({
   // hier überhaupt Bilder gibt.
   if (!session) {
     return (
-      <main className="min-h-screen bg-sand px-[var(--shell-x)] text-ink">
+      <main className="min-h-screen bg-ink px-[var(--shell-x)] text-paper">
         <GalleryLogin slug={slug} title={project.title} />
       </main>
     );
@@ -100,54 +100,67 @@ export default async function GaleriePage({
 
   const abgeschickt = project.status !== "selecting";
 
+  const intro = abgeschickt ? (
+    <>
+      Eure Auswahl ist bei Regina angekommen –{" "}
+      <strong className="font-medium text-paper">{favorites.length}</strong>{" "}
+      {favorites.length === 1 ? "Bild" : "Bilder"}. Sie meldet sich, sobald die
+      bearbeiteten Aufnahmen bereitstehen. Anschauen könnt ihr hier weiterhin
+      alles.
+    </>
+  ) : (
+    <>
+      Tippt auf das Herz bei den Bildern, die ihr haben möchtet. Ihr könnt
+      jederzeit wieder abwählen – erst mit &bdquo;Auswahl abschicken&ldquo; geht
+      sie an Regina.
+      {project.selectionLimit !== null && (
+        <>
+          {" "}
+          In eurem Paket sind{" "}
+          <strong className="font-medium text-paper">
+            {project.selectionLimit}
+          </strong>{" "}
+          bearbeitete Bilder enthalten.
+        </>
+      )}
+    </>
+  );
+
+  /*
+    Kein px, kein max-width, kein Container.
+
+    Die Bilder sollen die Kante berühren – jede Fassung, die sie in eine Spalte
+    mit Rand setzt, lässt eine Hochzeitsgalerie wie eine Dateiliste aussehen.
+    Die Innenabstände setzt jeder Abschnitt selbst.
+  */
   return (
-    <main className="min-h-screen bg-sand px-[var(--shell-x)] pb-4 text-ink">
-      <div className="mx-auto max-w-[110rem] pt-16">
-        <p className="eyebrow text-ink/55">Eure Auswahl</p>
-        <h1 className="display-lg mt-5 text-ink">{project.title}</h1>
-
-        {abgeschickt ? (
-          <p className="mt-6 max-w-2xl text-base leading-8 text-ink/75">
-            Eure Auswahl ist bei Regina angekommen –{" "}
-            <strong className="text-ink">{favorites.length}</strong>{" "}
-            {favorites.length === 1 ? "Bild" : "Bilder"}. Sie meldet sich, sobald
-            die bearbeiteten Aufnahmen bereitstehen. Anschauen könnt ihr hier
-            weiterhin alles.
-          </p>
-        ) : (
-          <p className="mt-6 max-w-2xl text-base leading-8 text-ink/75">
-            Tippt auf das Herz bei den Bildern, die ihr haben möchtet. Ihr könnt
-            jederzeit wieder abwählen – erst mit &bdquo;Auswahl abschicken&ldquo;
-            geht sie an Regina.
-            {project.selectionLimit !== null && (
-              <>
-                {" "}
-                In eurem Paket sind{" "}
-                <strong className="text-ink">{project.selectionLimit}</strong>{" "}
-                bearbeitete Bilder enthalten.
-              </>
-            )}
-          </p>
-        )}
-
-        <GalleryClient
-          projectId={project.id}
-          assets={assets}
-          initialFavorites={favorites.map((f) => f.assetId)}
-          selectionLimit={project.selectionLimit}
-          locked={abgeschickt}
-        />
-      </div>
+    /*
+      overflow-visible ist hier kein Detail, sondern die Bedingung dafür, dass
+      die Auswahlleiste beim Scrollen oben stehen bleibt: Die Basisregel
+      "main { overflow-x: clip }" macht aus dem Element einen eigenen
+      Ausschnitt, und darin verliert position: sticky seinen Bezugsrahmen. Die
+      Galerie läuft ohnehin nicht seitlich über.
+    */
+    <main className="min-h-screen overflow-visible bg-ink pb-24 text-paper">
+      <GalleryClient
+        projectId={project.id}
+        title={project.title}
+        intro={intro}
+        assets={assets}
+        initialFavorites={favorites.map((f) => f.assetId)}
+        selectionLimit={project.selectionLimit}
+        locked={abgeschickt}
+      />
     </main>
   );
 }
 
 function Hinweis({ titel, text }: { titel: string; text: string }) {
   return (
-    <main className="min-h-screen bg-sand px-[var(--shell-x)] text-ink">
+    <main className="min-h-screen bg-ink px-[var(--shell-x)] text-paper">
       <div className="mx-auto max-w-lg py-24">
-        <h1 className="display-lg text-ink">{titel}</h1>
-        <p className="mt-6 text-base leading-8 text-ink/75">{text}</p>
+        <h1 className="display-lg text-paper">{titel}</h1>
+        <p className="mt-6 text-base leading-8 text-paper/70">{text}</p>
       </div>
     </main>
   );

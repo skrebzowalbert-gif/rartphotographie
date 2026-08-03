@@ -35,6 +35,23 @@ export function derivedKey(params: {
   }.jpg`;
 }
 
+/**
+ * Das Original liegt nicht mehr im Speicher, obwohl die Datenbank es führt.
+ *
+ * Eigener Fehlertyp, weil dieser Fall etwas ganz anderes bedeutet als ein
+ * misslungenes Verkleinern: Nicht die Verarbeitung ist kaputt, sondern die
+ * Datei ist weg. Genau das ist einmal passiert – ein Aufraeumskript hat den
+ * Bucket geleert –, und weil die Bildroute damals jeden Fehler in ein
+ * schlichtes 404 verwandelt hat, war von aussen nur zu sehen: keine Bilder.
+ * Die Unterscheidung kostet zehn Zeilen und spart eine Stunde Suchen.
+ */
+export class MissingOriginalError extends Error {
+  constructor(public readonly key: string) {
+    super(`Original nicht im Speicher: ${key}`);
+    this.name = "MissingOriginalError";
+  }
+}
+
 async function readObject(key: string): Promise<Buffer | null> {
   try {
     const result = await r2().send(
@@ -125,7 +142,7 @@ export async function getPreviewImage(params: {
   if (cached) return { image: cached, sourceWidth: null, sourceHeight: null };
 
   const original = await readObject(params.sourceKey);
-  if (!original) throw new Error("Das Bild liegt nicht im Speicher.");
+  if (!original) throw new MissingOriginalError(params.sourceKey);
 
   /*
     Die Maße des Originals mitnehmen.
