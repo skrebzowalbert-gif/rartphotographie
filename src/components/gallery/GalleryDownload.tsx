@@ -20,10 +20,13 @@ export default function GalleryDownload({
   projectId,
   dateien,
   paketZuGross,
+  verfuegbarBis,
 }: {
   projectId: string;
   dateien: Enddatei[];
   paketZuGross: boolean;
+  /** Vorformatiert vom Server – die Zeitzone des Betrachters hat hier nichts zu suchen. */
+  verfuegbarBis: string;
 }) {
   const [offen, setOffen] = useState(false);
 
@@ -59,7 +62,20 @@ export default function GalleryDownload({
           </p>
         )}
 
-        <div className="mt-8">
+        {/*
+          Die Frist gehoert dorthin, wo die Bilder liegen – nicht ins
+          Kleingedruckte.
+
+          Wir loeschen nach Ablauf wirklich. Wer das erst erfaehrt, wenn die
+          Galerie leer ist, hat seine Hochzeitsbilder verloren, und niemand
+          hat ihm gesagt, dass er sie sichern soll.
+        */}
+        <p className="mt-8 text-sm leading-7 text-paper/45">
+          Verfügbar bis {verfuegbarBis}. Danach werden die Bilder gelöscht –
+          ladet sie euch bis dahin herunter.
+        </p>
+
+        <div className="mt-6">
           <button
             type="button"
             onClick={() => setOffen((v) => !v)}
