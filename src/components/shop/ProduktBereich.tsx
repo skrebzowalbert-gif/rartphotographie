@@ -25,6 +25,13 @@ import {
  * 3:4 – irgendetwas fällt weg, und wenn niemand hinsieht, ist es der Kopf.
  */
 
+type Korbeintrag = {
+  sku: string;
+  bezeichnung: string;
+  assetIds: string[];
+  preisCent: number;
+};
+
 export type ShopBild = {
   id: string;
   fileName: string;
@@ -51,7 +58,19 @@ export default function ProduktBereich({
   */
   const [seiten, setSeiten] = useState<string[]>([]);
 
+  /*
+    Der Warenkorb liegt im Bauteil, nicht im Speicher des Browsers.
+
+    Er haelt genau so lange, wie die Seite offen ist. Das ist Absicht: In ihm
+    stehen die Kennungen von Hochzeitsbildern. Etwas, das ueber Tage in einem
+    fremden Browser liegen bleibt, will ich dafuer nicht anlegen - und wer die
+    Seite schliesst, hat die Auswahl in zwei Minuten wieder zusammengeklickt.
+  */
+  const [warenkorb, setWarenkorb] = useState<Korbeintrag[]>([]);
+
   const produkt = KATALOG.find((p) => p.id === familie) ?? null;
+  // Steht weiter unten, braucht aber produkt/variante/pruefung - deshalb hier
+  // nur die Deklaration und die Zuweisung nach der Pruefung.
   const variante: Variante | null =
     produkt?.varianten.find((v) => v.sku === sku) ?? produkt?.varianten[0] ?? null;
   const bild = bilder.find((b) => b.id === bildId) ?? bilder[0] ?? null;
@@ -74,6 +93,30 @@ export default function ProduktBereich({
   }
 
   const pruefung = variante ? pruefe(variante) : null;
+
+  /*
+    Darf dieser Artikel in den Korb?
+
+    Drei Gruende koennen dagegen sprechen, und jeder bekommt einen eigenen
+    Satz. "Der Knopf ist grau" ist keine Antwort - der Kunde soll wissen, was
+    ihm fehlt.
+  */
+  let bereit = false;
+  let grund = "";
+
+  if (produkt && variante) {
+    if (produkt.seiten && seiten.length < produkt.seiten.min) {
+      grund = `Es fehlen noch ${produkt.seiten.min - seiten.length} Seiten.`;
+    } else if (!produkt.seiten && !bild) {
+      grund = "Wähle ein Bild.";
+    } else if (pruefung && !pruefung.bestellbar) {
+      grund = "Dieses Bild ist für das gewählte Format zu klein.";
+    } else {
+      bereit = true;
+    }
+  }
+
+  const summeCent = warenkorb.reduce((s, e) => s + e.preisCent, 0);
 
   if (bilder.length === 0) return null;
 
@@ -132,6 +175,76 @@ export default function ProduktBereich({
             );
           })}
         </div>
+
+        {/* --- Warenkorb ------------------------------------------------ */}
+        {warenkorb.length > 0 && (
+          <div className="mt-12 rounded-2xl border border-paper/25 bg-paper/5 p-6 md:p-8">
+            <h3 className="font-display text-xl text-paper">Warenkorb</h3>
+
+            <ul className="mt-5 divide-y divide-paper/10 border-y border-paper/10">
+              {warenkorb.map((e, i) => (
+                <li
+                  key={`${e.sku}-${i}`}
+                  className="flex items-center justify-between gap-4 py-3 text-sm"
+                >
+                  <span className="text-paper/80">
+                    {e.bezeichnung}
+                    {e.assetIds.length > 1 && (
+                      <span className="ml-2 text-paper/45">
+                        {e.assetIds.length} Seiten
+                      </span>
+                    )}
+                  </span>
+                  <span className="flex shrink-0 items-center gap-5">
+                    <span className="text-paper/80">
+                      {preisText(e.preisCent)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setWarenkorb((k) => k.filter((_, j) => j !== i))
+                      }
+                      aria-label={`${e.bezeichnung} entfernen`}
+                      className="text-paper/40 transition-colors duration-300 hover:text-paper"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-5 flex items-center justify-between">
+              <span className="text-sm text-paper/60">Summe</span>
+              <span className="font-display text-2xl text-paper">
+                {preisText(summeCent)}
+              </span>
+            </div>
+
+            {/*
+              Noch keine Bezahlung.
+
+              Ein Knopf, der eine Bestellung annimmt, ohne dass Geld fliesst,
+              waere der schlimmere Fehler: Die Kundschaft glaubt bestellt zu
+              haben, und niemand liefert.
+            */}
+            <button
+              type="button"
+              disabled
+              className="mt-7 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-paper px-6 text-sm font-medium text-ink opacity-30"
+            >
+              Weiter zur Bezahlung
+            </button>
+            <p className="mt-3 text-center text-xs leading-6 text-paper/45">
+              Bezahlung wird gerade gebaut – noch nichts verbindlich
+            </p>
+
+            <p className="mt-6 text-xs leading-6 text-paper/40">
+              Preise inklusive Versand. Kein Ausweis der Umsatzsteuer gemäß
+              § 19 UStG.
+            </p>
+          </div>
+        )}
 
         {/* --- Konfigurator -------------------------------------------- */}
         {produkt && variante && (
@@ -356,14 +469,34 @@ export default function ProduktBereich({
                 */}
                 <button
                   type="button"
-                  disabled
-                  className="mt-8 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-paper px-6 text-sm font-medium text-ink opacity-40"
+                  onClick={() => {
+                    if (!bereit) return;
+                    setWarenkorb((k) => [
+                      ...k,
+                      {
+                        sku: variante.sku,
+                        bezeichnung: `${produkt.name} ${variante.bezeichnung}`,
+                        assetIds: produkt.seiten
+                          ? seiten
+                          : bild
+                          ? [bild.id]
+                          : [],
+                        preisCent: variante.preisCent,
+                      },
+                    ]);
+                    setSeiten([]);
+                    setFamilie(null);
+                  }}
+                  disabled={!bereit}
+                  className="mt-8 inline-flex min-h-[52px] w-full items-center justify-center rounded-full bg-paper px-6 text-sm font-medium text-ink transition-opacity duration-300 hover:opacity-85 disabled:opacity-30"
                 >
                   In den Warenkorb
                 </button>
-                <p className="mt-3 text-center text-xs leading-6 text-paper/45">
-                  Entwurf – Bestellung und Bezahlung folgen
-                </p>
+                {!bereit && (
+                  <p className="mt-3 text-center text-xs leading-6 text-paper/45">
+                    {grund}
+                  </p>
+                )}
               </div>
             </div>
           </div>
