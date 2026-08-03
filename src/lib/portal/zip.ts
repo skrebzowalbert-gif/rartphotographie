@@ -122,21 +122,33 @@ function verketten(teile: Uint8Array[]) {
  */
 export function paketStrom(
   eintraege: PaketEintrag[],
-  holen: (key: string) => Promise<ReadableStream<Uint8Array>>
+  holen: (key: string) => Promise<ReadableStream<Uint8Array>>,
+  datum: Date
 ): ReadableStream<Uint8Array> {
   const verzeichnis: Uint8Array[] = [];
   let versatz = 0;
   let index = 0;
 
   /*
-    Zeitstempel im MS-DOS-Format, fest verdrahtet auf den 1.1.2000.
+    Zeitstempel im MS-DOS-Format – mit dem echten Datum.
 
-    Die echte Uhrzeit brächte hier nichts – ein Paket, das zweimal erzeugt
-    wird, wäre dann zweimal verschieden, und die Aufnahmezeit steht ohnehin im
-    Bild. Ein fester Wert macht das Ergebnis wiederholbar und prüfbar.
+    Hier stand ein fester Wert, weil das Ergebnis dann wiederholbar ist. Das
+    war ein Denkfehler aus Entwicklersicht: Im Finder standen die entpackten
+    Bilder anschliessend mit "01.01.2000, 00:00" da. Für jemanden, der gerade
+    seine Hochzeitsbilder ausgepackt hat, sieht das nicht nach Sorgfalt aus,
+    sondern nach kaputt. Wiederholbarkeit ist an dieser Stelle nichts wert.
+
+    Das Format stammt aus MS-DOS und hat seine eigene Rechnung: Jahre ab 1980,
+    Sekunden in Zweierschritten.
   */
-  const dosZeit = 0;
-  const dosDatum = ((2000 - 1980) << 9) | (1 << 5) | 1;
+  const dosZeit =
+    (datum.getHours() << 11) |
+    (datum.getMinutes() << 5) |
+    Math.floor(datum.getSeconds() / 2);
+  const dosDatum =
+    ((datum.getFullYear() - 1980) << 9) |
+    ((datum.getMonth() + 1) << 5) |
+    datum.getDate();
 
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
