@@ -61,3 +61,74 @@ export async function notifySelection(params: {
 
   if (error) throw new Error(String(error));
 }
+
+/**
+ * Regina erfährt, dass eine Galerie bald abläuft.
+ *
+ * AN REGINA, NICHT AN DAS PAAR – und das ist keine Bequemlichkeit, sondern
+ * eine Folge des Entwurfs: Kundschaft hat in diesem Portal kein Konto. Es gibt
+ * kein Passwort-vergessen, keine E-Mail-Enumeration und keine halbe
+ * Angriffsfläche, weil wir schlicht keine Adressen speichern. Der Preis dafür
+ * steht hier: Wir können das Paar nicht erinnern.
+ *
+ * Regina kann es. Sie hat die Nummer im Telefon und weiß, wie sie die beiden
+ * erreicht. Diese Mail gibt ihr den Anstoß und die Frist – den Rest macht ein
+ * Mensch, und bei Hochzeitsbildern ist das ohnehin die bessere Fassung.
+ */
+export async function sendExpiryReminder(params: {
+  title: string;
+  clientName: string;
+  slug: string;
+  expiresAt: Date;
+}) {
+  if ((process.env.PORTAL_ORIGIN ?? "").includes("localhost")) {
+    console.info(`[Entwicklung] Ablauf-Erinnerung unterdrückt: ${params.title}`);
+    return;
+  }
+
+  const config = getResendConfig();
+  if (!config.ok) {
+    console.warn("Keine Mail-Konfiguration – Ablauf-Erinnerung entfällt.");
+    return;
+  }
+
+  const datum = new Intl.DateTimeFormat("de-DE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(params.expiresAt);
+
+  const { error } = await config.resend.emails.send({
+    from: config.fromEmail,
+    to: config.toEmail,
+    subject: `Läuft bald ab: ${params.title} (${datum})`,
+    text: [
+      `Die Galerie "${params.title}" für ${params.clientName} läuft am ${datum} ab.`,
+      "",
+      "Danach werden die Bilder gelöscht und lassen sich nicht wiederherstellen.",
+      "",
+      `${siteUrl}/galerie/${params.slug}`,
+      "",
+      "Falls die beiden noch nicht heruntergeladen haben, sag ihnen kurz Bescheid.",
+      "Das Portal kann das nicht: Wir speichern bewusst keine Adressen der Kundschaft.",
+    ].join("\n"),
+    html: emailShell(
+      "Eine Galerie läuft bald ab",
+      [
+        row("Galerie", params.title),
+        row("Kundin oder Kunde", params.clientName),
+        row("Läuft ab am", datum),
+        `<p style="margin:20px 0 0;">
+           <a href="${siteUrl}/galerie/${params.slug}">Galerie öffnen</a>
+         </p>`,
+        `<p style="margin:20px 0 0;color:#555;font-size:14px;">
+           Danach werden die Bilder gelöscht. Falls die beiden noch nicht
+           heruntergeladen haben, sag ihnen kurz Bescheid – das Portal kann das
+           nicht, wir speichern bewusst keine Adressen der Kundschaft.
+         </p>`,
+      ].join("")
+    ),
+  });
+
+  if (error) console.error("Ablauf-Erinnerung fehlgeschlagen:", error);
+}

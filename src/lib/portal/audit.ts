@@ -26,7 +26,8 @@ export type AuditAction =
   | "gallery.login.success"
   | "gallery.login.failed"
   | "gallery.selection.submitted"
-  | "download.paket";
+  | "download.paket"
+  | "project.purged";
 
 export async function record(entry: {
   actor: "admin" | "client" | "system";

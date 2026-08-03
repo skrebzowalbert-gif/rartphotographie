@@ -89,6 +89,25 @@ export const projects = pgTable(
       withTimezone: true,
     }),
 
+    /**
+     * Wann die Erinnerung vor dem Ablauf rausging.
+     *
+     * Damit sie GENAU EINMAL rausgeht. Ein Aufräumauftrag, der stündlich
+     * läuft, würde sonst stündlich mahnen – und aus einer Fürsorge wird
+     * Belästigung.
+     */
+    reminderSentAt: timestamp("reminder_sent_at", { withTimezone: true }),
+
+    /**
+     * Wann die Dateien tatsächlich gelöscht wurden.
+     *
+     * Getrennt von expiresAt, weil beides verschiedene Dinge sind: Die Frist
+     * sagt, ab wann niemand mehr darf; dieser Wert sagt, dass es wirklich
+     * passiert ist. Ohne ihn liesse sich weder belegen, dass gelöscht wurde
+     * (Art. 5 Abs. 2 DSGVO), noch verhindern, dass es zweimal versucht wird.
+     */
+    purgedAt: timestamp("purged_at", { withTimezone: true }),
+
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
