@@ -112,7 +112,7 @@ export async function GET(
     was === "auswahl" ? " Auswahl" : ""
   }.zip`;
 
-  return new NextResponse(paketStrom(eintraege, objectStream), {
+  return new NextResponse(paketStrom(eintraege, objectStream, new Date()), {
     headers: {
       "content-type": "application/zip",
       "content-disposition": `attachment; filename="${dateiname}"`,
