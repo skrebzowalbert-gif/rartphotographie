@@ -6,6 +6,7 @@ import { db, schema } from "@/lib/db";
 import { getAdminUser } from "@/lib/portal/session";
 import { getProjectById, STATUS_LABEL } from "@/lib/portal/projects";
 import { siteUrl } from "@/lib/site";
+import { setStatus, setWatermark } from "./actions";
 
 export const metadata = { title: "Galerie" };
 
@@ -61,6 +62,51 @@ export default async function ProjektPage({
         {siteUrl}/galerie/{project.slug}
       </p>
 
+      <div className="mt-8 flex flex-wrap gap-4">
+        <form action={setWatermark}>
+          <input type="hidden" name="projectId" value={project.id} />
+          <input
+            type="hidden"
+            name="enabled"
+            value={project.watermarkEnabled ? "aus" : "an"}
+          />
+          <button
+            type="submit"
+            className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-ink/25 px-6 text-sm font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+          >
+            {project.watermarkEnabled
+              ? "Wasserzeichen ausschalten"
+              : "Wasserzeichen einschalten"}
+          </button>
+        </form>
+
+        {project.status === "draft" && previews.length > 0 && (
+          <form action={setStatus}>
+            <input type="hidden" name="projectId" value={project.id} />
+            <input type="hidden" name="status" value="selecting" />
+            <button
+              type="submit"
+              className="inline-flex min-h-[46px] items-center justify-center rounded-full bg-ink px-6 text-sm font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
+            >
+              Für die Kundschaft freigeben
+            </button>
+          </form>
+        )}
+
+        {project.status === "selecting" && (
+          <form action={setStatus}>
+            <input type="hidden" name="projectId" value={project.id} />
+            <input type="hidden" name="status" value="draft" />
+            <button
+              type="submit"
+              className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-ink/25 px-6 text-sm font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+            >
+              Freigabe zurücknehmen
+            </button>
+          </form>
+        )}
+      </div>
+
       <section className="mt-16">
         <h2 className="font-display text-2xl text-ink">
           Auswahlbilder{previews.length > 0 && ` (${previews.length})`}
@@ -76,16 +122,27 @@ export default async function ProjektPage({
         </div>
 
         {previews.length > 0 && (
-          <ul className="mt-10 grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {previews.map((asset) => (
-              <li key={asset.id} className="text-sm leading-6 text-ink/70">
-                <span className="font-mono text-xs">{asset.fileName}</span>
-                {asset.width && asset.height && (
-                  <span className="text-ink/45">
-                    {" "}
-                    · {asset.width}×{asset.height}
-                  </span>
-                )}
+              <li key={asset.id}>
+                {/*
+                  Bewusst ein einfaches img-Element statt next/image: Diese
+                  Bilder liegen hinter einer Anmeldung. Vercels Bildoptimierung
+                  wuerde sie holen und in einem gemeinsamen Zwischenspeicher
+                  ablegen – genau das, was bei Kundenfotos nicht passieren darf.
+                */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/portal/bild/${asset.id}?w=400`}
+                  alt={asset.fileName}
+                  loading="lazy"
+                  width={asset.width ?? undefined}
+                  height={asset.height ?? undefined}
+                  className="aspect-[4/5] w-full rounded-lg object-cover"
+                />
+                <p className="mt-2 truncate font-mono text-[11px] text-ink/50">
+                  {asset.fileName}
+                </p>
               </li>
             ))}
           </ul>

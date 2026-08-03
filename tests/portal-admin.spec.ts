@@ -1,5 +1,5 @@
 import { neon } from "@neondatabase/serverless";
-import { expect, test, type Page } from "playwright/test";
+import { expect, request as playwrightRequest, test, type Page } from "playwright/test";
 
 /*
   Der komplette Zugangsweg gegen die echte Datenbank.
@@ -240,5 +240,27 @@ test.describe("Bilder hochladen", () => {
     await expect(
       page.getByRole("heading", { name: /Auswahlbilder \(1\)/ })
     ).toBeVisible();
+
+    /* --- Wird das Vorschaubild ausgeliefert? -------------------------- */
+    const src = await page.locator('img[src^="/api/portal/bild/"]').first().getAttribute("src");
+    expect(src).toBeTruthy();
+
+    const mitSitzung = await page.request.get(src!);
+    expect(mitSitzung.status()).toBe(200);
+    expect(mitSitzung.headers()["content-type"]).toBe("image/jpeg");
+    // Kein gemeinsamer Zwischenspeicher – sonst koennte er ein Bild an jemanden
+    // ausliefern, dessen Sitzung laengst abgelaufen ist.
+    expect(mitSitzung.headers()["cache-control"]).toContain("private");
+
+    /* --- Und ohne Sitzung? ------------------------------------------- */
+    const fremd = await playwrightRequest.newContext();
+    const ohneSitzung = await fremd.get(`http://localhost:3100${src}`, {
+      failOnStatusCode: false,
+    });
+    expect(
+      ohneSitzung.status(),
+      "Ein fremder Browser darf das Bild nicht bekommen"
+    ).toBe(404);
+    await fremd.dispose();
   });
 });
