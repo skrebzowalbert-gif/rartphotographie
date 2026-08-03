@@ -399,3 +399,110 @@ export type NewAsset = typeof assets.$inferInsert;
 export type GallerySession = typeof gallerySessions.$inferSelect;
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type AdminCredential = typeof adminCredentials.$inferSelect;
+
+/**
+ * Lebenszyklus einer Bestellung.
+ *
+ * Bewusst getrennt von "bezahlt": Eine Bestellung kann bezahlt sein und
+ * trotzdem beim Druckpartner scheitern. Wer beides in einem Feld führt, kann
+ * genau den Fall nicht abbilden, in dem Geld geflossen ist und nichts kommt –
+ * und das ist der einzige, bei dem es wirklich darauf ankommt.
+ */
+export const orderStatus = pgEnum("order_status", [
+  /** Im Warenkorb zusammengestellt, noch nicht bezahlt. */
+  "entwurf",
+  /** Zahlung angestossen, Ausgang offen. */
+  "zahlung_offen",
+  /** Geld ist da. Ab hier schulden wir eine Lieferung. */
+  "bezahlt",
+  /** An den Druckpartner uebergeben. */
+  "beauftragt",
+  /** Unterwegs oder zugestellt. */
+  "versandt",
+  /** Abgebrochen oder erstattet. */
+  "storniert",
+]);
+
+export const orders = pgTable(
+  "orders",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+
+    /**
+     * Die Galerie, aus der bestellt wurde.
+     *
+     * Ohne sie gaebe es keine Berechtigungspruefung: Wer bestellt, muss die
+     * Galerie geoeffnet haben. Und Regina sieht, zu welchem Auftrag es gehoert.
+     */
+    projectId: uuid("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "restrict" }),
+
+    status: orderStatus("status").notNull().default("entwurf"),
+
+    /**
+     * Summe in Cent, zum Zeitpunkt der Bestellung eingefroren.
+     *
+     * Nicht aus dem Katalog nachgerechnet: Preise aendern sich, und was der
+     * Kunde beim Klicken gesehen hat, ist das, was gilt.
+     */
+    totalCent: integer("total_cent").notNull(),
+
+    /** Lieferanschrift. Nur hier, nirgends sonst. */
+    recipientName: text("recipient_name"),
+    recipientLine1: text("recipient_line1"),
+    recipientPostcode: text("recipient_postcode"),
+    recipientCity: text("recipient_city"),
+    recipientCountry: text("recipient_country").notNull().default("DE"),
+    /** Fuer Ruecksprachen und die Sendungsverfolgung. */
+    contactEmail: text("contact_email"),
+
+    /** Stripe. Erst gesetzt, wenn die Zahlung angestossen wurde. */
+    paymentIntentId: text("payment_intent_id"),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+
+    /** Auftragsnummer beim Druckpartner. */
+    prodigiOrderId: text("prodigi_order_id"),
+
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("orders_project_idx").on(table.projectId, table.createdAt),
+    uniqueIndex("orders_payment_intent_idx").on(table.paymentIntentId),
+  ]
+);
+
+export const orderItems = pgTable(
+  "order_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orderId: uuid("order_id")
+      .notNull()
+      .references(() => orders.id, { onDelete: "cascade" }),
+
+    /** Artikelnummer beim Druckpartner, z. B. "GLOBAL-CAN-12X16". */
+    sku: text("sku").notNull(),
+    /** Was der Kunde gesehen hat: "Leinwand 30 x 41 cm". */
+    bezeichnung: text("bezeichnung").notNull(),
+
+    /**
+     * Die Bilder in der Reihenfolge der Seiten.
+     *
+     * Ein Eintrag bei Leinwand und Rahmen, viele beim Album. Als Feld und
+     * nicht als eigene Tabelle: Die Reihenfolge IST die Information, und ein
+     * Feld haelt sie fest, ohne dass man sie ueber eine Sortierspalte
+     * rekonstruieren muss.
+     */
+    assetIds: uuid("asset_ids").array().notNull(),
+
+    stueck: integer("stueck").notNull().default(1),
+    /** Einzelpreis in Cent, eingefroren. */
+    preisCent: integer("preis_cent").notNull(),
+  },
+  (table) => [index("order_items_order_idx").on(table.orderId)]
+);
