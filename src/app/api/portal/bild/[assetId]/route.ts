@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db, schema } from "@/lib/db";
 import { getAdminUser, getGallerySession } from "@/lib/portal/session";
-import { getPreviewImage, WIDTHS, type Width } from "@/lib/portal/images";
+import {
+  getPreviewImage,
+  MissingOriginalError,
+  WIDTHS,
+  type Width,
+} from "@/lib/portal/images";
 
 /*
   Die einzige Adresse, unter der ein Kundenbild den Speicher verlässt.
@@ -117,7 +122,25 @@ export async function GET(
         "x-content-type-options": "nosniff",
       },
     });
-  } catch {
-    return new NextResponse(null, { status: 404 });
+  } catch (error) {
+    /*
+      Hier stand einmal ein stilles 404 für jeden erdenklichen Fehler.
+
+      Das war bequem und falsch: Als der Speicher tatsächlich leer war, sah die
+      Galerie exakt so aus wie bei einem Bild, das es nie gab – und in den
+      Protokollen stand nichts. Ein Fehler, den man nicht sieht, wird nicht
+      behoben. Also getrennte Antworten und in beiden Fällen eine Zeile im Log.
+    */
+    if (error instanceof MissingOriginalError) {
+      console.error(
+        "Bild fehlt im Speicher:",
+        JSON.stringify({ assetId: asset.id, projectId: asset.projectId, key: asset.r2Key })
+      );
+      // 502: Die Berechtigung stimmt, die Quelle dahinter nicht.
+      return new NextResponse(null, { status: 502 });
+    }
+
+    console.error("Vorschau fehlgeschlagen:", asset.id, error);
+    return new NextResponse(null, { status: 500 });
   }
 }

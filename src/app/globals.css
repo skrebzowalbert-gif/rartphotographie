@@ -43,7 +43,16 @@
     padding: 0;
     background: var(--background);
     color: var(--foreground);
-    overflow-x: hidden;
+    /*
+      clip, nicht hidden.
+
+      Beides verhindert seitliches Überlaufen. hidden macht den Body aber zu
+      einem eigenen Scroll-Behälter, und darin verliert jedes position: sticky
+      darunter seinen Bezugsrahmen – die Auswahlleiste der Kundengalerie
+      scrollte einfach weg, statt oben stehen zu bleiben. clip klemmt nur ab,
+      ohne einen Scroll-Behälter aufzumachen.
+    */
+    overflow-x: clip;
   }
 
   body {

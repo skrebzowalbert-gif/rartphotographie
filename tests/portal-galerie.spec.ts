@@ -242,6 +242,83 @@ test.describe("Kundengalerie", () => {
     password = neu;
   });
 
+  test("ein fehlendes Original meldet sich, statt still zu verschwinden", async ({
+    page,
+  }) => {
+    test.skip(!slug, "Vorbereitung fehlgeschlagen");
+
+    /*
+      Doppelt abgesichert, bevor hier irgendetwas gelöscht wird.
+
+      Dieser Test entfernt Objekte aus R2. Genau so ein Skript hat einmal den
+      Produktions-Bucket geleert und alle hochgeladenen Hochzeitsbilder
+      mitgenommen, während die Datenbankeinträge stehen blieben. Seitdem gilt:
+      Es wird nur im Entwicklungs-Bucket gelöscht, und der Name muss das
+      belegen. Der Zugangsschlüssel in .env.local kommt zusätzlich gar nicht an
+      den Produktions-Bucket heran.
+    */
+    const bucket = process.env.R2_BUCKET ?? "";
+    test.skip(
+      !bucket.endsWith("-dev"),
+      `R2_BUCKET ist "${bucket}" – gelöscht wird ausschließlich im -dev-Bucket`
+    );
+
+    await page.goto(`/galerie/${slug}`);
+    await page.getByLabel("Passwort").fill(password);
+    await page.getByRole("button", { name: /Galerie öffnen/ }).click();
+
+    const bild = page.locator('img[src^="/api/portal/bild/"]').first();
+    await expect(bild).toBeVisible({ timeout: 20_000 });
+
+    const quelle = (await bild.getAttribute("src"))!;
+    const assetId = quelle.split("/api/portal/bild/")[1].split("?")[0];
+
+    // Solange die Datei da ist, kommt ein Bild.
+    const vorher = await page.request.get(`/api/portal/bild/${assetId}?w=400`);
+    expect(vorher.status()).toBe(200);
+
+    const sql = neon(process.env.DATABASE_URL!);
+    const [{ project_id: projectId }] = (await sql`
+      select project_id from assets where id = ${assetId}
+    `) as { project_id: string }[];
+
+    const { S3Client, ListObjectsV2Command, DeleteObjectCommand } = await import(
+      "@aws-sdk/client-s3"
+    );
+    const s3 = new S3Client({
+      region: "auto",
+      endpoint: `https://${process.env.R2_ACCOUNT_ID}.eu.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+      },
+    });
+
+    // Nur die Objekte genau dieser Testgalerie – kein Rundumschlag.
+    const liste = await s3.send(
+      new ListObjectsV2Command({ Bucket: bucket, Prefix: `${projectId}/` })
+    );
+    for (const objekt of liste.Contents ?? []) {
+      await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: objekt.Key }));
+    }
+    expect(liste.KeyCount ?? 0).toBeGreaterThan(0);
+
+    /*
+      Jetzt muss die Route 502 antworten, nicht 404.
+
+      Der Unterschied ist nicht kosmetisch: 404 heißt "gibt es nicht" und ist
+      im Kundenfall die richtige, verschwiegene Antwort auf eine fremde
+      Galerie. Hier stimmt die Berechtigung aber – kaputt ist der Speicher
+      dahinter. Als das noch beides 404 war, sah ein leerer Bucket exakt aus
+      wie eine Galerie ohne Bilder, und in den Protokollen stand nichts.
+    */
+    const nachher = await page.request.get(
+      `/api/portal/bild/${assetId}?w=400&cb=1`,
+      { failOnStatusCode: false }
+    );
+    expect(nachher.status()).toBe(502);
+  });
+
   test("Kundengalerien sind für Suchmaschinen gesperrt", async ({ request }) => {
     test.skip(!slug, "Vorbereitung fehlgeschlagen");
 
