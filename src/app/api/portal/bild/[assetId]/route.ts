@@ -66,13 +66,19 @@ export async function GET(
     }
   } else {
     /*
-      Regina sieht ihre Bilder standardmäßig OHNE Wasserzeichen – sie muss
+      Regina sieht ihre Bilder in der VERWALTUNG ohne Wasserzeichen – sie muss
       beurteilen können, was sie hochgeladen hat.
 
-      Mit ?ansicht=kunde bekommt sie dieselbe Fassung wie die Kundschaft.
-      Ohne diesen Schalter könnte sie nie prüfen, wie das Wasserzeichen auf
-      ihren eigenen Motiven wirkt – und genau das ist eine Geschmacksfrage,
-      die sie entscheiden muss, nicht ich.
+      Wichtig ist, wer das entscheidet: die aufrufende Seite, nicht die Person.
+      Die Kundengalerie hängt "ansicht=kunde" an jede Bildadresse und bekommt
+      damit immer die Kundenfassung – auch dann, wenn im selben Browser eine
+      Anmeldung als Regina liegt.
+
+      Das war nicht immer so, und die Folge war übel: Regina öffnete ihre
+      Galerie im selben Browser, in dem sie in der Verwaltung angemeldet war,
+      sah keine Wasserzeichen und musste annehmen, die Kundschaft sähe auch
+      keine. Eine Sicherheitsfunktion, die für den Prüfenden unsichtbar anders
+      aussieht als für alle anderen, ist keine.
     */
     const alsKunde =
       new URL(request.url).searchParams.get("ansicht") === "kunde";
