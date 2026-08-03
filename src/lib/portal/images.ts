@@ -25,15 +25,30 @@ import { WORTMARKE_PNG } from "./wortmarke";
 export const WIDTHS = [400, 800, 1600] as const;
 export type Width = (typeof WIDTHS)[number];
 
+/**
+ * Fassung der Bilderzeugung.
+ *
+ * Steht im Ablageschlüssel, und das ist kein Ordnungsdetail: Der
+ * Zwischenspeicher in R2 kennt nur den Schlüssel. Als das Wasserzeichen
+ * repariert wurde, lagen dort bereits Vorschauen, die unter "wz" abgelegt
+ * waren und trotzdem keines trugen – die wären munter weiter ausgeliefert
+ * worden, und die Reparatur wäre wirkungslos geblieben.
+ *
+ * Diese Zahl hochzuzählen entwertet alle zwischengespeicherten Fassungen auf
+ * einen Schlag. Die alten Dateien bleiben liegen und kosten ein paar Cent
+ * Speicher, bis die Galerie abläuft; sie zu löschen wäre der riskantere Weg.
+ */
+const ERZEUGUNG = 2;
+
 export function derivedKey(params: {
   projectId: string;
   assetId: string;
   width: Width;
   watermark: boolean;
 }) {
-  return `${params.projectId}/abgeleitet/${params.assetId}-${params.width}-${
-    params.watermark ? "wz" : "ohne"
-  }.jpg`;
+  return `${params.projectId}/abgeleitet/v${ERZEUGUNG}-${params.assetId}-${
+    params.width
+  }-${params.watermark ? "wz" : "ohne"}.jpg`;
 }
 
 /**
