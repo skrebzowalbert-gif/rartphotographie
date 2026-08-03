@@ -172,6 +172,13 @@ export async function abortMultipartUpload(params: {
  *
  * Die Ableitungen tragen die Kennung des Datensatzes im Namen. Ohne diesen
  * Aufruf blieben sie liegen: unsichtbar, unbenutzbar und trotzdem bezahlt.
+ *
+ * Gesucht wird über den ganzen Ableitungsordner und dann gefiltert, nicht über
+ * ein Präfix mit der Kennung. Der Grund ist eine Falle: Vor dem Ablageschlüssel
+ * steht seit der Wasserzeichen-Reparatur eine Fassungsnummer ("v2-"). Ein
+ * Präfix, das mit der Kennung beginnt, findet seitdem nichts mehr – gelöscht
+ * würde nur noch das Original, und die Vorschauen blieben für immer liegen.
+ * Diese Art von Fehler meldet sich nie; sie kostet nur.
  */
 export async function deleteAssetObjects(params: {
   projectId: string;
@@ -181,7 +188,7 @@ export async function deleteAssetObjects(params: {
   const listing = await r2().send(
     new ListObjectsV2Command({
       Bucket: bucket(),
-      Prefix: `${params.projectId}/abgeleitet/${params.assetId}-`,
+      Prefix: `${params.projectId}/abgeleitet/`,
     })
   );
 
@@ -189,7 +196,7 @@ export async function deleteAssetObjects(params: {
     params.r2Key,
     ...(listing.Contents ?? [])
       .map((o) => o.Key)
-      .filter((k): k is string => Boolean(k)),
+      .filter((k): k is string => !!k && k.includes(`-${params.assetId}-`)),
   ];
 
   await r2().send(
