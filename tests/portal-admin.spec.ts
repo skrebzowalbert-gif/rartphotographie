@@ -254,7 +254,7 @@ test.describe("Bilder hochladen", () => {
 
     /* --- Und ohne Sitzung? ------------------------------------------- */
     const fremd = await playwrightRequest.newContext();
-    const ohneSitzung = await fremd.get(`http://localhost:3100${src}`, {
+    const ohneSitzung = await fremd.get(`http://127.0.0.1:3100${src}`, {
       failOnStatusCode: false,
     });
     expect(

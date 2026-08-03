@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { eq, asc } from "drizzle-orm";
 import AssetGrid from "@/components/portal/AssetGrid";
+import SelectionList from "@/components/portal/SelectionList";
 import Uploader from "@/components/portal/Uploader";
 import { db, schema } from "@/lib/db";
 import { getAdminUser } from "@/lib/portal/session";
@@ -39,6 +40,13 @@ export default async function ProjektPage({
     })
     .from(schema.assets)
     .where(eq(schema.assets.projectId, project.id))
+    .orderBy(asc(schema.assets.sortIndex));
+
+  const chosen = await db()
+    .select({ fileName: schema.assets.fileName })
+    .from(schema.favorites)
+    .innerJoin(schema.assets, eq(schema.assets.id, schema.favorites.assetId))
+    .where(eq(schema.favorites.projectId, project.id))
     .orderBy(asc(schema.assets.sortIndex));
 
   const previews = assets.filter((a) => a.kind === "preview");
@@ -131,6 +139,22 @@ export default async function ProjektPage({
           />
         )}
       </section>
+
+      {chosen.length > 0 && (
+        <section className="mt-20">
+          <h2 className="font-display text-2xl text-ink">
+            Ausgewählt ({chosen.length})
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-8 text-ink/70">
+            {project.status === "selecting"
+              ? "Die Auswahl läuft noch – das Paar kann sie bis zum Abschicken ändern."
+              : "Diese Bilder hat sich das Paar gewünscht. In Lightroom nach den Dateinamen filtern."}
+          </p>
+          <div className="mt-8">
+            <SelectionList fileNames={chosen.map((c) => c.fileName)} />
+          </div>
+        </section>
+      )}
 
       <section className="mt-20">
         <h2 className="font-display text-2xl text-ink">

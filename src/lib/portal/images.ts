@@ -59,12 +59,27 @@ async function readObject(key: string): Promise<Buffer | null> {
  * bleibt. Wer das wegretuschieren will, hat mehr Arbeit als mit dem Kauf.
  */
 function watermarkSvg(width: number, height: number) {
-  const step = Math.round(width / 2.2);
+  /*
+    Die Untergrenze ist kein Schönheitsdetail, sondern verhindert einen
+    Serverabsturz.
+
+    Zuvor stand hier schlicht Math.round(width / 2.2). Bei einem sehr kleinen
+    Bild – im Test ein 1×1-Pixel-PNG – ergibt das 0, und die Schleife unten
+    zählt nie hoch: eine Endlosschleife, die Zeichenketten anhäuft, bis der
+    Arbeitsspeicher voll ist. Der Node-Prozess starb mit "heap out of memory",
+    und mit ihm die gesamte Website – wegen eines einzigen Vorschaubildes.
+  */
+  const step = Math.max(80, Math.round(width / 2.2));
   const fontSize = Math.max(13, Math.round(width / 42));
 
   const marks: string[] = [];
-  for (let y = -height; y < height * 2; y += step) {
-    for (let x = -width; x < width * 2; x += step) {
+
+  // Zweite Sicherung: Selbst wenn die Rechnung oben je wieder danebengeht,
+  // ist hier Schluss. Eine Obergrenze kostet nichts und rettet den Prozess.
+  const MAX_MARKS = 400;
+
+  for (let y = -height; y < height * 2 && marks.length < MAX_MARKS; y += step) {
+    for (let x = -width; x < width * 2 && marks.length < MAX_MARKS; x += step) {
       marks.push(
         `<text x="${x}" y="${y}" transform="rotate(-30 ${x} ${y})">R.ARTPHOTOGRAPHIE</text>`
       );

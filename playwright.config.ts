@@ -23,6 +23,20 @@ try {
 
 export default defineConfig({
   testDir: "./tests",
+
+  /*
+    Ein Arbeiter, nicht mehrere.
+
+    Playwright führt Testdateien standardmäßig parallel aus. Die Portal-Tests
+    teilen sich aber EINE Datenbank und setzen zu Beginn die Zugänge zurück –
+    laufen zwei Dateien gleichzeitig, löscht die eine der anderen unter den
+    Händen weg den Passkey. Das Ergebnis sind Fehlschläge, die je nach Timing
+    mal auftreten und mal nicht.
+
+    Die Suite braucht seriell rund eine Minute. Das ist der Preis dafür, dass
+    ein roter Test etwas bedeutet.
+  */
+  workers: 1,
   timeout: 30_000,
   expect: {
     timeout: 7_000,
