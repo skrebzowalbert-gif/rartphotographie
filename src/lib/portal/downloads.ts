@@ -59,6 +59,10 @@ export function enddateien(projectId: string) {
       fileName: schema.assets.fileName,
       r2Key: schema.assets.r2Key,
       byteSize: schema.assets.byteSize,
+      // Fuer den Shop: ohne die Masse laesst sich weder der Beschnitt noch
+      // die Aufloesung berechnen.
+      width: schema.assets.width,
+      height: schema.assets.height,
     })
     .from(schema.assets)
     .where(
