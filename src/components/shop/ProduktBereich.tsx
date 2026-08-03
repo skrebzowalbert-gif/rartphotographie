@@ -41,6 +41,16 @@ export default function ProduktBereich({
   const [sku, setSku] = useState<string | null>(null);
   const [bildId, setBildId] = useState<string | null>(bilder[0]?.id ?? null);
 
+  /*
+    Die Seitenfolge des Albums.
+
+    Eine Liste, keine Menge – die Reihenfolge IST die Information. Seite 1 ist
+    das erste Element, und wer ein Bild zweimal will, darf das: In einem Album
+    kommt dasselbe Motiv durchaus auf die Titelseite und noch einmal gross
+    nach hinten.
+  */
+  const [seiten, setSeiten] = useState<string[]>([]);
+
   const produkt = KATALOG.find((p) => p.id === familie) ?? null;
   const variante: Variante | null =
     produkt?.varianten.find((v) => v.sku === sku) ?? produkt?.varianten[0] ?? null;
@@ -102,6 +112,7 @@ export default function ProduktBereich({
                       return !g || g.bestellbar;
                     });
                   setSku((passend ?? p.varianten[0]).sku);
+                  setSeiten([]);
                 }}
                 aria-pressed={aktiv}
                 className={`rounded-2xl border p-6 text-left transition-colors duration-300 ${
@@ -242,16 +253,23 @@ export default function ProduktBereich({
                 {bilder.length > 1 && (
                   <fieldset className="mt-8">
                     <legend className="text-sm font-medium text-paper/80">
-                      {produkt.bilder === "mehrere"
-                        ? "Titelbild"
-                        : "Welches Bild?"}
+                      {produkt.seiten ? "Bilder antippen" : "Welches Bild?"}
                     </legend>
                     <div className="mt-3 grid grid-cols-5 gap-2">
                       {bilder.slice(0, 20).map((b) => (
                         <button
                           key={b.id}
                           type="button"
-                          onClick={() => setBildId(b.id)}
+                          onClick={() => {
+                            setBildId(b.id);
+                            // Beim Album ist ein Klick "Seite anhaengen",
+                            // nicht "Auswahl umschalten".
+                            if (produkt.seiten) {
+                              setSeiten((s) =>
+                                s.length < produkt.seiten!.max ? [...s, b.id] : s
+                              );
+                            }
+                          }}
                           aria-pressed={b.id === bild?.id}
                           aria-label={b.fileName}
                           className={`overflow-hidden rounded transition-opacity duration-300 ${
@@ -272,6 +290,60 @@ export default function ProduktBereich({
                       ))}
                     </div>
                   </fieldset>
+                )}
+
+                {produkt.seiten && (
+                  <div className="mt-8">
+                    <p className="text-sm font-medium text-paper/80">
+                      Seiten ({seiten.length} von {produkt.seiten.min}–
+                      {produkt.seiten.max})
+                    </p>
+
+                    {seiten.length === 0 ? (
+                      <p className="mt-3 text-sm leading-7 text-paper/55">
+                        Tippt unten auf die Bilder – in der Reihenfolge, in der
+                        sie im Album stehen sollen.
+                      </p>
+                    ) : (
+                      <ol className="mt-3 flex flex-col gap-1">
+                        {seiten.map((id, i) => {
+                          const b = bilder.find((x) => x.id === id);
+                          return (
+                            <li
+                              key={`${id}-${i}`}
+                              className="flex items-center justify-between gap-3 rounded-lg border border-paper/12 px-3 py-2 text-sm"
+                            >
+                              <span className="text-paper/70">
+                                Seite {i + 1}
+                                <span className="ml-2 text-paper/40">
+                                  {b?.fileName}
+                                </span>
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setSeiten((s) =>
+                                    s.filter((_, j) => j !== i)
+                                  )
+                                }
+                                aria-label={`Seite ${i + 1} entfernen`}
+                                className="text-paper/40 transition-colors duration-300 hover:text-paper"
+                              >
+                                ✕
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    )}
+
+                    {seiten.length > 0 && seiten.length < produkt.seiten.min && (
+                      <p className="mt-3 text-sm leading-7 text-paper/55">
+                        Es fehlen noch {produkt.seiten.min - seiten.length}{" "}
+                        Seiten bis zum kleinsten Album.
+                      </p>
+                    )}
+                  </div>
                 )}
 
                 {/*
