@@ -1,5 +1,8 @@
 import "server-only";
 
+import { eindeutigeNamen, mitEndung } from "./dateinamen";
+export { eindeutigeNamen, mitEndung };
+
 /**
  * Ein Paket aus vielen Bildern – im Fluss, ohne es vorher zusammenzubauen.
  *
@@ -58,38 +61,6 @@ export type PaketEintrag = {
   /** Ablageschlüssel in R2. */
   key: string;
 };
-
-function namenSaeubern(name: string) {
-  // Schraegstriche wuerden im Paket Ordner aufmachen, Steuerzeichen manche
-  // Entpacker verwirren. Der Name kommt aus einer hochgeladenen Datei - also
-  // aus fremder Hand.
-  //
-  // Leerzeichen und Bindestriche bleiben ausdruecklich stehen: "Julia & Max
-  // 2026-05-12.jpg" ist ein voellig normaler Dateiname. Ein Zeichenbereich
-  // "[ -]" haette genau die beiden geloescht.
-  return name
-    .replace(/[/\\]/g, "_")
-    .replace(/[\x00-\x1f\x7f]/g, "");
-}
-
-/** Sorgt dafür, dass kein Name zweimal vorkommt. */
-export function eindeutigeNamen(namen: string[]): string[] {
-  const gesehen = new Map<string, number>();
-
-  return namen.map((roh) => {
-    const name = namenSaeubern(roh);
-    const anzahl = gesehen.get(name) ?? 0;
-    gesehen.set(name, anzahl + 1);
-
-    if (anzahl === 0) return name;
-
-    // "IMG_1.jpg" wird beim zweiten Mal zu "IMG_1 (2).jpg".
-    const punkt = name.lastIndexOf(".");
-    return punkt > 0
-      ? `${name.slice(0, punkt)} (${anzahl + 1})${name.slice(punkt)}`
-      : `${name} (${anzahl + 1})`;
-  });
-}
 
 function zahl16(wert: number) {
   const b = new Uint8Array(2);
