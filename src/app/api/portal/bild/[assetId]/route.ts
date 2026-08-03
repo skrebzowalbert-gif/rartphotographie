@@ -64,6 +64,17 @@ export async function GET(
     if (asset.kind === "final" && asset.status !== "delivered") {
       return new NextResponse(null, { status: 404 });
     }
+
+    /*
+      Und sie tragen NIE ein Wasserzeichen.
+
+      Das Wasserzeichen schuetzt die unbearbeitete Vorauswahl. Eine Enddatei
+      ist bezahlt und gehoert der Kundschaft - ein Schriftzug darauf waere
+      kein Schutz, sondern eine Frechheit. Aufgefallen ist mir das erst, als
+      die Produktvorschau im Shop anfing, Enddateien anzuzeigen: Bis dahin
+      wurden sie nirgends als Bild dargestellt, nur heruntergeladen.
+    */
+    if (asset.kind === "final") watermark = false;
   } else {
     /*
       Regina sieht ihre Bilder in der VERWALTUNG ohne Wasserzeichen – sie muss

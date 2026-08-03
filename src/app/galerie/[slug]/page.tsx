@@ -4,6 +4,7 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/lib/db";
 import GalleryClient from "@/components/gallery/GalleryClient";
 import GalleryDownload from "@/components/gallery/GalleryDownload";
+import ProduktBereich from "@/components/shop/ProduktBereich";
 import { enddateien } from "@/lib/portal/downloads";
 import { PAKET_GRENZE_BYTES } from "@/lib/portal/zip";
 import GalleryLogin from "@/components/gallery/GalleryLogin";
@@ -121,6 +122,14 @@ export default async function GaleriePage({
                 fertige.reduce((s, d) => s + d.byteSize, 0) > PAKET_GRENZE_BYTES
               }
             />
+            <ProduktBereich
+              bilder={fertige.map((d) => ({
+                id: d.id,
+                fileName: d.fileName,
+                width: d.width,
+                height: d.height,
+              }))}
+            />
           </div>
         </main>
       );
@@ -194,6 +203,17 @@ export default async function GaleriePage({
           paketZuGross={
             fertige.reduce((s, d) => s + d.byteSize, 0) > PAKET_GRENZE_BYTES
           }
+        />
+      )}
+
+      {fertige.length > 0 && (
+        <ProduktBereich
+          bilder={fertige.map((d) => ({
+            id: d.id,
+            fileName: d.fileName,
+            width: d.width,
+            height: d.height,
+          }))}
         />
       )}
 
