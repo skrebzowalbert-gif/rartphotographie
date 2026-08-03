@@ -530,6 +530,27 @@ test.describe("Herunterladen", () => {
     const entpackt = readdirSync(ordner).filter((n) => n.endsWith(".jpg")).sort();
     expect(entpackt).toEqual(["family-1.jpg", "portrait-4.jpg"]);
 
+    /*
+      Und einmal mit dem Werkzeug, das macOS selbst benutzt.
+
+      Der Finder entpackt nicht mit unzip, sondern mit dem Archivierungs-
+      programm - und das ist bekannt dafuer, mit gestreamten Archiven anders
+      umzugehen. Genau dort erscheinen beim Kunden Dateien ohne Namen und
+      ohne Endung. Ein Paket, das nur unter unzip funktioniert, ist fuer ein
+      Brautpaar mit MacBook wertlos.
+    */
+    const macOrdner = mkdtempSync(join(tmpdir(), "paket-mac-"));
+    writeFileSync(join(macOrdner, "paket.zip"), zip);
+    execFileSync("ditto", ["-x", "-k", "paket.zip", "entpackt"], { cwd: macOrdner });
+
+    const macNamen = readdirSync(join(macOrdner, "entpackt"))
+      .filter((n) => !n.startsWith("_") && !n.startsWith("."))
+      .sort();
+    expect(
+      macNamen,
+      "Das Archivierungsprogramm von macOS liefert andere Dateinamen"
+    ).toEqual(["family-1.jpg", "portrait-4.jpg"]);
+
     for (const name of entpackt) {
       const ausPaket = readFileSync(join(ordner, name));
       const original = readFileSync(
