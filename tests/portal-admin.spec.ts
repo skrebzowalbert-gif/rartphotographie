@@ -62,7 +62,7 @@ test.describe("Verwaltung: Passkey und Galerie-Anlage", () => {
     return { client, authenticatorId };
   }
 
-  test("Einrichtung, Anmeldung und Anlegen einer Galerie", async ({ page, request }) => {
+  test("Einrichtung, Anmeldung und Anlegen einer Galerie", async ({ page }) => {
     await addAuthenticator(page);
 
     // Das Token steht in der Umgebung des Servers; der Test liest es aus der
