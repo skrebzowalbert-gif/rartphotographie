@@ -167,6 +167,41 @@ export async function abortMultipartUpload(params: {
 /* Aufräumen                                                           */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Löscht eine Datei samt aller daraus abgeleiteten Vorschauen.
+ *
+ * Die Ableitungen tragen die Kennung des Datensatzes im Namen. Ohne diesen
+ * Aufruf blieben sie liegen: unsichtbar, unbenutzbar und trotzdem bezahlt.
+ */
+export async function deleteAssetObjects(params: {
+  projectId: string;
+  assetId: string;
+  r2Key: string;
+}) {
+  const listing = await r2().send(
+    new ListObjectsV2Command({
+      Bucket: bucket(),
+      Prefix: `${params.projectId}/abgeleitet/${params.assetId}-`,
+    })
+  );
+
+  const keys = [
+    params.r2Key,
+    ...(listing.Contents ?? [])
+      .map((o) => o.Key)
+      .filter((k): k is string => Boolean(k)),
+  ];
+
+  await r2().send(
+    new DeleteObjectsCommand({
+      Bucket: bucket(),
+      Delete: { Objects: keys.map((Key) => ({ Key })) },
+    })
+  );
+
+  return keys.length;
+}
+
 /** Löscht alle Dateien eines Projekts – für abgelaufene Galerien. */
 export async function deleteProjectObjects(projectId: string) {
   let token: string | undefined;

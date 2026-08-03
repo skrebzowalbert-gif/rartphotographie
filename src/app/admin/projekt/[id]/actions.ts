@@ -1,11 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "@/lib/db";
 import { record } from "@/lib/portal/audit";
 import { getAdminUser } from "@/lib/portal/session";
+import { deleteAssetObjects } from "@/lib/portal/r2";
 
 const schemaWatermark = z.object({
   projectId: z.uuid(),
@@ -70,6 +71,48 @@ export async function setStatus(formData: FormData) {
     projectId: projectId.data,
     action: "project.status.changed",
     detail: { status: status.data },
+  });
+
+  revalidatePath(`/admin/projekt/${projectId.data}`);
+  revalidatePath("/admin");
+}
+
+/**
+ * Ein Bild wieder entfernen.
+ *
+ * Zuerst aus der Datenbank, dann aus dem Speicher – und zwar in dieser
+ * Reihenfolge: Bleibt eine Datei im Bucket liegen, kostet das ein paar Cent.
+ * Bliebe umgekehrt ein Datensatz ohne Datei stehen, zeigte die Kundengalerie
+ * eine Lücke. Das eine ist ärgerlich, das andere peinlich.
+ */
+export async function deleteAsset(formData: FormData) {
+  const admin = await getAdminUser();
+  if (!admin) return;
+
+  const assetId = z.uuid().safeParse(formData.get("assetId"));
+  const projectId = z.uuid().safeParse(formData.get("projectId"));
+  if (!assetId.success || !projectId.success) return;
+
+  const removed = await db()
+    .delete(schema.assets)
+    .where(
+      and(
+        eq(schema.assets.id, assetId.data),
+        // Projektzugehörigkeit gehört in die WHERE-Bedingung, nicht in eine
+        // vorgelagerte Prüfung – so kann dazwischen nichts passieren.
+        eq(schema.assets.projectId, projectId.data)
+      )
+    )
+    .returning({ r2Key: schema.assets.r2Key });
+
+  if (removed.length === 0) return;
+
+  await deleteAssetObjects({
+    projectId: projectId.data,
+    assetId: assetId.data,
+    r2Key: removed[0].r2Key,
+  }).catch((error) => {
+    console.error("Datei blieb im Speicher liegen:", error);
   });
 
   revalidatePath(`/admin/projekt/${projectId.data}`);

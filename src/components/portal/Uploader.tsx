@@ -284,14 +284,15 @@ export default function Uploader({
           {running ? "Lädt hoch…" : "Dateien auswählen"}
         </button>
         <p className="mt-5 text-sm leading-6 text-ink/55">
-          JPEG, PNG, WebP, AVIF und HEIC vom iPhone · bis 300 MB je Datei
+          JPEG, PNG, WebP oder AVIF · bis 300 MB je Datei · HEIC vom iPhone bitte
+          vorher als JPEG sichern
         </p>
 
         <input
           ref={inputRef}
           type="file"
           multiple
-          accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif"
+          accept="image/jpeg,image/png,image/webp,image/avif"
           className="hidden"
           onChange={(event) => {
             const files = Array.from(event.target.files ?? []);

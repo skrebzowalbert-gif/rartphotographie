@@ -6,7 +6,7 @@ import { db, schema } from "@/lib/db";
 import { getAdminUser } from "@/lib/portal/session";
 import { getProjectById, STATUS_LABEL } from "@/lib/portal/projects";
 import { siteUrl } from "@/lib/site";
-import { setStatus, setWatermark } from "./actions";
+import { deleteAsset, setStatus, setWatermark } from "./actions";
 
 export const metadata = { title: "Galerie" };
 
@@ -140,9 +140,21 @@ export default async function ProjektPage({
                   height={asset.height ?? undefined}
                   className="aspect-[4/5] w-full rounded-lg object-cover"
                 />
-                <p className="mt-2 truncate font-mono text-[11px] text-ink/50">
-                  {asset.fileName}
-                </p>
+                <div className="mt-2 flex items-baseline justify-between gap-2">
+                  <p className="truncate font-mono text-[11px] text-ink/50">
+                    {asset.fileName}
+                  </p>
+                  <form action={deleteAsset}>
+                    <input type="hidden" name="assetId" value={asset.id} />
+                    <input type="hidden" name="projectId" value={project.id} />
+                    <button
+                      type="submit"
+                      className="shrink-0 text-[11px] text-ink/45 underline underline-offset-2 transition-colors duration-300 hover:text-ink"
+                    >
+                      entfernen
+                    </button>
+                  </form>
+                </div>
               </li>
             ))}
           </ul>

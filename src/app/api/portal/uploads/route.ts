@@ -27,23 +27,36 @@ import {
 /**
  * Erlaubte Formate.
  *
- * HEIC gehoert ausdruecklich dazu: Das ist die Voreinstellung jedes iPhones,
- * und Regina wird Bilder auch direkt vom Telefon hochladen. Anzeigen kann der
- * Browser HEIC zwar nicht – ausgeliefert wird aber ohnehin nie das Original,
- * sondern ein neu kodiertes JPEG. Fuer die Umwandlung sorgt sharp.
+ * HEIC steht bewusst NICHT dabei, obwohl es die Voreinstellung jedes iPhones
+ * ist – und das hat einen unangenehm technischen Grund:
  *
- * Nicht erlaubt bleiben RAW-Dateien (kein Browser und auch sharp kann die
- * Vielfalt der Kamerahersteller nicht zuverlaessig) und SVG (ausfuehrbarer
- * Inhalt).
+ * iPhone-HEICs sind HEVC-kodiert. Die vorgefertigten sharp-Binaerdateien
+ * enthalten libheif zwar, aber ohne HEVC-Dekoder, weil dafuer Patentlizenzen
+ * faellig waeren. sharp kann die Metadaten lesen – das ist nur Struktur – und
+ * scheitert dann am Bildinhalt mit "bad seek". AVIF (AV1) funktioniert,
+ * HEIC (H.265) nicht.
+ *
+ * Eine Datei anzunehmen, aus der wir nie eine Vorschau erzeugen koennen, waere
+ * schlimmer als sie abzulehnen: Sie kostet Speicher und erzeugt in der
+ * Kundengalerie Luecken statt Bildern.
  */
 const ALLOWED = new Set([
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/avif",
-  "image/heic",
-  "image/heif",
 ]);
+
+/** Formate, fuer die wir einen brauchbaren Hinweis geben koennen. */
+const KNOWN_UNSUPPORTED: Record<string, string> = {
+  "image/heic":
+    "HEIC vom iPhone lässt sich hier nicht umwandeln. Stelle am iPhone unter " +
+    "Einstellungen → Kamera → Formate auf „Maximale Kompatibilität\" – dann " +
+    "fotografiert es JPEG. Vorhandene Bilder kannst du in der Fotos-App über " +
+    "„Teilen → Kopieren“ als JPEG sichern oder aus Lightroom exportieren.",
+  "image/heif":
+    "HEIF lässt sich hier nicht umwandeln. Bitte als JPEG exportieren.",
+};
 
 /**
  * 300 MB je Datei.
@@ -144,8 +157,9 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Format nicht unterstützt. Möglich sind JPEG, PNG, WebP, AVIF und HEIC – " +
-              "RAW-Dateien bitte vorher aus Lightroom exportieren.",
+              KNOWN_UNSUPPORTED[body.contentType] ??
+              "Format nicht unterstützt. Möglich sind JPEG, PNG, WebP und AVIF – " +
+                "RAW-Dateien bitte vorher als JPEG exportieren.",
           },
           { status: 415 }
         );
