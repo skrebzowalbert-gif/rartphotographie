@@ -103,14 +103,27 @@ export async function getPreviewImage(params: {
   sourceKey: string;
   width: Width;
   watermark: boolean;
-}): Promise<Buffer> {
+}): Promise<{ image: Buffer; sourceWidth: number | null; sourceHeight: number | null }> {
   const key = derivedKey(params);
 
   const cached = await readObject(key);
-  if (cached) return cached;
+  if (cached) return { image: cached, sourceWidth: null, sourceHeight: null };
 
   const original = await readObject(params.sourceKey);
   if (!original) throw new Error("Das Bild liegt nicht im Speicher.");
+
+  /*
+    Die Maße des Originals mitnehmen.
+
+    Im Browser lassen sie sich bei HEIC nicht auslesen – Chrome kann das
+    Format nicht dekodieren. Hier liegt die Datei ohnehin entschlüsselt vor,
+    also kostet es nichts. Ohne bekannte Seitenverhältnisse springt in der
+    Kundengalerie beim Scrollen das ganze Raster.
+  */
+  const meta = await sharp(original, { failOn: "none" }).metadata();
+  const rotated = meta.orientation && meta.orientation >= 5;
+  const sourceWidth = (rotated ? meta.height : meta.width) ?? null;
+  const sourceHeight = (rotated ? meta.width : meta.height) ?? null;
 
   const base = sharp(original, { failOn: "none" })
     // Hochformat-Aufnahmen aus der Kamera tragen die Drehung nur im EXIF.
@@ -121,10 +134,10 @@ export async function getPreviewImage(params: {
   let pipeline = base;
 
   if (params.watermark) {
-    const meta = await base.clone().toBuffer({ resolveWithObject: true });
-    pipeline = sharp(meta.data).composite([
+    const resized = await base.clone().toBuffer({ resolveWithObject: true });
+    pipeline = sharp(resized.data).composite([
       {
-        input: watermarkSvg(meta.info.width, meta.info.height),
+        input: watermarkSvg(resized.info.width, resized.info.height),
         blend: "over",
       },
     ]);
@@ -149,5 +162,5 @@ export async function getPreviewImage(params: {
       console.error("Vorschau konnte nicht abgelegt werden:", key, error);
     });
 
-  return output;
+  return { image: output, sourceWidth, sourceHeight };
 }

@@ -29,6 +29,31 @@ const PART_SIZE = 10 * 1024 * 1024;
 /** Wie viele Teile gleichzeitig unterwegs sind. */
 const PARALLEL = 4;
 
+/**
+ * Den Dateityp bestimmen, auch wenn der Browser schweigt.
+ *
+ * Bei HEIC-Dateien vom iPhone liefert Chrome unter macOS oft einen leeren
+ * file.type. Ohne diesen Rückfall auf die Endung würde jede iPhone-Aufnahme
+ * als "nicht unterstützt" abgewiesen – bei einer Fotografin die denkbar
+ * unglücklichste Fehlermeldung.
+ */
+const BY_EXTENSION: Record<string, string> = {
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+  avif: "image/avif",
+  heic: "image/heic",
+  heif: "image/heif",
+};
+
+function contentTypeOf(file: File): string {
+  if (file.type && file.type !== "application/octet-stream") return file.type;
+
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+  return BY_EXTENSION[extension] ?? "";
+}
+
 type Status = "wartet" | "laeuft" | "fertig" | "fehler";
 
 type Item = {
@@ -92,16 +117,31 @@ export default function Uploader({
   async function uploadOne(item: Item) {
     update(item.id, { status: "laeuft", progress: 0 });
 
-    const { key, uploadId } = await post({
-      step: "create",
-      projectId,
-      kind,
-      fileName: item.file.name,
-      contentType: item.file.type,
-      byteSize: item.file.size,
-    });
+    let key: string | undefined;
+    let uploadId: string | undefined;
 
+    /*
+      Das gesamte Hochladen liegt in EINER Fehlerbehandlung – auch das Holen
+      der Erlaubnis.
+
+      Vorher stand der erste Schritt davor. Eine Ablehnung (etwa ein nicht
+      unterstütztes Format) flog dann bis in die Schleife, die alle Dateien
+      abarbeitet, und beendete sie stillschweigend: Die erste Datei blieb bei
+      "0 %" stehen, alle weiteren ewig bei "wartet", und niemand erfuhr,
+      warum. Ein einzelnes ungeeignetes Bild legte den ganzen Stapel lahm.
+    */
     try {
+      const created = await post({
+        step: "create",
+        projectId,
+        kind,
+        fileName: item.file.name,
+        contentType: contentTypeOf(item.file),
+        byteSize: item.file.size,
+      });
+
+      key = created.key;
+      uploadId = created.uploadId;
       const total = Math.max(1, Math.ceil(item.file.size / PART_SIZE));
       const numbers = Array.from({ length: total }, (_, i) => i + 1);
       const { urls } = await post({
@@ -171,8 +211,10 @@ export default function Uploader({
       update(item.id, { status: "fertig", progress: 100 });
     } catch (error) {
       // Angefangene Uploads freigeben, sonst liegen die Teile unsichtbar im
-      // Bucket und kosten Speicher.
-      await post({ step: "abort", projectId, key, uploadId }).catch(() => {});
+      // Bucket und kosten Speicher. Nur sinnvoll, wenn überhaupt einer begann.
+      if (key && uploadId) {
+        await post({ step: "abort", projectId, key, uploadId }).catch(() => {});
+      }
 
       update(item.id, {
         status: "fehler",
@@ -192,15 +234,19 @@ export default function Uploader({
     setItems((current) => [...current, ...fresh]);
     setRunning(true);
 
-    // Dateien nacheinander, Teile innerhalb einer Datei parallel. Alles
-    // gleichzeitig würde die Leitung überfahren und jeden Fortschritt
-    // unleserlich machen.
-    for (const item of fresh) {
-      await uploadOne(item);
+    try {
+      // Dateien nacheinander, Teile innerhalb einer Datei parallel. Alles
+      // gleichzeitig würde die Leitung überfahren und jeden Fortschritt
+      // unleserlich machen.
+      for (const item of fresh) {
+        await uploadOne(item);
+      }
+    } finally {
+      // Zweites Netz: Selbst wenn uploadOne wider Erwarten durchreicht, darf
+      // die Oberfläche nicht in "Lädt hoch…" hängen bleiben.
+      setRunning(false);
+      router.refresh();
     }
-
-    setRunning(false);
-    router.refresh();
   }
 
   const fertig = items.filter((i) => i.status === "fertig").length;
@@ -218,7 +264,7 @@ export default function Uploader({
           event.preventDefault();
           setDragging(false);
           const files = Array.from(event.dataTransfer.files).filter((f) =>
-            f.type.startsWith("image/")
+            contentTypeOf(f).startsWith("image/")
           );
           if (files.length > 0) void start(files);
         }}
@@ -238,15 +284,14 @@ export default function Uploader({
           {running ? "Lädt hoch…" : "Dateien auswählen"}
         </button>
         <p className="mt-5 text-sm leading-6 text-ink/55">
-          JPEG, PNG, WebP oder AVIF · bis 300 MB je Datei · abgebrochene
-          Uploads setzen automatisch wieder auf
+          JPEG, PNG, WebP, AVIF und HEIC vom iPhone · bis 300 MB je Datei
         </p>
 
         <input
           ref={inputRef}
           type="file"
           multiple
-          accept="image/jpeg,image/png,image/webp,image/avif"
+          accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif"
           className="hidden"
           onChange={(event) => {
             const files = Array.from(event.target.files ?? []);

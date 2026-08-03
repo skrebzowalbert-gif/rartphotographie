@@ -24,8 +24,26 @@ import {
   zwischen "600 Bilder über Nacht" und "600 Bilder in zwanzig Minuten".
 */
 
-/** Nur was der Browser auch anzeigen kann. Keine RAWs, keine ZIPs, kein SVG. */
-const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
+/**
+ * Erlaubte Formate.
+ *
+ * HEIC gehoert ausdruecklich dazu: Das ist die Voreinstellung jedes iPhones,
+ * und Regina wird Bilder auch direkt vom Telefon hochladen. Anzeigen kann der
+ * Browser HEIC zwar nicht – ausgeliefert wird aber ohnehin nie das Original,
+ * sondern ein neu kodiertes JPEG. Fuer die Umwandlung sorgt sharp.
+ *
+ * Nicht erlaubt bleiben RAW-Dateien (kein Browser und auch sharp kann die
+ * Vielfalt der Kamerahersteller nicht zuverlaessig) und SVG (ausfuehrbarer
+ * Inhalt).
+ */
+const ALLOWED = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+  "image/heic",
+  "image/heif",
+]);
 
 /**
  * 300 MB je Datei.
@@ -126,7 +144,8 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             error:
-              "Nur JPEG, PNG, WebP oder AVIF. RAW-Dateien kann kein Browser anzeigen.",
+              "Format nicht unterstützt. Möglich sind JPEG, PNG, WebP, AVIF und HEIC – " +
+              "RAW-Dateien bitte vorher aus Lightroom exportieren.",
           },
           { status: 415 }
         );

@@ -28,6 +28,7 @@ export async function GET(
       id: schema.assets.id,
       kind: schema.assets.kind,
       r2Key: schema.assets.r2Key,
+      width: schema.assets.width,
       projectId: schema.projects.id,
       status: schema.projects.status,
       watermarkEnabled: schema.projects.watermarkEnabled,
@@ -70,13 +71,28 @@ export async function GET(
     : 800;
 
   try {
-    const image = await getPreviewImage({
+    const { image, sourceWidth, sourceHeight } = await getPreviewImage({
       projectId: asset.projectId,
       assetId: asset.id,
       sourceKey: asset.r2Key,
       width,
       watermark,
     });
+
+    /*
+      Maße nachtragen, falls sie fehlen.
+
+      Bei HEIC kann der Browser sie beim Hochladen nicht auslesen. Hier fallen
+      sie beim ersten Erzeugen der Vorschau ohnehin an – also mitnehmen, statt
+      dafür eine eigene Runde zu drehen.
+    */
+    if (sourceWidth && sourceHeight && asset.width === null) {
+      await db()
+        .update(schema.assets)
+        .set({ width: sourceWidth, height: sourceHeight })
+        .where(eq(schema.assets.id, asset.id))
+        .catch(() => {});
+    }
 
     return new NextResponse(new Uint8Array(image), {
       headers: {
