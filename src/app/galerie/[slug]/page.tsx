@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { db, schema } from "@/lib/db";
 import GalleryClient from "@/components/gallery/GalleryClient";
+import GalleryDownload from "@/components/gallery/GalleryDownload";
+import { enddateien } from "@/lib/portal/downloads";
+import { PAKET_GRENZE_BYTES } from "@/lib/portal/zip";
 import GalleryLogin from "@/components/gallery/GalleryLogin";
 import { getGallerySession } from "@/lib/portal/session";
 
@@ -84,7 +87,45 @@ export default async function GaleriePage({
     )
     .orderBy(asc(schema.assets.sortIndex));
 
+  /*
+    Die fertigen Bilder.
+
+    Getrennt von den Auswahlbildern, weil es andere Dateien sind: Regina laedt
+    in der zweiten Runde die BEARBEITETEN Aufnahmen hoch, oft unter anderem
+    Namen. Sichtbar werden sie erst mit dem Ausliefern.
+  */
+  const fertige =
+    project.status === "delivered" ? await enddateien(project.id) : [];
+
   if (assets.length === 0) {
+    // Ohne Auswahlbilder, aber mit fertigen: Das ist Reginas Weg 1 - die
+    // Auswahl lief an der Kamera, das Portal liefert nur noch aus.
+    if (fertige.length > 0) {
+      return (
+        <main className="min-h-screen overflow-visible bg-ink pb-24 text-paper">
+          <div className="px-[var(--shell-x)] pt-20">
+            <p className="eyebrow text-paper/50">R.Artphotographie</p>
+            <h1 className="display-xl mt-4 max-w-[16ch] text-paper">
+              {project.title}
+            </h1>
+          </div>
+          <div className="mt-12">
+            <GalleryDownload
+              projectId={project.id}
+              dateien={fertige.map((d) => ({
+                id: d.id,
+                fileName: d.fileName,
+                byteSize: d.byteSize,
+              }))}
+              paketZuGross={
+                fertige.reduce((s, d) => s + d.byteSize, 0) > PAKET_GRENZE_BYTES
+              }
+            />
+          </div>
+        </main>
+      );
+    }
+
     return (
       <Hinweis
         titel="Gleich geht es los"
@@ -142,6 +183,20 @@ export default async function GaleriePage({
       Galerie läuft ohnehin nicht seitlich über.
     */
     <main className="min-h-screen overflow-visible bg-ink pb-24 text-paper">
+      {fertige.length > 0 && (
+        <GalleryDownload
+          projectId={project.id}
+          dateien={fertige.map((d) => ({
+            id: d.id,
+            fileName: d.fileName,
+            byteSize: d.byteSize,
+          }))}
+          paketZuGross={
+            fertige.reduce((s, d) => s + d.byteSize, 0) > PAKET_GRENZE_BYTES
+          }
+        />
+      )}
+
       <GalleryClient
         projectId={project.id}
         title={project.title}

@@ -5,6 +5,7 @@ import {
   CompleteMultipartUploadCommand,
   CreateMultipartUploadCommand,
   DeleteObjectsCommand,
+  GetObjectCommand,
   ListObjectsV2Command,
   S3Client,
   UploadPartCommand,
@@ -241,4 +242,61 @@ export async function deleteProjectObjects(projectId: string) {
   } while (token);
 
   return deleted;
+}
+
+/* ------------------------------------------------------------------ */
+/* Herunterladen                                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Eine kurzlebige Adresse für genau eine Datei.
+ *
+ * Bei den Vorschaubildern gehe ich bewusst den anderen Weg: Die laufen durch
+ * den Server, damit eine kopierte Adresse wertlos ist. Beim Herunterladen der
+ * fertigen Bilder geht das nicht – ein Paket über mehrere Gigabyte durch eine
+ * Serverless-Funktion zu schieben, die nach 800 Sekunden abgebrochen wird,
+ * endet in einer halb geladenen Datei.
+ *
+ * Vertretbar ist der Unterschied, weil sich die Lage geändert hat: Wer hier
+ * ankommt, hat die Galerie geöffnet UND die Datei ist für ihn bestimmt. Er
+ * darf sie ohnehin behalten. Bei der Vorauswahl war beides nicht der Fall.
+ *
+ * Fünf Minuten sind knapp genug, dass eine weitergeschickte Adresse ins Leere
+ * läuft, und lang genug, dass ein Download über Mobilfunk startet.
+ */
+export function signDownloadUrl(params: {
+  key: string;
+  fileName: string;
+}): Promise<string> {
+  return getSignedUrl(
+    r2(),
+    new GetObjectCommand({
+      Bucket: bucket(),
+      Key: params.key,
+      /*
+        Ohne das öffnet der Browser das JPEG im Tab, statt es zu speichern –
+        und der Dateiname wäre der Ablageschlüssel, also eine Kennung ohne
+        Bedeutung. Regina braucht in Lightroom den ursprünglichen Namen.
+      */
+      ResponseContentDisposition: `attachment; filename="${params.fileName.replace(
+        /"/g,
+        ""
+      )}"`,
+    }),
+    { expiresIn: 300 }
+  );
+}
+
+/** Liefert den Inhalt einer Datei als Strom – für das Paket. */
+export async function objectStream(
+  key: string
+): Promise<ReadableStream<Uint8Array>> {
+  const result = await r2().send(
+    new GetObjectCommand({ Bucket: bucket(), Key: key })
+  );
+
+  const body = result.Body;
+  if (!body) throw new Error(`Kein Inhalt: ${key}`);
+
+  return body.transformToWebStream() as ReadableStream<Uint8Array>;
 }
