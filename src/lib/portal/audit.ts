@@ -25,7 +25,8 @@ export type AuditAction =
   | "project.status.changed"
   | "gallery.login.success"
   | "gallery.login.failed"
-  | "gallery.selection.submitted";
+  | "gallery.selection.submitted"
+  | "download.paket";
 
 export async function record(entry: {
   actor: "admin" | "client" | "system";

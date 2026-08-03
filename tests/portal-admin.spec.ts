@@ -446,3 +446,117 @@ test.describe("Wasserzeichen", () => {
     ).toBeGreaterThan(1);
   });
 });
+
+test.describe("Herunterladen", () => {
+  test.skip(
+    ({ browserName }) => browserName !== "chromium",
+    "Virtueller Authenticator gibt es nur in Chromium"
+  );
+
+  test.beforeAll(resetAdmin);
+
+  /*
+    Das ZIP ist von Hand gebaut – also muss bewiesen werden, dass es eines ist.
+
+    Ein selbstgeschriebenes Archivformat, das "irgendwie" heruntergeladen wird,
+    ist wertlos: Der Fehler faellt erst auf, wenn das Brautpaar doppelklickt
+    und der Rechner sagt, die Datei sei beschaedigt. Deshalb wird hier
+    tatsaechlich entpackt und der Inhalt Byte fuer Byte mit dem Original
+    verglichen.
+  */
+  test("das Paket ist ein echtes ZIP mit unveraendertem Inhalt", async ({
+    page,
+  }) => {
+    const setupToken = process.env.PORTAL_SETUP_TOKEN;
+    test.skip(!setupToken, "PORTAL_SETUP_TOKEN nicht gesetzt");
+    test.setTimeout(180_000);
+
+    await addAuthenticator(page);
+    await page.goto(`/admin/einrichten?token=${encodeURIComponent(setupToken!)}`);
+    await page.getByRole("button", { name: /Passkey anlegen/ }).click();
+    await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    const titel = `Testgalerie Paket ${Date.now()}`;
+    await page.goto("/admin/neu");
+    await page.getByLabel("Titel der Galerie").fill(titel);
+    await page.getByLabel("Kundin oder Kunde").fill("Testpaar");
+    await page.getByRole("button", { name: /Galerie anlegen/ }).click();
+    await expect(page.getByRole("heading", { name: new RegExp(titel) })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    await page.goto("/admin");
+    await page.getByRole("link", { name: titel }).click();
+
+    // Zwei Enddateien – nur mit mehr als einer zeigt sich, ob das
+    // Zentralverzeichnis stimmt.
+    const dateien = [
+      "public/images/portrait/portrait-4.jpg",
+      "public/images/family/family-1.jpg",
+    ];
+    await page.locator('input[type="file"]').nth(1).setInputFiles(dateien);
+    await expect(page.getByText("family-1.jpg").first()).toBeVisible({
+      timeout: 90_000,
+    });
+
+    await page.getByRole("button", { name: /Bilder ausliefern/ }).click();
+    await expect(page.getByText(/Die Kundschaft kann die Bilder/)).toBeVisible({
+      timeout: 20_000,
+    });
+
+    const projektId = page.url().split("/admin/projekt/")[1];
+    const antwort = await page.request.get(`/api/portal/paket/${projektId}`);
+    expect(antwort.status()).toBe(200);
+    expect(antwort.headers()["content-type"]).toBe("application/zip");
+
+    const zip = await antwort.body();
+
+    /*
+      Entpacken mit dem Bordmittel des Betriebssystems, nicht mit einer
+      Bibliothek aus demselben Projekt. Waere mein Code falsch UND der
+      Entpacker aus derselben Feder, wuerden sich beide Fehler aufheben.
+    */
+    const { mkdtempSync, writeFileSync, readFileSync, readdirSync } = await import(
+      "node:fs"
+    );
+    const { execFileSync } = await import("node:child_process");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+
+    const ordner = mkdtempSync(join(tmpdir(), "paket-"));
+    writeFileSync(join(ordner, "paket.zip"), zip);
+    execFileSync("unzip", ["-q", "paket.zip"], { cwd: ordner });
+
+    const entpackt = readdirSync(ordner).filter((n) => n.endsWith(".jpg")).sort();
+    expect(entpackt).toEqual(["family-1.jpg", "portrait-4.jpg"]);
+
+    for (const name of entpackt) {
+      const ausPaket = readFileSync(join(ordner, name));
+      const original = readFileSync(
+        dateien.find((d) => d.endsWith(name))!
+      );
+      expect(
+        ausPaket.equals(original),
+        `${name} kam veraendert aus dem Paket`
+      ).toBe(true);
+    }
+  });
+
+  test("ohne Sitzung gibt es weder Paket noch Einzeldatei", async ({
+    browser,
+  }) => {
+    const fremd = await browser.newContext();
+    const paket = await fremd.request.get(
+      "/api/portal/paket/00000000-0000-0000-0000-000000000000",
+      { failOnStatusCode: false }
+    );
+    expect(paket.status()).toBe(404);
+
+    const datei = await fremd.request.get(
+      "/api/portal/datei/00000000-0000-0000-0000-000000000000",
+      { failOnStatusCode: false }
+    );
+    expect(datei.status()).toBe(404);
+    await fremd.close();
+  });
+});

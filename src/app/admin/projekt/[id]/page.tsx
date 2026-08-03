@@ -44,11 +44,16 @@ export default async function ProjektPage({
     .orderBy(asc(schema.assets.sortIndex));
 
   const chosen = await db()
-    .select({ fileName: schema.assets.fileName })
+    .select({
+      fileName: schema.assets.fileName,
+      byteSize: schema.assets.byteSize,
+    })
     .from(schema.favorites)
     .innerJoin(schema.assets, eq(schema.assets.id, schema.favorites.assetId))
     .where(eq(schema.favorites.projectId, project.id))
     .orderBy(asc(schema.assets.sortIndex));
+
+  const chosenBytes = chosen.reduce((summe, c) => summe + c.byteSize, 0);
 
   const previews = assets.filter((a) => a.kind === "preview");
   const finals = assets.filter((a) => a.kind === "final");
@@ -158,6 +163,25 @@ export default async function ProjektPage({
               ? "Die Auswahl läuft noch – das Paar kann sie bis zum Abschicken ändern."
               : "Diese Bilder hat sich das Paar gewünscht. In Lightroom nach den Dateinamen filtern."}
           </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            {/*
+              Der Knopf, der Regina den Abgleich erspart.
+
+              Bisher bekam sie nur Dateinamen und musste sie gegen mehrere
+              hundert Aufnahmen auf ihrer Platte halten. Die Bilder liegen
+              aber laengst im Portal - sie hat sie selbst hochgeladen.
+            */}
+            <a
+              href={`/api/portal/paket/${project.id}?was=auswahl`}
+              className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-ink px-7 text-sm font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
+            >
+              Auswahl herunterladen ({chosen.length})
+            </a>
+            <span className="text-sm text-ink/55">
+              {(chosenBytes / 1024 / 1024).toFixed(0)} MB als ZIP
+            </span>
+          </div>
+
           <div className="mt-8">
             <SelectionList fileNames={chosen.map((c) => c.fileName)} />
           </div>
@@ -176,6 +200,66 @@ export default async function ProjektPage({
         <div className="mt-8">
           <Uploader projectId={project.id} kind="final" />
         </div>
+
+        {finals.length > 0 && (
+          <>
+            <ul className="mt-10 divide-y divide-ink/12 border-t border-ink/15">
+              {finals.map((datei) => (
+                <li
+                  key={datei.id}
+                  className="flex flex-wrap items-center justify-between gap-3 py-4"
+                >
+                  <span className="font-mono text-sm text-ink/75">
+                    {datei.fileName}
+                  </span>
+                  <span className="flex items-center gap-5">
+                    <span className="text-sm text-ink/50">
+                      {(datei.byteSize / 1024 / 1024).toFixed(1)} MB
+                    </span>
+                    <a
+                      href={`/api/portal/datei/${datei.id}`}
+                      className="text-sm text-ink/70 underline decoration-ink/25 underline-offset-4 transition-colors duration-300 hover:text-ink"
+                    >
+                      Herunterladen
+                    </a>
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              {project.status !== "delivered" ? (
+                <form action={setStatus}>
+                  <input type="hidden" name="projectId" value={project.id} />
+                  <input type="hidden" name="status" value="delivered" />
+                  <button
+                    type="submit"
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-full bg-ink px-7 text-sm font-medium text-paper transition-colors duration-500 hover:bg-ink-soft"
+                  >
+                    Bilder ausliefern
+                  </button>
+                </form>
+              ) : (
+                <form action={setStatus}>
+                  <input type="hidden" name="projectId" value={project.id} />
+                  <input type="hidden" name="status" value="selected" />
+                  <button
+                    type="submit"
+                    className="inline-flex min-h-[52px] items-center justify-center rounded-full border border-ink/25 px-6 text-sm font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+                  >
+                    Auslieferung zurücknehmen
+                  </button>
+                </form>
+              )}
+
+              <p className="self-center text-sm leading-7 text-ink/60">
+                {project.status === "delivered"
+                  ? "Die Kundschaft kann die Bilder herunterladen."
+                  : "Erst mit dem Ausliefern werden die Bilder sichtbar."}
+              </p>
+            </div>
+          </>
+        )}
       </section>
 
       {assets.length > 0 && (
