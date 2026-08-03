@@ -349,3 +349,100 @@ test.describe("Ein zweites Gerät freischalten", () => {
     await expect(page.getByText(/Dieser Link gilt nicht mehr/)).toBeVisible();
   });
 });
+
+test.describe("Wasserzeichen", () => {
+  test.skip(
+    ({ browserName }) => browserName !== "chromium",
+    "Virtueller Authenticator gibt es nur in Chromium"
+  );
+
+  test.beforeAll(resetAdmin);
+
+  /*
+    Das Wasserzeichen muss im Bild ankommen – nicht nur im Code stehen.
+
+    Es hat monatelang nichts getan: Der Schriftzug lag als Text in einem SVG,
+    und in der Serverless-Umgebung ist keine Schrift installiert. Die
+    Grafikbibliothek zeichnet dann stillschweigend nichts. Lokal fiel es nie
+    auf, weil macOS Helvetica mitbringt.
+
+    Dieser Test haette das damals NICHT gefunden – er laeuft ja auch lokal.
+    Gefunden hat es Regina. Er haelt fest, was seitdem gilt: Die Wortmarke
+    haengt an keiner Schrift mehr, und wenn sie je wieder verschwindet, faellt
+    es hier auf und nicht bei der Kundschaft.
+  */
+  test("die Kundenansicht unterscheidet sich sichtbar von Reginas Ansicht", async ({
+    page,
+  }) => {
+    const setupToken = process.env.PORTAL_SETUP_TOKEN;
+    test.skip(!setupToken, "PORTAL_SETUP_TOKEN nicht gesetzt");
+
+    // Ein echtes Foto hochzuladen und daraus zwei Fassungen zu rechnen dauert
+    // laenger als die 30 Sekunden Grundeinstellung.
+    test.setTimeout(180_000);
+
+    await addAuthenticator(page);
+    await page.goto(`/admin/einrichten?token=${encodeURIComponent(setupToken!)}`);
+    await page.getByRole("button", { name: /Passkey anlegen/ }).click();
+    await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    const titel = `Testgalerie Wasserzeichen ${Date.now()}`;
+    await page.goto("/admin/neu");
+    await page.getByLabel("Titel der Galerie").fill(titel);
+    await page.getByLabel("Kundin oder Kunde").fill("Testpaar");
+    await page.getByRole("button", { name: /Galerie anlegen/ }).click();
+    await expect(page.getByRole("heading", { name: new RegExp(titel) })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    // Der Uploader liegt auf der Projektseite, nicht auf der Seite direkt nach
+    // dem Anlegen – dort stehen nur Link und Passwort.
+    await page.goto("/admin");
+    await page.getByRole("link", { name: titel }).click();
+
+    // Ein echtes Foto, kein Testpixel: Auf 1x1 gibt es nichts zu beschriften.
+    await page
+      .locator('input[type="file"]')
+      .first()
+      .setInputFiles("public/images/portrait/portrait-4.jpg");
+    await expect(page.getByText("portrait-4.jpg").first()).toBeVisible({
+      timeout: 60_000,
+    });
+
+    const src = await page
+      .locator('img[src^="/api/portal/bild/"]')
+      .first()
+      .getAttribute("src");
+    const assetId = src!.split("/api/portal/bild/")[1].split("?")[0];
+
+    const ohne = await page.request.get(`/api/portal/bild/${assetId}?w=800`);
+    const mit = await page.request.get(
+      `/api/portal/bild/${assetId}?w=800&ansicht=kunde`
+    );
+    expect(ohne.status()).toBe(200);
+    expect(mit.status()).toBe(200);
+
+    const sharp = (await import("sharp")).default;
+    const a = await sharp(await ohne.body()).raw().toBuffer({ resolveWithObject: true });
+    const b = await sharp(await mit.body()).raw().toBuffer({ resolveWithObject: true });
+
+    expect(a.info.width).toBe(b.info.width);
+    expect(a.info.height).toBe(b.info.height);
+
+    let summe = 0;
+    for (let i = 0; i < a.data.length; i++) summe += Math.abs(a.data[i] - b.data[i]);
+    const mittlereAbweichung = summe / a.data.length;
+
+    /*
+      Die Schwelle ist mit Bedacht niedrig. Das Wasserzeichen deckt nur einen
+      Bruchteil der Flaeche ab und liegt bei rund einem Drittel Deckkraft –
+      ueber das ganze Bild gemittelt bleibt davon wenig uebrig. Entscheidend
+      ist die Abgrenzung nach unten: Bei fehlender Schrift waere die Abweichung
+      exakt zwischen null und dem JPEG-Rauschen gelegen.
+    */
+    expect(
+      mittlereAbweichung,
+      "Die Kundenansicht ist praktisch identisch – das Wasserzeichen fehlt"
+    ).toBeGreaterThan(1);
+  });
+});
