@@ -46,7 +46,12 @@ export default async function AdminPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
                   <div>
                     <h2 className="font-display text-2xl leading-tight text-ink">
-                      {project.title}
+                      <Link
+                        href={`/admin/projekt/${project.id}`}
+                        className="underline decoration-ink/20 underline-offset-8 transition-colors duration-300 hover:decoration-ink/60"
+                      >
+                        {project.title}
+                      </Link>
                     </h2>
                     <p className="mt-1 text-sm text-ink/60">
                       {project.clientName}

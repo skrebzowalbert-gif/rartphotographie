@@ -11,6 +11,31 @@ import { expect, test, type Page } from "playwright/test";
   Läuft bewusst nur unter Chromium: WebKit kennt diese Schnittstelle nicht.
 */
 
+/**
+ * Sauberer Ausgangszustand vor jedem Abschnitt.
+ *
+ * Ein virtueller Authenticator bringt keine Schlüssel aus früheren Läufen mit.
+ * Bliebe ein Passkey in der Datenbank stehen, sähe der nächste Abschnitt
+ * "Bereits eingerichtet" – und anmelden kann sich ein frisches Gerät nicht.
+ *
+ * Die doppelte Absicherung ist Absicht: Die Anwendung muss über PORTAL_ORIGIN
+ * auf localhost zeigen, und .env.local auf den Neon-Zweig "development".
+ * Trifft eine der Bedingungen nicht zu, wird nichts gelöscht. Ein Test, der
+ * Reginas echten Passkey entfernt, wäre schlimmer als gar kein Test.
+ */
+async function resetAdmin() {
+  const url = process.env.DATABASE_URL;
+  const origin = process.env.PORTAL_ORIGIN ?? "";
+
+  if (!url || !origin.includes("localhost")) return;
+
+  const sql = neon(url);
+  await sql`delete from admin_challenges`;
+  await sql`delete from admin_credentials`;
+  await sql`delete from admin_users`;
+  await sql`delete from projects where title like 'Testgalerie %'`;
+}
+
 test.describe("Verwaltung: Passkey und Galerie-Anlage", () => {
   test.skip(
     ({ browserName }) => browserName !== "chromium",
@@ -31,18 +56,7 @@ test.describe("Verwaltung: Passkey und Galerie-Anlage", () => {
     gelöscht. Ein Test, der Reginas echten Passkey entfernt, wäre schlimmer
     als gar kein Test.
   */
-  test.beforeAll(async () => {
-    const url = process.env.DATABASE_URL;
-    const origin = process.env.PORTAL_ORIGIN ?? "";
-
-    if (!url || !origin.includes("localhost")) return;
-
-    const sql = neon(url);
-    await sql`delete from admin_challenges`;
-    await sql`delete from admin_credentials`;
-    await sql`delete from admin_users`;
-    await sql`delete from projects where title like 'Testgalerie %'`;
-  });
+  test.beforeAll(resetAdmin);
 
   async function addAuthenticator(page: Page) {
     const client = await page.context().newCDPSession(page);
@@ -152,5 +166,79 @@ test.describe("Verwaltung: Passkey und Galerie-Anlage", () => {
     // Dieselbe Antwort wie bei fehlendem Token: keine Auskunft darüber,
     // welcher der beiden Fälle vorliegt.
     expect((await response.json()).error).toBe("Nicht berechtigt.");
+  });
+});
+
+test.describe("Bilder hochladen", () => {
+  test.skip(
+    ({ browserName }) => browserName !== "chromium",
+    "Braucht den virtuellen Authenticator"
+  );
+
+  test.beforeAll(resetAdmin);
+
+  test("ein Bild wandert durch die ganze Kette bis nach Cloudflare", async ({
+    page,
+  }) => {
+    const setupToken = process.env.PORTAL_SETUP_TOKEN;
+    test.skip(!setupToken, "PORTAL_SETUP_TOKEN nicht gesetzt");
+
+    const client = await page.context().newCDPSession(page);
+    await client.send("WebAuthn.enable");
+    await client.send("WebAuthn.addVirtualAuthenticator", {
+      options: {
+        protocol: "ctap2",
+        transport: "internal",
+        hasResidentKey: true,
+        hasUserVerification: true,
+        isUserVerified: true,
+        automaticPresenceSimulation: true,
+      },
+    });
+
+    await page.goto(`/admin/einrichten?token=${encodeURIComponent(setupToken!)}`);
+    await page.getByRole("button", { name: /Passkey anlegen/ }).click();
+    await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    const titel = `Testgalerie Upload ${Date.now()}`;
+    await page.goto("/admin/neu");
+    await page.getByLabel("Titel der Galerie").fill(titel);
+    await page.getByLabel("Kundin oder Kunde").fill("Testkundin");
+    await page.getByRole("button", { name: /Galerie anlegen/ }).click();
+    await expect(page.getByRole("heading", { name: new RegExp(titel) })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    await page.goto("/admin");
+    await page.getByRole("link", { name: titel }).click();
+    await expect(page.getByRole("heading", { name: titel })).toBeVisible();
+
+    /*
+      Ein winziges, gültiges PNG. Es geht nicht um den Inhalt, sondern darum,
+      dass der Weg trägt: Erlaubnis holen, Teil signieren, direkt zu Cloudflare
+      hochladen, ETag zurücklesen, abschliessen, in die Datenbank schreiben.
+
+      Der Upload läuft aus dem Browser heraus – damit prüft dieser Test auch
+      die CORS-Regel am Bucket. Fehlt dort ExposeHeaders: ["ETag"], schlägt er
+      fehl, und zwar genau an der Stelle, an der es in der Praxis knallt.
+    */
+    const png = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "base64"
+    );
+
+    await page.locator('input[type="file"]').first().setInputFiles({
+      name: "testbild.png",
+      mimeType: "image/png",
+      buffer: png,
+    });
+
+    // Nach dem Abschluss lädt die Seite neu und zeigt die Datei.
+    await expect(page.getByText("testbild.png").first()).toBeVisible({
+      timeout: 45_000,
+    });
+    await expect(
+      page.getByRole("heading", { name: /Auswahlbilder \(1\)/ })
+    ).toBeVisible();
   });
 });

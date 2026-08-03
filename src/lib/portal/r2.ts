@@ -1,0 +1,202 @@
+import "server-only";
+
+import {
+  AbortMultipartUploadCommand,
+  CompleteMultipartUploadCommand,
+  CreateMultipartUploadCommand,
+  DeleteObjectsCommand,
+  ListObjectsV2Command,
+  S3Client,
+  UploadPartCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+/**
+ * Anbindung an Cloudflare R2.
+ *
+ * Der Grundsatz des ganzen Portals: Dateibytes laufen NIE durch Next.js.
+ * Reginas Browser lädt direkt in den Bucket, die Kundschaft lädt direkt aus
+ * dem Bucket. Diese Datei stellt nur die Erlaubnisscheine dafür aus.
+ *
+ * Eine Serverless-Funktion, durch die ein 8-MB-JPEG fließt, ist bei 600
+ * Bildern nicht langsam – sie läuft in die Zeitgrenze und in die
+ * Speichergrenze. Vercel nimmt ohnehin nur 4,5 MB Anfragekörper an.
+ */
+
+function required(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) throw new Error(`${name} fehlt – ohne sie kein Bilderspeicher.`);
+  return value;
+}
+
+/**
+ * Buckets mit EU-Jurisdiktion sprechen einen eigenen Endpunkt an.
+ *
+ * Ohne das zusätzliche ".eu" antwortet R2 mit NoSuchBucket, obwohl der Bucket
+ * existiert – ein Fehler, bei dem man lange in die falsche Richtung sucht.
+ * Deshalb wird der Endpunkt hier abgeleitet und nicht separat konfiguriert:
+ * So kann er gar nicht erst auseinanderlaufen.
+ */
+export function endpoint(): string {
+  return `https://${required("R2_ACCOUNT_ID")}.eu.r2.cloudflarestorage.com`;
+}
+
+export function bucket(): string {
+  return required("R2_BUCKET");
+}
+
+let client: S3Client | null = null;
+
+export function r2(): S3Client {
+  if (client) return client;
+
+  client = new S3Client({
+    region: "auto",
+    endpoint: endpoint(),
+    credentials: {
+      accessKeyId: required("R2_ACCESS_KEY_ID"),
+      secretAccessKey: required("R2_SECRET_ACCESS_KEY"),
+    },
+  });
+
+  return client;
+}
+
+/**
+ * Ablageort einer Datei.
+ *
+ * Nach Projekt und Art getrennt, mit einer Zufallsfolge im Namen. Der
+ * Originaldateiname wandert NICHT in den Schlüssel: "Julia_und_Max_Kuss.jpg"
+ * im Pfad wäre eine Aussage über Dritte, die in Protokollen und Fehlerberichten
+ * auftaucht. Der echte Name steht in der Datenbank, wo er hingehört.
+ */
+export function objectKey(params: {
+  projectId: string;
+  kind: "preview" | "final";
+  extension: string;
+}): string {
+  const random = crypto.randomUUID();
+  const ext = params.extension.replace(/[^a-z0-9]/gi, "").toLowerCase() || "jpg";
+
+  return `${params.projectId}/${params.kind}/${random}.${ext}`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Mehrteiliger Upload                                                 */
+/* ------------------------------------------------------------------ */
+
+export async function beginMultipartUpload(params: {
+  key: string;
+  contentType: string;
+}) {
+  const result = await r2().send(
+    new CreateMultipartUploadCommand({
+      Bucket: bucket(),
+      Key: params.key,
+      ContentType: params.contentType,
+    })
+  );
+
+  if (!result.UploadId) throw new Error("R2 hat keine Upload-Kennung geliefert.");
+  return result.UploadId;
+}
+
+/**
+ * Erlaubnisschein für ein einzelnes Teilstück.
+ *
+ * Fünf Minuten Gültigkeit reichen: Ein 10-MB-Stück ist auch bei schlechter
+ * Verbindung schneller oben, und eine kurze Frist begrenzt den Schaden, falls
+ * eine dieser Adressen je abhandenkommt.
+ */
+export function signUploadPart(params: {
+  key: string;
+  uploadId: string;
+  partNumber: number;
+}) {
+  return getSignedUrl(
+    r2(),
+    new UploadPartCommand({
+      Bucket: bucket(),
+      Key: params.key,
+      UploadId: params.uploadId,
+      PartNumber: params.partNumber,
+    }),
+    { expiresIn: 300 }
+  );
+}
+
+export async function finishMultipartUpload(params: {
+  key: string;
+  uploadId: string;
+  parts: { PartNumber: number; ETag: string }[];
+}) {
+  await r2().send(
+    new CompleteMultipartUploadCommand({
+      Bucket: bucket(),
+      Key: params.key,
+      UploadId: params.uploadId,
+      MultipartUpload: {
+        // R2 verlangt aufsteigende Teilnummern; Uppy liefert sie nicht
+        // zwingend sortiert, wenn Teile parallel fertig werden.
+        Parts: [...params.parts].sort((a, b) => a.PartNumber - b.PartNumber),
+      },
+    })
+  );
+}
+
+/**
+ * Bricht einen Upload ab und gibt die bereits übertragenen Teile frei.
+ *
+ * Ohne diesen Aufruf bleiben angefangene Uploads unsichtbar im Bucket liegen
+ * und kosten Speicher, ohne je in einer Dateiliste aufzutauchen.
+ */
+export async function abortMultipartUpload(params: {
+  key: string;
+  uploadId: string;
+}) {
+  await r2().send(
+    new AbortMultipartUploadCommand({
+      Bucket: bucket(),
+      Key: params.key,
+      UploadId: params.uploadId,
+    })
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Aufräumen                                                           */
+/* ------------------------------------------------------------------ */
+
+/** Löscht alle Dateien eines Projekts – für abgelaufene Galerien. */
+export async function deleteProjectObjects(projectId: string) {
+  let token: string | undefined;
+  let deleted = 0;
+
+  do {
+    const listing = await r2().send(
+      new ListObjectsV2Command({
+        Bucket: bucket(),
+        Prefix: `${projectId}/`,
+        ContinuationToken: token,
+      })
+    );
+
+    const keys = (listing.Contents ?? [])
+      .map((o) => o.Key)
+      .filter((k): k is string => Boolean(k));
+
+    if (keys.length > 0) {
+      await r2().send(
+        new DeleteObjectsCommand({
+          Bucket: bucket(),
+          Delete: { Objects: keys.map((Key) => ({ Key })) },
+        })
+      );
+      deleted += keys.length;
+    }
+
+    token = listing.IsTruncated ? listing.NextContinuationToken : undefined;
+  } while (token);
+
+  return deleted;
+}
