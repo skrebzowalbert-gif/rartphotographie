@@ -9,7 +9,12 @@ import { db, schema } from "@/lib/db";
 import { getAdminUser } from "@/lib/portal/session";
 import { getProjectById, STATUS_LABEL } from "@/lib/portal/projects";
 import { siteUrl } from "@/lib/site";
-import { deleteAsset, setStatus, setWatermark } from "./actions";
+import {
+  deleteAsset,
+  setSelectionLimit,
+  setStatus,
+  setWatermark,
+} from "./actions";
 
 export const metadata = { title: "Galerie" };
 
@@ -84,7 +89,34 @@ export default async function ProjektPage({
         />
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-4">
+      <div className="mt-6 flex flex-wrap items-center gap-4">
+        {/*
+          Die Zahl aendert sich im Alltag - mal einigt man sich waehrend der
+          Auswahl auf mehr. Ohne dieses Feld muesste dafuer die ganze Galerie
+          neu angelegt werden, samt neuem Link und Passwort, waehrend das Paar
+          schon drin ist.
+        */}
+        <form action={setSelectionLimit} className="flex items-center gap-3">
+          <input type="hidden" name="projectId" value={project.id} />
+          <label htmlFor="limit" className="text-sm text-ink/70">
+            Enthaltene Bilder
+          </label>
+          <input
+            id="limit"
+            name="limit"
+            inputMode="numeric"
+            defaultValue={project.selectionLimit ?? ""}
+            placeholder="alle"
+            className="w-24 rounded-xl border border-ink/15 bg-paper px-3 py-2.5 text-base text-ink outline-none transition-colors duration-300 focus:border-ink/45"
+          />
+          <button
+            type="submit"
+            className="inline-flex min-h-[46px] items-center justify-center rounded-full border border-ink/25 px-5 text-sm font-medium text-ink transition-colors duration-500 hover:border-ink/55"
+          >
+            Speichern
+          </button>
+        </form>
+
         <form action={setWatermark}>
           <input type="hidden" name="projectId" value={project.id} />
           <input

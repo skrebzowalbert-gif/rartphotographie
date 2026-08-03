@@ -166,3 +166,54 @@ export async function resetGalleryPassword(
   // Wie beim Anlegen: einmal zurückgeben, nie über die Adresszeile.
   return { password };
 }
+
+const schemaLimit = z.object({
+  projectId: z.uuid(),
+  /* Leer heisst "unbegrenzt" – das ist ein gueltiger Wunsch, kein Versehen. */
+  limit: z.string(),
+});
+
+/**
+ * Wie viele Bilder im Paket enthalten sind.
+ *
+ * Bisher liess sich das nur beim Anlegen setzen. Das reicht nicht: Regina
+ * einigt sich mit einem Paar auch mal waehrend der Auswahl auf eine andere
+ * Zahl, und dann muesste sie sonst die ganze Galerie neu anlegen – samt neuem
+ * Link und neuem Passwort, waehrend das Paar schon drin ist.
+ *
+ * Die Zahl ist bewusst KEINE harte Sperre. Wer sein Lieblingsbild als 41. von
+ * 40 nicht anklicken kann, waehlt nicht weniger aus, sondern aergert sich –
+ * und Regina erfaehrt nie, welches Bild es gewesen waere. Die Galerie zeigt
+ * stattdessen an, dass es mehr sind, und beide Seiten reden darueber.
+ */
+export async function setSelectionLimit(formData: FormData) {
+  const admin = await getAdminUser();
+  if (!admin) return;
+
+  const parsed = schemaLimit.safeParse({
+    projectId: formData.get("projectId"),
+    limit: formData.get("limit") ?? "",
+  });
+  if (!parsed.success) return;
+
+  const roh = Number(parsed.data.limit.trim());
+  const limit =
+    parsed.data.limit.trim() === "" || !Number.isFinite(roh) || roh <= 0
+      ? null
+      : Math.min(Math.round(roh), 10_000);
+
+  await db()
+    .update(schema.projects)
+    .set({ selectionLimit: limit, updatedAt: new Date() })
+    .where(eq(schema.projects.id, parsed.data.projectId));
+
+  await record({
+    actor: "admin",
+    actorId: admin.userId,
+    projectId: parsed.data.projectId,
+    action: "project.status.changed",
+    detail: { selectionLimit: limit },
+  });
+
+  revalidatePath(`/admin/projekt/${parsed.data.projectId}`);
+}
