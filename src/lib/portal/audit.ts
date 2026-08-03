@@ -16,6 +16,7 @@ import { db, schema } from "@/lib/db";
  */
 export type AuditAction =
   | "admin.passkey.registered"
+  | "admin.invite.created"
   | "admin.login.success"
   | "admin.login.failed"
   | "admin.logout"

@@ -36,6 +36,31 @@ async function resetAdmin() {
   await sql`delete from projects where title like 'Testgalerie %'`;
 }
 
+/**
+ * Ein virtueller Sicherheitsschlüssel für diese Seite.
+ *
+ * Steht auf Modulebene, weil ihn inzwischen mehrere Abschnitte brauchen –
+ * unter anderem der Test der Geräteeinladung, der gleich drei verschiedene
+ * "Geräte" gegeneinander antreten lässt.
+ */
+async function addAuthenticator(page: Page) {
+  const client = await page.context().newCDPSession(page);
+  await client.send("WebAuthn.enable");
+
+  const { authenticatorId } = await client.send("WebAuthn.addVirtualAuthenticator", {
+    options: {
+      protocol: "ctap2",
+      transport: "internal",
+      hasResidentKey: true,
+      hasUserVerification: true,
+      isUserVerified: true,
+      automaticPresenceSimulation: true,
+    },
+  });
+
+  return { client, authenticatorId };
+}
+
 test.describe("Verwaltung: Passkey und Galerie-Anlage", () => {
   test.skip(
     ({ browserName }) => browserName !== "chromium",
@@ -57,24 +82,6 @@ test.describe("Verwaltung: Passkey und Galerie-Anlage", () => {
     als gar kein Test.
   */
   test.beforeAll(resetAdmin);
-
-  async function addAuthenticator(page: Page) {
-    const client = await page.context().newCDPSession(page);
-    await client.send("WebAuthn.enable");
-
-    const { authenticatorId } = await client.send("WebAuthn.addVirtualAuthenticator", {
-      options: {
-        protocol: "ctap2",
-        transport: "internal",
-        hasResidentKey: true,
-        hasUserVerification: true,
-        isUserVerified: true,
-        automaticPresenceSimulation: true,
-      },
-    });
-
-    return { client, authenticatorId };
-  }
 
   test("Einrichtung, Anmeldung und Anlegen einer Galerie", async ({ page }) => {
     await addAuthenticator(page);
@@ -262,5 +269,83 @@ test.describe("Bilder hochladen", () => {
       "Ein fremder Browser darf das Bild nicht bekommen"
     ).toBe(404);
     await fremd.dispose();
+  });
+});
+
+test.describe("Ein zweites Gerät freischalten", () => {
+  test.skip(
+    ({ browserName }) => browserName !== "chromium",
+    "Virtueller Authenticator gibt es nur in Chromium"
+  );
+
+  test.beforeAll(resetAdmin);
+
+  /*
+    Der Weg, über den Regina auf ihr eigenes Handy kommt.
+
+    Der eigentliche Prüfpunkt ist nicht, dass es funktioniert – sondern dass
+    der Link danach wertlos ist. Ein Einladungslink, der zweimal gilt, liegt
+    irgendwann in einem Chatverlauf und ist dann ein dauerhafter Zugang zu
+    fremden Hochzeitsbildern.
+  */
+  test("der Einladungslink schaltet genau ein Gerät frei – und dann nie wieder", async ({
+    browser,
+    page,
+  }) => {
+    const setupToken = process.env.PORTAL_SETUP_TOKEN;
+    test.skip(!setupToken, "PORTAL_SETUP_TOKEN nicht gesetzt");
+
+    /* --- Gerät 1: einrichten ------------------------------------------ */
+    await addAuthenticator(page);
+    await page.goto(`/admin/einrichten?token=${encodeURIComponent(setupToken!)}`);
+    await page.getByRole("button", { name: /Passkey anlegen/ }).click();
+    await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    /* --- Gerät 1 erzeugt eine Einladung ------------------------------- */
+    await page.getByRole("button", { name: /Weiteres Gerät freischalten/ }).click();
+    await page.getByLabel(/Um welches Gerät geht es/).fill("Reginas Handy");
+    await page.getByRole("button", { name: /Link erzeugen/ }).click();
+
+    const linkFeld = page.locator("p.font-mono").first();
+    await expect(linkFeld).toBeVisible({ timeout: 20_000 });
+    const link = (await linkFeld.innerText()).trim();
+    expect(link).toMatch(/\/admin\/geraet\?token=[0-9a-f]{48}$/);
+
+    const pfad = link.slice(link.indexOf("/admin/geraet"));
+
+    /* --- Gerät 2: fremder Browser, eigener Authenticator -------------- */
+    const handy = await browser.newContext();
+    const handySeite = await handy.newPage();
+    await addAuthenticator(handySeite);
+
+    await handySeite.goto(pfad);
+    await handySeite.getByRole("button", { name: /Jetzt freischalten/ }).click();
+    await expect(handySeite).toHaveURL(/\/admin$/, { timeout: 20_000 });
+
+    // Und ist danach wirklich drin, nicht nur weitergeleitet.
+    await expect(
+      handySeite.getByRole("heading", { name: /Galerien/ })
+    ).toBeVisible({ timeout: 20_000 });
+    await handy.close();
+
+    /* --- Derselbe Link ein zweites Mal -------------------------------- */
+    const dritter = await browser.newContext();
+    const dritteSeite = await dritter.newPage();
+    await addAuthenticator(dritteSeite);
+
+    await dritteSeite.goto(pfad);
+    await expect(
+      dritteSeite.getByText(/Dieser Link gilt nicht mehr/),
+      "Ein verbrauchter Einladungslink darf kein zweites Gerät freischalten"
+    ).toBeVisible({ timeout: 20_000 });
+    await expect(
+      dritteSeite.getByRole("button", { name: /Jetzt freischalten/ })
+    ).toHaveCount(0);
+    await dritter.close();
+  });
+
+  test("ein erfundenes Token schaltet nichts frei", async ({ page }) => {
+    await page.goto(`/admin/geraet?token=${"a".repeat(48)}`);
+    await expect(page.getByText(/Dieser Link gilt nicht mehr/)).toBeVisible();
   });
 });

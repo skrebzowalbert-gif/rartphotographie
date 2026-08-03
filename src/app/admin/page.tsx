@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import DeviceInvite from "@/components/portal/DeviceInvite";
 import { getAdminUser } from "@/lib/portal/session";
 import { listProjects, STATUS_LABEL } from "@/lib/portal/projects";
 
@@ -81,9 +82,12 @@ export default async function AdminPage() {
         </ul>
       )}
 
-      <p className="mt-20 text-sm text-ink/55">
-        Angemeldet als {admin.displayName}
-      </p>
+      <div className="mt-20 border-t border-ink/12 pt-8">
+        <DeviceInvite />
+        <p className="mt-8 text-sm text-ink/55">
+          Angemeldet als {admin.displayName}
+        </p>
+      </div>
     </div>
   );
 }

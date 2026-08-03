@@ -22,12 +22,14 @@ type Mode = "login" | "register";
 export default function PasskeyButton({
   mode,
   setupToken,
+  inviteToken,
   label,
   redirectTo = "/admin",
   children,
 }: {
   mode: Mode;
   setupToken?: string;
+  inviteToken?: string;
   label?: string;
   redirectTo?: string;
   children: React.ReactNode;
@@ -47,7 +49,7 @@ export default function PasskeyButton({
       const optionsResponse = await fetch(endpoint, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ step: "options", setupToken, label }),
+        body: JSON.stringify({ step: "options", setupToken, inviteToken, label }),
       });
 
       if (!optionsResponse.ok) {
@@ -68,6 +70,7 @@ export default function PasskeyButton({
         body: JSON.stringify({
           step: "verify",
           setupToken,
+          inviteToken,
           label,
           response: credential,
         }),
