@@ -11,6 +11,7 @@ import { getAdminUser } from "@/lib/portal/session";
 import { record } from "@/lib/portal/audit";
 import {
   eindeutigeNamen,
+  mitEndung,
   paketStrom,
   PAKET_GRENZE_BYTES,
 } from "@/lib/portal/zip";
@@ -88,7 +89,9 @@ export async function GET(
     );
   }
 
-  const namen = eindeutigeNamen(dateien.map((d) => d.fileName));
+  const namen = eindeutigeNamen(
+    dateien.map((d) => mitEndung(d.fileName, d.r2Key))
+  );
   const eintraege = dateien.map((d, i) => ({ name: namen[i], key: d.r2Key }));
 
   if (admin) {

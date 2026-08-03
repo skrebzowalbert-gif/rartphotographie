@@ -6,6 +6,7 @@ import {
   mindestPixel,
 } from "../src/lib/shop/zuschnitt";
 import { KATALOG, findeVariante, preisText } from "../src/lib/shop/katalog";
+import { eindeutigeNamen, mitEndung } from "../src/lib/portal/dateinamen";
 
 /*
   Reine Rechnerei, kein Browser und keine Datenbank.
@@ -208,5 +209,45 @@ test.describe("Katalog", () => {
   test("Preise stehen in deutscher Schreibweise", () => {
     expect(preisText(8900)).toContain("89,00");
     expect(preisText(8900)).toContain("€");
+  });
+});
+
+test.describe("Dateinamen im Paket", () => {
+  /*
+    Der Fall, der bei einem echten Kunden gelandet ist.
+
+    Die hochgeladenen Dateien hiessen "download", "download (2)" - ohne
+    Endung, weil sie irgendwo im Netz so gespeichert worden waren. Das Paket
+    gab die Namen originalgetreu weiter, macOS erkannte den Typ nicht und
+    oeffnete die Hochzeitsbilder im Texteditor.
+  */
+  test("ein Name ohne Endung bekommt die aus dem Ablageschluessel", () => {
+    expect(mitEndung("download", "projekt/final/abc-123.jpg")).toBe("download.jpg");
+    expect(mitEndung("download (2)", "projekt/final/abc.PNG")).toBe("download (2).png");
+  });
+
+  test("ein Name mit Endung bleibt unangetastet", () => {
+    expect(mitEndung("IMG_5457.jpeg", "projekt/final/abc.jpg")).toBe("IMG_5457.jpeg");
+    expect(mitEndung("Julia & Max 2026-05-12.jpg", "x/y.jpg")).toBe(
+      "Julia & Max 2026-05-12.jpg"
+    );
+  });
+
+  test("ohne erkennbare Endung bleibt es beim Namen, statt zu raten", () => {
+    expect(mitEndung("download", "projekt/final/abc")).toBe("download");
+  });
+
+  test("gleiche Namen werden auseinandergehalten", () => {
+    expect(eindeutigeNamen(["download.jpg", "download.jpg", "download.jpg"])).toEqual([
+      "download.jpg",
+      "download (2).jpg",
+      "download (3).jpg",
+    ]);
+  });
+
+  test("Leerzeichen und Bindestriche bleiben erhalten", () => {
+    expect(eindeutigeNamen(["Julia & Max 2026-05-12.jpg"])).toEqual([
+      "Julia & Max 2026-05-12.jpg",
+    ]);
   });
 });

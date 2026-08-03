@@ -4,6 +4,7 @@ import { db, schema } from "@/lib/db";
 import { darfEnddateien } from "@/lib/portal/downloads";
 import { getAdminUser } from "@/lib/portal/session";
 import { signDownloadUrl } from "@/lib/portal/r2";
+import { mitEndung } from "@/lib/portal/zip";
 
 /*
   Eine einzelne Datei in voller Auflösung.
@@ -62,7 +63,8 @@ export async function GET(
 
   const url = await signDownloadUrl({
     key: asset.r2Key,
-    fileName: asset.fileName,
+    // Auch hier: ohne Endung haelt macOS das Bild fuer eine Textdatei.
+    fileName: mitEndung(asset.fileName, asset.r2Key),
   });
 
   return NextResponse.redirect(url, {
