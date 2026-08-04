@@ -31,8 +31,9 @@ import {
 
 export const dynamic = "force-dynamic";
 // Ein Paket über mehrere hundert Megabyte braucht länger als die
-// Grundeinstellung von 15 Sekunden. 800 ist, was der Vertrag hergibt.
-export const maxDuration = 800;
+// Grundeinstellung von 15 Sekunden. 300 ist das Maximum im Hobby-Plan
+// (Pro erlaubt mehr — bei sehr großen Paketen ggf. wieder erhöhen).
+export const maxDuration = 300;
 
 export async function GET(
   request: Request,
