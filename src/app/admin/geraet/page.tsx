@@ -52,13 +52,43 @@ export default async function GeraetPage({
         oder dir entlocken könnte.
       </p>
 
+      {/*
+        Der Hinweis steht VOR dem Knopf, nicht darunter.
+
+        Er ist keine Fußnote, sondern die häufigste Ursache dafür, dass hier
+        nichts passiert: Ein Link aus WhatsApp öffnet sich im eingebauten
+        Vorschaufenster, und das darf keine Passkeys anlegen. Wer erst nach dem
+        Fehlschlag davon liest, hat schon einmal vergeblich getippt.
+      */}
+      <p className="mt-8 rounded-xl border border-ink/12 bg-paper/40 px-4 py-3 text-sm leading-7 text-ink/70">
+        Wichtig: Diese Seite muss im richtigen Browser stehen – Safari auf dem
+        iPhone, Chrome auf Android. Hast du den Link in WhatsApp angetippt,
+        öffne ihn über das Teilen-Symbol noch einmal „in Safari“.
+      </p>
+
       <div className="mt-10">
         <PasskeyButton mode="register" inviteToken={token} label={invite.label}>
           Jetzt freischalten
         </PasskeyButton>
       </div>
 
-      <p className="mt-12 text-sm leading-7 text-ink/60">
+      {/*
+        Ein Ausweg für den Fall, dass hier gar nichts freizuschalten ist.
+
+        Passkeys wandern über den iCloud-Schlüsselbund von selbst aufs Telefon.
+        Dann lehnt das Gerät einen zweiten für dieselbe Seite ab – richtigerweise,
+        aber ohne diesen Satz sieht es nach einem kaputten Knopf aus.
+      */}
+      <p className="mt-8 text-sm leading-7 text-ink/60">
+        Schon einmal freigeschaltet oder der Passkey vom Mac ist von selbst
+        hier gelandet?{" "}
+        <Link href="/admin/anmelden" className="underline underline-offset-4">
+          Dann geht es direkt zur Anmeldung
+        </Link>
+        .
+      </p>
+
+      <p className="mt-8 text-sm leading-7 text-ink/60">
         Der Schlüssel bleibt auf diesem Gerät und verlässt es nie. Geht das
         Gerät verloren, lässt sich der Zugang von einem anderen Gerät aus
         entziehen.

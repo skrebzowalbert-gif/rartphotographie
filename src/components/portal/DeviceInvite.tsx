@@ -97,6 +97,17 @@ export default function DeviceInvite() {
             Schick ihn über einen Weg, den nur ihr beide lest. Nach dem
             Freischalten ist er wertlos, davor ist er ein Zugang.
           </p>
+
+          {/*
+            Der Satz gehört hierher und nicht nur auf die Zielseite: Wer den
+            Link verschickt, kann gleich dazuschreiben, wie er zu öffnen ist.
+            Das erspart die Rückfrage "bei mir passiert nichts".
+          */}
+          <p className="mt-3 text-sm leading-7 text-ink/60">
+            Auf dem Handy muss der Link in Safari beziehungsweise Chrome
+            geöffnet werden – das eingebaute Vorschaufenster von WhatsApp kann
+            keine Passkeys anlegen.
+          </p>
         </div>
       )}
     </div>

@@ -55,6 +55,29 @@ export type StoredCredential = {
   transports: string[] | null;
 };
 
+/**
+ * Ein gespeicherter Schlüssel als Beschreibung für den Browser.
+ *
+ * Der Umweg über diese Funktion hat einen einzigen Grund: `null`.
+ *
+ * Die Spalte transports ist nullbar – meldet ein Authenticator seine
+ * Übertragungswege nicht, steht dort NULL. Reicht man das unverändert weiter,
+ * enthält die Antwort `"transports": null`, und der Browser erwartet an dieser
+ * Stelle eine Liste. `null` ist keine. Chrome bricht die Anfrage dann mit einem
+ * TypeError ab, bevor überhaupt ein Systemdialog erscheint – für Regina sieht
+ * das aus, als sei der Knopf kaputt.
+ *
+ * `undefined` verschwindet beim Serialisieren dagegen ganz, und ein fehlendes
+ * Feld ist genau das, was hier gemeint ist: Wir wissen es nicht, der Browser
+ * soll selbst schauen.
+ */
+function describe(credential: StoredCredential) {
+  return {
+    id: credential.id,
+    transports: (credential.transports ?? undefined) as never,
+  };
+}
+
 export async function buildRegistrationOptions(params: {
   userId: string;
   userName: string;
@@ -73,11 +96,16 @@ export async function buildRegistrationOptions(params: {
     // Information über Reginas Gerät, die wir nicht brauchen.
     attestationType: "none",
 
-    // Verhindert, dass dasselbe Gerät versehentlich zweimal registriert wird.
-    excludeCredentials: params.existing.map((c) => ({
-      id: c.id,
-      transports: c.transports as never,
-    })),
+    /*
+      Verhindert, dass dasselbe Gerät versehentlich zweimal registriert wird.
+
+      Das ist der Grund, warum der Freischaltknopf auf einem iPhone scheitern
+      kann, obwohl alles richtig ist: Liegt Reginas Passkey vom Mac im
+      iCloud-Schlüsselbund, kennt ihn das iPhone bereits – und lehnt einen
+      zweiten für dieselbe Seite ab. Das ist kein Fehler, sondern die Antwort
+      "hast du längst". Der Knopf muss das nur verständlich sagen.
+    */
+    excludeCredentials: params.existing.map(describe),
 
     authenticatorSelection: {
       // Der Schlüssel soll auffindbar sein, damit die Anmeldung ohne vorherige
@@ -120,10 +148,7 @@ export async function buildAuthenticationOptions(
   return generateAuthenticationOptions({
     rpID: rpId(),
     userVerification: "preferred",
-    allowCredentials: allowed.map((c) => ({
-      id: c.id,
-      transports: c.transports as never,
-    })),
+    allowCredentials: allowed.map(describe),
   });
 }
 
